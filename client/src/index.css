@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+   
+    background:rgb(255, 255,255);
+}
+
+@layer utilities {
+    input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+  }
+  .no-scrollbar {
+      -ms-overflow-style: none;  
+      scrollbar-width: none; 
+}
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(209, 209, 209);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 10px;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 55%; }
+}
+
+@keyframes blink {
+  from, to { border-color: transparent; }
+  50% { border-color: #fffefe; }
+}
+
+.typewriter {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 3px solid black; 
+  font-size: inherit; 
+  animation: typing 3s steps(30, end), blink .75s step-end infinite;
+}
