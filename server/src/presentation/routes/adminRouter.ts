@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { adminRepositoryImpl } from "../../infrastructure/repositories/adminRepositoryImpl";
 import { adminInteractorImpl } from "../../application/usecases/adminInteractor";
-import { adminController } from "../services/adminController";
+import { adminController } from "../services/controller/adminController";
 import { loginValidation } from "../middlewares/expressValidatorValidation";
 import adminVerifyMiddleware from "../middlewares/adminAuth";
 
@@ -11,55 +11,30 @@ const controller = new adminController(interactor);
 
 const adminRouter: Router = Router();
 
-/** Post Methods  */
-adminRouter.post(
-  "/login",
-  loginValidation(),
-  controller.loginAdmin.bind(controller)
-);
+/** HTTP POST METHODS  */
+adminRouter.post("/login", loginValidation(), controller.adminLoginController.bind(controller))
+adminRouter.post("/coupons", loginValidation(), controller.createCouponController.bind(controller))
+adminRouter.post("/memeberships", loginValidation(), controller.createMembershipController.bind(controller))
 
-/** Get Methods  */
-adminRouter.get(
-  "/users-list",
-  adminVerifyMiddleware,
-  controller.getUsers.bind(controller)
-);
-adminRouter.get(
-  "/restaurants-approval-lists",
-  adminVerifyMiddleware,
-  controller.approveRestaurant.bind(controller)
-);
-adminRouter.get(
-  "/restaurant-approval/:id",
-  adminVerifyMiddleware,
-  controller.approval_restaurant.bind(controller)
-);
-adminRouter.get(
-  "/restaurants-list",
-  adminVerifyMiddleware,
-  controller.getRestaurants.bind(controller)
-);
 
-/** Put Methods */
-adminRouter.put(
-  "/user-actions/:id/:block",
-  adminVerifyMiddleware,
-  controller.userActions.bind(controller)
-);
-adminRouter.put(
-  "/restaurant-approval/:id",
-  adminVerifyMiddleware,
-  controller.confirmRestaurant_Approval.bind(controller)
-);
+/** HTTP GET METHODS  */
+adminRouter.get("/users", adminVerifyMiddleware, controller.getUserListContoller.bind(controller));
+adminRouter.get("/approval-restaurants", adminVerifyMiddleware, controller.getApproveRestaurantListController.bind(controller));
+adminRouter.get("/restaurants", adminVerifyMiddleware, controller.getRestaurantListController.bind(controller));
+adminRouter.get("/approve-restaurant/:restaurantId", adminVerifyMiddleware, controller.getApproveRestaurantController.bind(controller));
+adminRouter.get("/coupons", adminVerifyMiddleware, controller.getCouponController.bind(controller));
+adminRouter.get("/memberships", adminVerifyMiddleware, controller.getMembershipController.bind(controller));
 
-adminRouter.get(
-  "/validate-token",
 
-  (req: Request, res: Response) => {
-    res.status(200).send({ userId: req.userId });
-  }
-);
+/** HTTP PATCH METHODS */
+adminRouter.patch("/users/:userId/:action", adminVerifyMiddleware, controller.userActionController.bind(controller));
+adminRouter.patch("/approval-restaurant/:restaurantId", adminVerifyMiddleware, controller.approveRestaurantController.bind(controller));
 
-adminRouter.post("/logout", controller.Logout.bind(controller));
+
+/** HTTP DELETE METHODS */
+adminRouter.delete("/coupons", loginValidation(), controller.removeCouponController.bind(controller))
+
+
+
 
 export default adminRouter;

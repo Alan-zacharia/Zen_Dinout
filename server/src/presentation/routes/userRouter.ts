@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { userController } from "../services/userController";
+import { userController } from "../services/controller/userController";
 import { userInteractorImpl } from "../../application/usecases/userInteractor";
 import { userRepositoryImpl } from "../../infrastructure/repositories/userRepositoryImpl";
 import { userExists } from "../middlewares/userExists";

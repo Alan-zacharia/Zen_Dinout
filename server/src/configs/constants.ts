@@ -1,5 +1,6 @@
 export const STATUS_CODES = {
   OK: 200,
+  NO_CONTENT: 204,
   CREATED: 201,
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
@@ -17,15 +18,26 @@ export const MESSAGES = {
   INVALID_REGISTER: "Please provide all required fields.",
   INVALID_PASSWORD: "Incorrect Password..",
   PASSWORD_REQUIRED: "Password with 8 or more characters required",
-  LOGIN_SUCCESS: "Login successful..",
   LOGIN_FAILURE: "Invalid email or password",
-  RESOURCE_CREATED: "Created successfully....",
   PAYMENT_REQUIRED: "Payment required",
   FORBIDDEN_ACCESS: "Forbidden access",
   RESOURCE_NOT_FOUND: "Not found..",
-  REGISTRATION_SUCCESS: "Registeration successful...",
   USER_ALREADY_EXISTS: "A user with this email already exists",
-  SOMETHING_WENT_WRONG : "Something went wrong...."
+  SOMETHING_WENT_WRONG: "Something went wrong....",
+  ADMIN_DOESNOT_EXIST: "Admin does not exists",
+  INVALID_DATA: "Please provide all required fields.",
+  INVALID_FORMAT: "Invalid format....",
+};
+
+export const SUCCESS_MESSAGES = {
+  FETCHED_SUCCESSFULLY: "Successfully fetched ......",
+  LOGIN_SUCCESS: "Login successful..",
+  RESOURCE_CREATED: "Created successfully....",
+  REGISTRATION_SUCCESS: "Registeration successful...",
+  UPDATED_SUCCESSFULLY : "Updated  succesfully....",
+  RESTAURANT_REJECT : "Restaurant rejected successfully ....",
+  APPROVED_SUCCESS : "Restaurant approved successfully...",
+  REMOVED_SUCCESS : "Removed successfully..."
 };
 
 export const JWT_CONSTANTS = {

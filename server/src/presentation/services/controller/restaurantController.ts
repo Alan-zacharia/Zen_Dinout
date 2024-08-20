@@ -30,7 +30,7 @@ export class sellerController {
   ) {
     const { email, password } = req.body;
     try {
-      const result = await this.interactor.restaurantLoginInteractor({
+      const result = await this.interactor.Login({
         email,
         password,
       });
@@ -65,7 +65,7 @@ export class sellerController {
     console.log("Restauarant registeration service ...........");
     const credentials: IRestaurant = req.body;
     try {
-      const result = await this.interactor.restaurantRegisterationInteractor(
+      const result = await this.interactor.restaurantRegisteration(
         credentials
       );
       const { message, restaurant } = result;

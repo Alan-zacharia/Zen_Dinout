@@ -1,17 +1,23 @@
-import { UserType } from "../../domain/entities/User";
+import {
+  CouponType,
+  MemberShipType,
+  UserType,
+} from "../../domain/entities/UserType";
 import { IAdminRepositories } from "../../domain/interface/repositories/IAdminRepositories";
 import UserModel from "../database/model.ts/userModel";
-import bcrypt from "bcryptjs";
 import restaurantModel from "../database/model.ts/restaurantModel";
 import nodeMailerRejectionEmail from "../../functions/mailer/nodeMailerRejectionEmail";
 import nodeMailerConfirmationEmail from "../../functions/mailer/nodeMailerConfirmationEmail";
-import {
-  jwtGenerateRefreshToken,
-  jwtGenerateToken,
-} from "../../functions/auth/jwtTokenFunctions";
+import { generateTokens } from "../utils/jwtUtils";
+import { hashedPasswordCompare } from "../../domain/entities/auth";
+import { MESSAGES, ROLES, SUCCESS_MESSAGES } from "../../configs/constants";
+import { ObjectId } from "mongoose";
+import { RestaurantType } from "../../domain/entities/RestaurantType";
+import couponModel from "../database/model.ts/couponModel";
+import membershipModel from "../database/model.ts/membershipModel";
 
 export class adminRepositoryImpl implements IAdminRepositories {
-  async loginAdminRepo(credentials: {
+  public async adminLoginRepo(credentials: {
     email: string;
     password: string;
   }): Promise<{
@@ -20,149 +26,305 @@ export class adminRepositoryImpl implements IAdminRepositories {
     token: string | null;
     refreshToken: string | null;
   }> {
+    const { email, password } = credentials;
     try {
-      const admin = await UserModel.findOne({ email: credentials.email });
-      console.log(admin)
-      let token = null;
-      let refreshToken = null;
+      const admin = await UserModel.findOne({ email });
       if (!admin || !admin.isAdmin) {
         return {
           admin: null,
-          message: "Admin doesn't exist",
-          token,
-          refreshToken,
+          message: MESSAGES.ADMIN_DOESNOT_EXIST,
+          token: null,
+          refreshToken: null,
+        };
+      }
+      const hashedPassword = await hashedPasswordCompare(
+        password,
+        admin.password
+      );
+      if (hashedPassword) {
+        const { generatedAccessToken, generatedRefreshToken } = generateTokens(
+          admin._id as string,
+          ROLES.ADMIN
+        );
+        const { password, ...adminData } = admin;
+        return {
+          admin: adminData.toObject(),
+          message: SUCCESS_MESSAGES.LOGIN_SUCCESS,
+          refreshToken: generatedRefreshToken,
+          token: generatedAccessToken,
         };
       } else {
-        const passwordMatch = await bcrypt.compare(
-          credentials.password,
-          admin.password
-        );
-        console.log(passwordMatch)
-        if (passwordMatch) {
-          if (admin) {
-            token = jwtGenerateToken(admin._id as string, "admin");
-            refreshToken = jwtGenerateRefreshToken(admin._id as string);
-          }
-          return { admin, message: "Login Successful", token, refreshToken };
-        } else {
-          return {
-            admin : null,
-            message: "Password is incorrect",
-            token,
-            refreshToken,
-          };
-        }
+        return {
+          admin: null,
+          message: MESSAGES.INVALID_PASSWORD,
+          token: null,
+          refreshToken: null,
+        };
       }
-    } catch (error: any) {
-      console.log("Error in admin login repo : ", error);
-      throw error;
-    }
-  }
-  async getUsersList(): Promise<{ users: object | null; message: string }> {
-    try {
-      console.log("Get USer Repo");
-      const users = await UserModel.find({ isVerified: true });
-      return { users, message: "Users list Successfull" };
     } catch (error) {
-      console.log("Error in get user repo : ", error);
-      throw error;
-    }
-  }
-  async getRestaurantsList(): Promise<{
-    restaurants: object | null;
-    message: string;
-  }> {
-    try {
-      const restaurants = await restaurantModel.find({ isApproved: true });
-      return { restaurants, message: "restaurant list Successfull" };
-    } catch (error) {
-      console.log("Error in get restaurant repo : ", error);
-      throw error;
-    }
-  }
-  async approve(): Promise<{
-    restaurants: object | null;
-    message: string;
-  }> {
-    console.log("hhhhhhh");
-    try {
-      const restaurants = await restaurantModel.find({ isApproved: false });
-      console.log(restaurants);
-      return { restaurants, message: "restaurant list Successfull" };
-    } catch (error) {
-      console.log("Error in get restaurant approve repo : ", error);
       throw error;
     }
   }
 
-  async userBlockUnblock(
-    id: string,
-    block: string
-  ): Promise<{ users: UserType | null; message: string }> {
+  public async getUsersListRepo(): Promise<{
+    users: UserType[] | null;
+    message: string;
+    totalPages: number;
+  }> {
+    const totalPages = 1;
     try {
-      let user;
-      if (block == "false") {
-        user = await UserModel.findByIdAndUpdate(
-          id,
-          { isBlocked: true },
-          { new: true }
-        );
-      } else {
-        user = await UserModel.findByIdAndUpdate(
-          id,
-          { isBlocked: false },
-          { new: true }
-        );
-      }
-      return { users: user, message: "user actions successfull" };
-    } catch (error) {
-      console.log("Error in get restaurant actions repo : ", error);
-      throw error;
-    }
-  }
-
-  async getapprovalRestaurant(
-    restaurantId: string
-  ): Promise<{ restaurants: object | null; message: string }> {
-    try {
-      const restaurantDetails = await restaurantModel.findById(restaurantId);
-      console.log(restaurantDetails);
+      const users = await UserModel.find();
+      const sanitizedUsers: UserType[] = users.map((user) => {
+        const userObj = user.toObject();
+        const { password, _id, ...userWithoutPassword } = userObj;
+        return {
+          ...userWithoutPassword,
+          id: (_id as ObjectId).toString(),
+        };
+      });
       return {
-        restaurants: restaurantDetails,
-        message: "Restaurant details......",
+        users: sanitizedUsers,
+        message: SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
+        totalPages,
       };
     } catch (error) {
-      console.log(
-        "Oops an error occurred in getapprovalRestaurant repository",
-        error
-      );
       throw error;
     }
   }
-  async confirmRestaurant(
+
+  public async getApproveRestaurantListRepo(): Promise<{
+    restaurants: RestaurantType[] | null;
+    message: string;
+  }> {
+    try {
+      const restaurants = await restaurantModel
+        .find({ isApproved: false })
+        .select("-password");
+      const restauarntList: RestaurantType[] = restaurants.map((restaurant) => {
+        return restaurant.toObject();
+      });
+      return {
+        restaurants: restauarntList,
+        message: SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getRestaurantListRepo(pageNumber: number): Promise<{
+    restaurants: RestaurantType[] | null;
+    message: string;
+    totalPages: number;
+  }> {
+    try {
+      const totalPages = 1;
+      const pageSize = 6;
+      const skip = (pageNumber - 1) * pageSize;
+      const restaurants = await restaurantModel
+        .find({ isApproved: true })
+        .skip(skip)
+        .limit(pageSize)
+        .select("-password");
+      const restauarntList: RestaurantType[] = restaurants.map((restaurant) => {
+        return restaurant.toObject();
+      });
+      return {
+        restaurants: restauarntList,
+        message: SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
+        totalPages,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getApproveRestaurantRepo(
+    restaurantId: string
+  ): Promise<{ restaurant: RestaurantType | null; message: string }> {
+    try {
+      const restaurantDetails = await restaurantModel.findById(restaurantId);
+      if (!restaurantDetails) {
+        return {
+          restaurant: null,
+          message: MESSAGES.RESOURCE_NOT_FOUND,
+        };
+      }
+      return {
+        restaurant: restaurantDetails.toObject(),
+        message: SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async userActionRepo(
+    userId: string,
+    action: string
+  ): Promise<{ user: UserType | null; message: string }> {
+    try {
+      const isBlocked = action === "false";
+      const user = await UserModel.findByIdAndUpdate(
+        userId,
+        { isBlocked },
+        { new: true }
+      );
+      if (!user) {
+        return { user: null, message: MESSAGES.RESOURCE_NOT_FOUND };
+      }
+      return {
+        user: user.toObject(),
+        message: SUCCESS_MESSAGES.UPDATED_SUCCESSFULLY,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async approveRestaurantRepo(
     restaurantId: string,
-    logic: string,
+    action: string,
     rejectReason: string
   ): Promise<{ success: boolean; message: string }> {
     try {
-      console.log(logic);
-      if (logic == "reject") {
+      if (action === "reject") {
         const restaurant = await restaurantModel.findByIdAndDelete(
           restaurantId
         );
-        console.log(restaurant);
-        nodeMailerRejectionEmail(restaurant?.email as string, rejectReason);
-        console.log("hjhjhjhjhj");
-        return { success: true, message: "Success" };
+        if (!restaurant) {
+          return { success: false, message: MESSAGES.RESOURCE_NOT_FOUND };
+        }
+        await nodeMailerRejectionEmail(
+          restaurant?.email as string,
+          rejectReason
+        );
+        return { success: true, message: SUCCESS_MESSAGES.RESTAURANT_REJECT };
       }
       const restaurant = await restaurantModel.findByIdAndUpdate(restaurantId, {
         isApproved: true,
       });
-      console.log(restaurant);
-      nodeMailerConfirmationEmail(restaurant?.email as string);
-      return { success: true, message: "Success" };
+      if (!restaurant) {
+        return { success: false, message: MESSAGES.RESOURCE_NOT_FOUND };
+      }
+      await nodeMailerConfirmationEmail(restaurant?.email as string);
+      return { success: true, message: SUCCESS_MESSAGES.APPROVED_SUCCESS };
     } catch (error) {
-      console.log("OOps an error occured in comfirmation ", error);
+      throw error;
+    }
+  }
+  public async getCouponsRepo(): Promise<{
+    message: string;
+    Coupons: CouponType[];
+  }> {
+    try {
+      const coupons = await couponModel.find({});
+      const allCoupons: CouponType[] = coupons.map((coupon) => {
+        return coupon.toObject();
+      });
+      return {
+        Coupons: allCoupons,
+        message: SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async getMembershipRepo(): Promise<{
+    message: string;
+    Memberships: MemberShipType[];
+  }> {
+    try {
+      const memberships = await membershipModel.find({});
+      const Memberships: MemberShipType[] = memberships.map((membership) => {
+        return membership.toObject();
+      });
+      return {
+        Memberships,
+        message: SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async createCouponRepo(couponDetails: CouponType): Promise<{
+    message: string;
+    status: boolean;
+  }> {
+    const {
+      couponcode,
+      description,
+      discount,
+      discountPrice,
+      expiryDate,
+      minPurchase,
+      startDate,
+    } = couponDetails;
+    try {
+      const coupon = new couponModel({
+        couponcode,
+        description,
+        discount,
+        discountPrice,
+        minPurchase,
+        expiryDate,
+        startDate,
+      });
+      await coupon.save();
+      return {
+        message: SUCCESS_MESSAGES.RESOURCE_CREATED,
+        status: true,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async createMembershipInteractor(
+    membershipData: MemberShipType
+  ): Promise<{
+    message: string;
+    status: boolean;
+  }> {
+    const {
+      planName,
+      benefits,
+      cost,
+      description,
+      discount,
+      expiryDate,
+      type,
+    } = membershipData;
+    try {
+      const membership = new membershipModel({
+        planName,
+        description,
+        discount,
+        benefits,
+        expiryDate,
+        type,
+      });
+      await membership.save();
+      return {
+        message: SUCCESS_MESSAGES.RESOURCE_CREATED,
+        status: true,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async removeCouponRepo(couponId: string): Promise<{
+    message: string;
+    status: boolean;
+  }> {
+    try {
+      const coupon = await couponModel.findByIdAndDelete(couponId);
+      if (!coupon) {
+        return { status: false, message: MESSAGES.RESOURCE_NOT_FOUND };
+      }
+      return {
+        status: true,
+        message: SUCCESS_MESSAGES.REMOVED_SUCCESS,
+      };
+    } catch (error) {
       throw error;
     }
   }

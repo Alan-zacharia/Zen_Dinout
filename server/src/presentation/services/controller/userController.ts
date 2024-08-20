@@ -1,23 +1,23 @@
 import { Response, Request, NextFunction } from "express";
 import { IUserInteractor } from "../../../domain/interface/use-cases/IUserInteractor";
-import {
-  bookingConfirmationInterface,
-  ReviewAddingInterface,
-  UserInterface,
-} from "../../../domain/entities/User";
+// import {
+//   bookingConfirmationInterface,
+//   ReviewAddingInterface,
+//   UserInterface,
+// } from "../../../domain/entities/User";
 import { setAuthTokenCookie } from "../../../functions/auth/cookieFunctions";
 import logger from "../../../infrastructure/lib/Wintson";
 import tableSlots from "../../../infrastructure/database/model.ts/tableSlots";
-import {
-  createMembershipPaymentIntent,
-  createPaymentIntent,
-} from "../../../functions/booking/paymentIntegration";
+// import {
+//   createMembershipPaymentIntent,
+//   createPaymentIntent,
+// } from "../../../functions/booking/paymentIntegration";
 import {
   jwtGenerateRefreshToken,
   jwtGenerateToken,
 } from "../../../functions/auth/jwtTokenFunctions";
 import mongoose from "mongoose";
-import { tableSlotsGetRequestInterface } from "../../../domain/entities/restaurants";
+// import { tableSlotsGetRequestInterface } from "../../../domain/entities/restaurants";
 import bookingModel from "../../../infrastructure/database/model.ts/bookingModel";
 import couponModel from "../../../infrastructure/database/model.ts/couponModel";
 

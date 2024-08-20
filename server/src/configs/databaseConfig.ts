@@ -1,15 +1,12 @@
 import mongoose from "mongoose";
-import configuredKeys from "./config";
+import configuredKeys from "./envConfig";
 
 const databaseConnection = async () => {
   try {
     await mongoose.connect(configuredKeys.DB_HOST);
-    console.log("Database connected succefully.............");
-  } catch (error) {
-    console.log(
-      "Oops something went wrong in database connection ! --->",
-      error
-    );
+    console.log("Database connected succefully......");
+  } catch (err) {
+    console.log(`Error in database connection ---> ${(err as Error).message}`);
   }
 };
 

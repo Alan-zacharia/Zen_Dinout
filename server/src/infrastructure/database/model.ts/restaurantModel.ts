@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { string } from "joi";
 
 const restaurantSchema = new mongoose.Schema(
   {
@@ -17,6 +18,7 @@ const restaurantSchema = new mongoose.Schema(
     },
     contact: {
       type: String,
+      required: true,
     },
     password: {
       type: String,
@@ -24,7 +26,7 @@ const restaurantSchema = new mongoose.Schema(
     },
     address: String,
     description: String,
-    TableRate: {
+    tableRate: {
       type: Number,
       default: 200,
     },
@@ -44,17 +46,18 @@ const restaurantSchema = new mongoose.Schema(
     },
     openingTime: String,
     closingTime: String,
-    // qrCode: String,
-
     isListed: {
       type: Boolean,
       default: true,
     },
-    featuredImage: String,
-
+    featuredImage: {
+      url: String,
+      public_id: String,
+    },
     secondaryImages: [
       {
-        type: String,
+        url: String,
+        public_id: String,
       },
     ],
     isApproved: {

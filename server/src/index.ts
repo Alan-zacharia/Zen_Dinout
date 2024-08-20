@@ -1,10 +1,10 @@
 /** Modules import */
 import express, { Application } from "express";
-import cors from "cors";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 /** Folders import */
-import configuredKeys from "./configs/config";
+import configuredKeys from "./configs/envConfig";
 import routes from "./application/routes/routes";
 import databaseConnection from "./configs/databaseConfig";
 
@@ -12,7 +12,7 @@ const app: Application = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ credentials: true, origin: "http://localhost:4000" }));
+app.use(cors({ credentials: true, origin: configuredKeys.CLIENT_URL }));
 app.use(cookieParser());
 
 databaseConnection();

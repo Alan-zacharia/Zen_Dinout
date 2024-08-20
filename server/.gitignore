@@ -1,4 +1,13 @@
 
 # .gitignore
+
+# dependencies 
 node_modules/
+
+# Secret
 .env
+
+
+# logs
+error.log
+combined.log

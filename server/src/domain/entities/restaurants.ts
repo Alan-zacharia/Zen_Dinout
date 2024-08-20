@@ -25,3 +25,5 @@ export interface tableSlotTypes {
   tableCapacity: number;
   tableLocation: "In" | "Out";
 }
+
+

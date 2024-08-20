@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { sellerController } from "../services/restaurantController";
+import { sellerController } from "../services/controller/restaurantController";
 import { sellerInteractor } from "../../application/usecases/sellerInteractor";
 import { sellerRepository } from "../../infrastructure/repositories/sellerRepository";
 import { sellerVerifyToken } from "../middlewares/sellerAuth";
@@ -28,7 +28,7 @@ restaurantRouter.get(
 
 /** POST METHODS  */
 restaurantRouter.post(
-  "/restaurant-login",
+  "/login",
   loginValidation(),
   controller.restaurantLogin.bind(controller)
 );
