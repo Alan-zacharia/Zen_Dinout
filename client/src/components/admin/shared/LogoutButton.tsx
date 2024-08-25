@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { adminLogout } from "../../../services/adminApiClient";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../../../redux/user/userSlice";
 import logout from "../../../utils/Logout";
@@ -13,7 +12,6 @@ const LogoutButton: React.FC = () => {
   function hanldeLogin() {
     dispatch(clearUser());
     logout("Logout out successfully");
-    adminLogout()
     navigate("/admin/login");
   }
   return (
