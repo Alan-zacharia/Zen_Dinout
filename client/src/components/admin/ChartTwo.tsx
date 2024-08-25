@@ -1,6 +1,6 @@
-import { ApexOptions } from "apexcharts";
-import React, { useEffect, useState } from "react";
-import ReactApexChart from "react-apexcharts";
+import { ApexOptions } from 'apexcharts';
+import React, { useEffect, useState } from 'react';
+import ReactApexChart from 'react-apexcharts';
 
 interface ChartDataType {
   data: {
@@ -10,6 +10,7 @@ interface ChartDataType {
     }[];
   };
 }
+
 const ChartTwo: React.FC = () => {
   const [state, setState] = useState<ChartDataType | null>(null);
 
@@ -18,11 +19,11 @@ const ChartTwo: React.FC = () => {
       data: {
         series: [
           {
-            name: "Sales",
+            name: 'Sales',
             data: [44, 55, 41, 67, 22, 43, 65],
           },
           {
-            name: "Revenue",
+            name: 'Revenue',
             data: [13, 23, 20, 8, 13, 27, 15],
           },
         ],
@@ -30,11 +31,12 @@ const ChartTwo: React.FC = () => {
     };
     setState(data);
   }, []);
+
   const options: ApexOptions = {
-    colors: ["#00BFFF"],
+    colors: ['#00BFFF'],
     chart: {
-      fontFamily: "Satoshi, sans-serif",
-      type: "bar",
+      fontFamily: 'Satoshi, sans-serif',
+      type: 'bar',
       stacked: true,
       toolbar: {
         show: false,
@@ -47,25 +49,22 @@ const ChartTwo: React.FC = () => {
       bar: {
         horizontal: false,
         borderRadius: 0,
-        borderRadiusApplication: "end",
-        borderRadiusWhenStacked: "last",
+        borderRadiusApplication: 'end',
+        borderRadiusWhenStacked: 'last',
       },
     },
     dataLabels: {
       enabled: false,
     },
     xaxis: {
-      categories: ["M", "T", "W", "T", "F", "S", "S"],
+      categories: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
     },
     legend: {
-      position: "top",
-      horizontalAlign: "left",
-      fontFamily: "Satoshi",
+      position: 'top',
+      horizontalAlign: 'left',
+      fontFamily: 'Satoshi',
       fontWeight: 500,
-      fontSize: "14px",
-      markers: {
-        radius: 99,
-      },
+      fontSize: '14px',
     },
     fill: {
       opacity: 1,
@@ -120,12 +119,16 @@ const ChartTwo: React.FC = () => {
 
       <div>
         <div id="chartTwo" className="-ml-5 -mb-9">
-          <ReactApexChart
-            options={options}
-            series={state?.data.series}
-            type="bar"
-            height={455}
-          />
+          {state ? (
+            <ReactApexChart
+              options={options}
+              series={state.data.series}
+              type="bar"
+              height={455}
+            />
+          ) : (
+            <div>Loading...</div>
+          )}
         </div>
       </div>
     </div>
