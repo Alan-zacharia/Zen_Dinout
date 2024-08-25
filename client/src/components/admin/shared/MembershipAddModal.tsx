@@ -444,7 +444,7 @@
                         value={benefit}
                         onChange={(e) => handleBenefitChange(index, e)}
                       />
-                      {formik.values.benefits.length > 1 && (
+                      {formik.values.benefits && formik.values.benefits.length > 1 && (
                         <button
                           type="button"
                           className="text-red-500"
