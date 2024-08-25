@@ -22,7 +22,7 @@ const useTableData = (userId: string, itemsPerPage: number) => {
     try {
       const res = await getTablesSlots(userId, page);
       setAllTableData(res.data.tables);
-      setTotalPage(Math.ceil(res.data.tables.length / itemsPerPage));
+      setTotalPage(Math.ceil(res.data.tables ? res.data.tables.length : 0 / itemsPerPage));
     } catch (error) {
       console.error("Error fetching table data:", error);
     } finally {
@@ -55,7 +55,7 @@ const useTableData = (userId: string, itemsPerPage: number) => {
   }, [filteredData, currentPage, itemsPerPage]);
 
   useEffect(() => {
-    setTotalPage(Math.ceil(filteredData.length / itemsPerPage));
+    setTotalPage(Math.ceil(filteredData ? filteredData.length : 0 / itemsPerPage));
   }, [filteredData.length, itemsPerPage]);
 
   const handlePageChange = useCallback(

@@ -21,8 +21,8 @@ const ChatMobileViewSlide: React.FC = () => {
           <div className="flex gap-2">
             <PiUserCircleDuotone className="size-10 md:size-12" />
             <p className="px-1 pt-2">
-              {name.length > 13 ? name.substring(0, 13) : name}
-              <span>{name.length > 13 && <span>...</span>}</span>
+              {name && name.length > 13 ? name.substring(0, 13) : name}
+              <span>{name && name.length > 13 && <span>...</span>}</span>
             </p>
           </div>
           <div className="flex md:hidden ml-auto">
@@ -50,8 +50,8 @@ const ChatMobileViewSlide: React.FC = () => {
               </div>
               <div className="ml-3">
                 <h3 className="text-sm font-semibold">
-                  {name.length > 13 ? name.substring(0, 13) : name}
-                  {name.length > 13 && <span>...</span>}
+                  {name &&name.length > 13 ? name.substring(0, 13) : name}
+                  {name && name.length > 13 && <span>...</span>}
                 </h3>
                 <p className="text-sm w-[500px]">you have a message</p>
               </div>

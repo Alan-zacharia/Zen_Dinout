@@ -62,7 +62,7 @@ const CuisinesAddForm: React.FC<CuisinesFormProps> = ({
                   <div key={index} className="flex items-center">
                     <span>{index * 2 + 1}. </span>
                     <span className="ml-2">
-                      {cuisine.length > 8
+                      {cuisine && cuisine.length > 8
                         ? cuisine.substring(0, 8) + "..."
                         : cuisine}
                     </span>
@@ -83,7 +83,7 @@ const CuisinesAddForm: React.FC<CuisinesFormProps> = ({
                   <div key={index} className="flex items-center">
                     <span>{index * 2 + 2}. </span>
                     <span className="ml-2">
-                      {cuisine.length > 8
+                      {cuisine && cuisine.length > 8
                         ? cuisine.substring(0, 8) + "..."
                         : cuisine}
                     </span>

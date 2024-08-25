@@ -100,7 +100,7 @@ const HomeLayout = () => {
                 Prev
               </button>
             </li>
-            {Array(Math.ceil(filteredRestaurants.length / restaurantsPerPage))
+            {Array(Math.ceil(filteredRestaurants ? filteredRestaurants.length : 0 / restaurantsPerPage))
               .fill(0)
               .map((_, index) => (
                 <li key={index}>
@@ -119,7 +119,7 @@ const HomeLayout = () => {
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={
                   currentPage ===
-                  Math.ceil(filteredRestaurants.length / restaurantsPerPage)
+                  Math.ceil(filteredRestaurants ? filteredRestaurants.length : 0 / restaurantsPerPage)
                 }
                 className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
               >

@@ -79,13 +79,13 @@ const ChatNamesListing: React.FC<ChatNameListingProps> = React.memo(
         <div className="ml-3">
           {role === "user" ? (
             <h3 className="text-sm font-semibold">
-              {receiver.restaurantName.length > 13
+              { receiver && receiver.restaurantName && receiver.restaurantName.length > 13
                 ? `${receiver.restaurantName.substring(0, 13)}...`
                 : receiver.restaurantName}
             </h3>
           ) : (
             <h3 className="text-sm font-semibold">
-              {receiver.username.length > 13
+              {receiver && receiver.username && receiver.username.length > 13
                 ? `${receiver.username.substring(0, 13)}...`
                 : receiver.username}
             </h3>

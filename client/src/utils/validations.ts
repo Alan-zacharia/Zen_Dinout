@@ -20,39 +20,6 @@ export const loginValidation = (values: Partial<userType>) => {
   return errors;
 };
 
-/** User side Validation for registeration */
-// export const registerValidation = (values: Partial<userType>) => {
-//   const errors: Partial<userType> = {};
-//   if (!values.username || !values.username.trim()) {
-//     errors.username = "Please enter your full name!";
-// } else if (!/^[A-Za-z]/.test(values.username)) {
-//     errors.username = "First letter should be a capital letter.";
-// } else if (!/^[A-Za-z\s]+$/.test(values.username)) {
-//     errors.username = "Name can only contain letters and spaces.";
-// }
-
-//   if (!values.email) {
-//     errors.email = "Email is required";
-//   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-//     errors.email = "Please enter a valid email address";
-//   };
-
-//   if (!values.password) {
-//     errors.password = "Password is required";
-//   } else if (values.password.length < 8) {
-//     errors.password = "Password must be 8 characters long";
-//   };
-
-//   if (!values.confirmPassword) {
-//     errors.confirmPassword = "Confirm password is required";
-//   }else if (values.confirmPassword.length < 8) {
-//     errors.confirmPassword = "Password must be 8 characters long";
-//   }else if (values.confirmPassword !== values.password) {
-//     errors.confirmPassword = "Password do not matching";
-//   };
-
-//   return errors;
-// };
 export const registerValidation = () => {
   return Yup.object().shape({
     username: Yup.string()

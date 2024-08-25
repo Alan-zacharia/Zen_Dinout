@@ -88,7 +88,7 @@ const Coupons: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {coupons.length > 0 ? (
+              {coupons && coupons.length > 0 ? (
                 coupons.map((coupon, index) => (
                   <tr
                     className="bg-white border-b border-b-black dark:border-gray-700 text-black font-bold text-[14.5px]"

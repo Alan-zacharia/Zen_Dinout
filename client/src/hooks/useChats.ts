@@ -156,7 +156,7 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
   useEffect(() => {
     if (!selectedChat) return;
     const lastMessageIsFromOtherUser =
-      messages.length && messages[messages.length - 1].sender !== userId;
+    messages && messages.length && messages[messages.length - 1].sender !== userId;
     if (lastMessageIsFromOtherUser) {
       socket.current?.emit("markMessageAsSeen", {
         conversationId: selectedChat._id,

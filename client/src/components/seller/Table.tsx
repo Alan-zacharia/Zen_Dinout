@@ -87,7 +87,7 @@ const Table: React.FC = () => {
               <div className="skeleton h-4 w-20"></div>
             </div>
           ))
-        ) : paginatedData.length > 0 ? (
+        ) :  paginatedData && paginatedData.length > 0 ? (
           <table className="table">
             <thead>
               <tr className="font-bold text-sm text-black">

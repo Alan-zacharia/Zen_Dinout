@@ -116,7 +116,7 @@ const RestaurantsListingPage: React.FC = () => {
             </Box>
 
             <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-              {filteredRestaurants.map((restuarant, index) => (
+              {filteredRestaurants && filteredRestaurants.map((restuarant, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Link to={`/restaurant-view/${restuarant._id}`}>
                     {" "}
@@ -126,7 +126,7 @@ const RestaurantsListingPage: React.FC = () => {
               ))}
             </Grid>
           </Box>
-          {filteredRestaurants.length > 8 && (
+          {filteredRestaurants && filteredRestaurants.length > 8 && (
             <Box
               display="flex"
               gap={1}

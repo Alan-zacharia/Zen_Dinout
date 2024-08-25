@@ -103,7 +103,7 @@ const RestaurantMangement: React.FC = () => {
                </td>
              </tr>
             ) : 
-              filteredItems.length > 0 ? (
+            filteredItems && filteredItems.length > 0 ? (
                 filteredItems.map(
                   (restaurant: RestaurantType, index: number) => {
                     return (

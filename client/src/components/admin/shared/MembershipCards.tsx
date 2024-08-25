@@ -22,7 +22,7 @@ const MembershipCards: React.FC<MembershipCardsProps> = ({ mount }) => {
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {memberships.length > 0 ? (
+      {memberships && memberships.length > 0 ? (
         memberships.map((membership) => (
           <div
             className="w-full max-w-sm p-8 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700"

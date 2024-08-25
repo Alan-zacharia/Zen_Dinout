@@ -22,7 +22,7 @@ const BookMarks: React.FC = () => {
 
   return (    
     <div className="lg:p-8 flex flex-col gap-4 w-[400px] lg:w-[500px]">
-      {bookmarks.length === 0 ? (
+      {bookmarks && bookmarks.length === 0 ? (
         <p className="text-gray-500 font-bold">No saved Restaurants.</p>
       ) : (
         bookmarks.map((restaurant) => (

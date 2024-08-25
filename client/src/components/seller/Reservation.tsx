@@ -111,14 +111,14 @@ const Reservation: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {paginatedData.map((bookingDetails) => (
+              {paginatedData && paginatedData.map((bookingDetails) => (
                 <tr
                   className="border-b border-b-gray-300 h-20 text-gray-700 font-bold text-base"
                   key={bookingDetails._id}
                 >
                   <td>
                     <p>
-                      {bookingDetails.bookingId.length > 15
+                      {bookingDetails && bookingDetails.bookingId && bookingDetails.bookingId.length > 15
                         ? bookingDetails.bookingId.substring(0, 14)
                         : bookingDetails.bookingId}
                       ...

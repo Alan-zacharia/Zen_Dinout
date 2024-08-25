@@ -105,7 +105,7 @@ const SelectTableList: React.FC<SelectTableProps> = ({
       </h1>
 
       <div className="container mx-auto">
-        {!tables || tables.length < 1 ? (
+        {!tables || (tables && tables.length < 1) ? (
           <div className="flex flex-col items-center gap-7">
             <img
               src={NoTables}

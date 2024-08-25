@@ -565,7 +565,7 @@ const RestaurantProfileAddForm: React.FC = () => {
                 ))}
               </div>
             )}
-            {selectedImagesForDeletion.length > 0 && (
+            {selectedImagesForDeletion && selectedImagesForDeletion.length > 0 && (
               <button
                 onClick={handleDeleteSelectedImages}
                 className="mt-4 btn hover:bg-red-200"

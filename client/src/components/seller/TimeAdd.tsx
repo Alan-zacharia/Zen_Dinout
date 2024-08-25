@@ -118,7 +118,7 @@ const TimeSlots: React.FC = () => {
     return matchesSearchQuery && matchesAvailability;
   }) : [];
 
-  const totalPages = Math.ceil(filteredSlots.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredSlots ? filteredSlots.length : 0 / itemsPerPage);
   const paginatedSlots = filteredSlots.slice(
     slotPage * itemsPerPage,
     slotPage * itemsPerPage + itemsPerPage
@@ -268,7 +268,7 @@ const TimeSlots: React.FC = () => {
         </table>
       </div>
 
-      {filteredSlots.length > itemsPerPage && (
+      {filteredSlots && filteredSlots.length > itemsPerPage && (
         <div className="flex items-center justify-end w-[95%] pt-4">
           <button
             onClick={() => setSlotPage((prevPage) => Math.max(prevPage - 1, 0))}

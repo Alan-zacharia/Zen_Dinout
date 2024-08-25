@@ -43,7 +43,7 @@ export const useReservation = () => {
         .get("/restaurant/reservations")
         .then((res) => {
           setBookingDetails(res.data.Reservations);
-          setTotalPage(Math.ceil(res.data.Reservations.length / itemsPerPage));
+          setTotalPage(Math.ceil(res.data.Reservations ? res.data.Reservations.length : 0 / itemsPerPage));
         })
         .catch(({ response }) => {
           console.log(response);
@@ -140,7 +140,7 @@ export const useReservation = () => {
   }, [filteredData, currentPage, itemsPerPage]);
 
   useEffect(() => {
-    setTotalPage(Math.ceil(filteredData.length / itemsPerPage));
+    setTotalPage(Math.ceil(filteredData ? filteredData.length : 0 / itemsPerPage));
   }, [filteredData.length, itemsPerPage]);
 
   return {

@@ -100,7 +100,7 @@ const NavLeftSide = () => {
           placeholder="Location......."
         />
         <FaLocationDot size={23} className="absolute right-12 top-2" />
-        {suggestion.length > 0 && (
+        {suggestion && suggestion.length > 0 && (
           <ul className="bg-white absolute w-[200px] top-12 overflow-x-auto h-52">
             {suggestion.map((suggestion: any, index: number) => (
               <li

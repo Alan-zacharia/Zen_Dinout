@@ -111,7 +111,7 @@ const Customer: React.FC = () => {
                   </div>
                 </td>
               </tr>
-            ) : filteredUsers.length > 0 ? (
+            ) : filteredUsers &&  filteredUsers.length > 0 ? (
               filteredUsers.map((user: UserType, index: number) => {
                 return (
                   <tr
