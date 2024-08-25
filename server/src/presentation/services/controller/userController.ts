@@ -731,7 +731,7 @@ export class userController {
     res: Response,
     next: NextFunction
   ) {
-    console.log("Creat payment.......")
+    console.log("Creat payment.......");
     const { email, name, restaurantDatas } = req.body;
     const bookingComfirmationDatas: BookingConfirmationType = req.body;
     const userId = req.userId;
@@ -965,43 +965,47 @@ export class userController {
     }
   }
 
-  // async bookingStatusUpdationController(
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ) {
-  //   console.log("Restaurants bookingStatusUpdation service.....");
-  //   const bookingId = req.params.bookingId;
-  //   const paymentStatus = req.body.paymentStatus;
-  //   try {
-  //     const { status } = await this.interactor.bookingStatusUpdationInteractor(
-  //       bookingId,
-  //       paymentStatus
-  //     );
-  //     if (!status) {
-  //       return res.status(201).json({ message: "Failed to book the table" });
-  //     }
-  //     console.log(bookingId, paymentStatus);
-  //     return res.status(200).json({ message: "Booking Succesfull" });
-  //   } catch (error) {
-  //     logger.error("Oops an error during in booking status service:", error);
-  //     return res.status(500).json({ message: "Internal server error" });
-  //   }
-  // }
-  // /**
+  async bookingStatusUpdationController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("Restaurants bookingStatusUpdation service.....");
+    const bookingId = req.params.bookingId;
+    const paymentStatus = req.body.paymentStatus;
+    try {
+      const { status } = await this.interactor.bookingStatusUpdationInteractor(
+        bookingId,
+        paymentStatus
+      );
+      if (!status) {
+        return res.status(STATUS_CODES.OK).json({ message: "Failed to book the table" });
+      }
+      console.log(bookingId, paymentStatus);
+      return res.status(STATUS_CODES.CREATED).json({ message: "Booking Succesfull" });
+    } catch (error) {
+      logger.error(`Error in update booking status : ${(error as Error).message}`);
+      next(
+        new AppError(
+          MESSAGES.INTERNAL_SERVER_ERROR,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
 
-  // async logoutController(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     res.clearCookie("../");
-  //     return res.status(STATUS_CODES.OK).send("Logout successfull...!");
-  //   } catch (error) {
-  //     logger.error(`Error in Logout : ${(error as Error).message}`);
-  //     next(
-  //       new AppError(
-  //         MESSAGES.INTERNAL_SERVER_ERROR,
-  //         STATUS_CODES.INTERNAL_SERVER_ERROR
-  //       )
-  //     );
-  //   }
-  // }
+  public async logoutController(req: Request, res: Response, next: NextFunction) {
+    try {
+      res.clearCookie("refreshToken");
+      return res.status(STATUS_CODES.OK).send("Logout successfull...!");
+    } catch (error) {
+      logger.error(`Error in Logout : ${(error as Error).message}`);
+      next(
+        new AppError(
+          MESSAGES.INTERNAL_SERVER_ERROR,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
 }

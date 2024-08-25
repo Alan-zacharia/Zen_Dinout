@@ -54,6 +54,10 @@ const bookingSchema = new Schema({
     enum: ["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED", "CHECKED"],
     default: "PENDING",
   },
+  subTotal: {
+    type: Number,
+    required: true,
+  },
   totalAmount: {
     type: Number,
     required: true,

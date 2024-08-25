@@ -28,18 +28,16 @@ userRouter.post("/membership",userVerifyMiddleware,controller.createMemberShipPa
 userRouter.post("/review",userVerifyMiddleware,controller.addReviewController.bind(controller));
 userRouter.post("/apply-coupon",userVerifyMiddleware,controller.applyCouponController.bind(controller));
 userRouter.post("/create-payment",userVerifyMiddleware,controller.createBookingController.bind(controller));
-
-
-
 userRouter.post("/reset-password-request",controller.resetPasswordController.bind(controller));
 userRouter.post("/save-restaurant",userVerifyMiddleware,controller.saveRestaurantController.bind(controller));
 userRouter.post("/slots",controller.getTimeSlotController.bind(controller));
+userRouter.post("/logout",controller.logoutController.bind(controller));
 
-// userRouter.post("/restaurant-slots",controller.restaurantTableSlotsController.bind(controller));
 
 /** HTTP PATCH METHODS  */
 userRouter.patch("/account/:userId",userVerifyMiddleware,controller.updateProfileController.bind(controller));
 userRouter.patch("/booking-details/:bookingId",userVerifyMiddleware,controller.cancelBookingController.bind(controller));
+userRouter.patch("/payment/status/:bookingId",userVerifyMiddleware,controller.bookingStatusUpdationController.bind(controller));
 
 
 /** HTTP PUT METHODS  */
@@ -64,9 +62,6 @@ userRouter.get("/restaurant/:restaurantId/tables",controller.getRestaurantTables
 
 /** HTTPS DELETE METHODS */
 userRouter.delete("/membership/:membershipId",userVerifyMiddleware , controller.cancelMembershipController.bind(controller));
-
-// userRouter.get("/restaurant-photos/:restaurantId",controller.getSavedRestaurantController.bind(controller));
-// userRouter.get("/restaurant-table-details/:tableId",controller.getRestaurantTablesController.bind(controller));
 
 
 export default userRouter;

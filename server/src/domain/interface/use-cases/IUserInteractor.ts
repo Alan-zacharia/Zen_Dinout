@@ -26,4 +26,5 @@ export interface IUserInteractor{
     getRestaurantTableInteractor(restaurantId :string , tableSize : number , slot : string, selectedDate : string , page : number | null) : Promise<{ availableTables : TableDataType[] | null , status : boolean , message : string , totalTables : number , tablesPerPage : number }>
     getRestaurantTableInteractor(restaurantId :string , tableSize : number , slot : string, selectedDate : string , page : number | null) : Promise<{ availableTables : TableDataType[] | null , status : boolean , message : string , totalTables : number , tablesPerPage : number }>
     createBookingInteractor(userId :string , bookingComfirmationDatas : BookingConfirmationType , totalCost : string) : Promise<{  status : boolean , bookingId : string | null }>
+    bookingStatusUpdationInteractor(bookingId :string , paymentStatus : string) : Promise<{  status : boolean }>
 }

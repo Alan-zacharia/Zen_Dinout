@@ -101,17 +101,21 @@ export interface IUserRepository {
     tableSize: number,
     slot: string,
     selectedDate: string,
-    page : number,
+    page: number
   ): Promise<{
     availableTables: TableDataType[] | null;
     status: boolean;
     message: string;
-    totalTables : number;
-    tablesPerPage : number;
+    totalTables: number;
+    tablesPerPage: number;
   }>;
   createBookingRepo(
     userId: string,
     bookingComfirmationDatas: BookingConfirmationType,
     totalCost: string
   ): Promise<{ status: boolean; bookingId: string | null }>;
+  bookingStatusUpdationRepo(
+    bookingId: string,
+    paymentStatus: string
+  ): Promise<{ status: boolean }>;
 }

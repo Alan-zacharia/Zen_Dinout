@@ -295,7 +295,8 @@ export class userRepositoryImpl implements IUserRepository {
         .find({ userId })
         .populate("table", "tableNumber")
         .populate("restaurantId", "_id restaurantName featuredImage tableRate")
-        .populate("userId", "username email");
+        .populate("userId", "username email")
+        .sort({ createdAt: 1 });
       const bookingData: BookingDataType[] = bookings.map((data) => {
         return data.toObject();
       });
@@ -452,28 +453,28 @@ export class userRepositoryImpl implements IUserRepository {
     bookingComfirmationDatas: BookingConfirmationType,
     totalCost: string
   ): Promise<{ status: boolean; bookingId: string | null }> {
-    const {bookingTime , Date , paymentMethod , restaurantDatas , timeSlotId} = bookingComfirmationDatas;
-    const {Capacity , price , restaurantId , subTotal , table} = restaurantDatas
+    const { bookingTime, Date, paymentMethod, restaurantDatas, timeSlotId } =
+      bookingComfirmationDatas;
+    const { Capacity, price, restaurantId, subTotal, table } = restaurantDatas;
     try {
-
       const newBooking = new bookingModel({
         bookingId: generateBookingId(),
         userId,
         table,
-        restaurantId ,
-        timeSlot : timeSlotId,
-        guestCount  : Capacity,
-        bookingDate : Date,
+        restaurantId,
+        timeSlot: timeSlotId,
+        guestCount: Capacity,
+        bookingDate: Date,
         bookingTime,
-        paymentMethod ,
-        totalAmount : price,
-        subTotal ,
+        paymentMethod,
+        totalAmount: price,
+        subTotal,
       });
       await newBooking.save();
-      if(!newBooking){
-        return { status: false, bookingId: null }
-      } 
-      
+      if (!newBooking) {
+        return { status: false, bookingId: null };
+      }
+
       return { bookingId: newBooking.bookingId as string, status: true };
     } catch (error) {
       throw error;
@@ -607,6 +608,35 @@ export class userRepositoryImpl implements IUserRepository {
         availableTables: tables,
         totalTables,
         tablesPerPage,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async bookingStatusUpdationRepo(
+    bookingId: string,
+    paymentStatus: string
+  ): Promise<{
+    status: boolean;
+  }> {
+    try {
+      console.log(paymentStatus, bookingId);
+      const bookingData = await bookingModel.findOne({ bookingId });
+      if (!bookingData) {
+        return {
+          status: false,
+        };
+      }
+      if (paymentStatus == "PAID") {
+        bookingData.paymentStatus = paymentStatus;
+        bookingData.bookingStatus = "CONFIRMED";
+      } else if (paymentStatus == "FAILED") {
+        bookingData.paymentStatus = paymentStatus;
+        bookingData.bookingStatus = "CANCELLED";
+      }
+      await bookingData.save();
+      return {
+        status: true,
       };
     } catch (error) {
       throw error;

@@ -422,7 +422,7 @@ export class userInteractorImpl implements IUserInteractor {
     status: boolean;
     bookingId: string | null;
   }> {
-    console.log(bookingComfirmationDatas)
+    console.log(bookingComfirmationDatas);
     const { bookingTime, Date, paymentMethod, restaurantDatas, timeSlotId } =
       bookingComfirmationDatas;
     if (
@@ -443,6 +443,26 @@ export class userInteractorImpl implements IUserInteractor {
       );
       const { bookingId, status } = result;
       return { bookingId, status };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async bookingStatusUpdationInteractor(
+    bookingId: string,
+    paymentStatus: string
+  ): Promise<{
+    status: boolean;
+  }> {
+    if (!bookingId || !paymentStatus) {
+      return { status: false };
+    }
+    try {
+      const result = await this.repository.bookingStatusUpdationRepo(
+        bookingId,
+        paymentStatus
+      );
+      const { status } = result;
+      return { status };
     } catch (error) {
       throw error;
     }

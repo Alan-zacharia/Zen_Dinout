@@ -23,9 +23,6 @@ export const createPaymentIntent = async (userData: userData, totalCost: number 
             currency: "inr",
             product_data: {
               name: "Guests",
-              metadata:{
-                bookingId : bookingId
-              },
               description: "Table booking",
             },
             unit_amount: Math.round(totalCost * 100),
@@ -34,8 +31,8 @@ export const createPaymentIntent = async (userData: userData, totalCost: number 
         },
       ],
       mode: "payment",
-      success_url: `${configuredKeys.CLIENT_URL}/success?status=true`,
-      cancel_url: `${configuredKeys.CLIENT_URL}/cancel?status=false`,
+      success_url: `${configuredKeys.CLIENT_URL}/payment-status/${bookingId}?success=true`,
+      cancel_url: `${configuredKeys.CLIENT_URL}/payment-status/${bookingId}?status=false`,
     });
     return session;
   } catch (error) {
