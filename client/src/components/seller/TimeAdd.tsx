@@ -108,7 +108,7 @@ const TimeSlots: React.FC = () => {
     }
   };
 
-  const filteredSlots = timeSlots.filter((slot) => {
+  const filteredSlots = timeSlots ? timeSlots.filter((slot) => {
     const matchesSearchQuery = slot.time.includes(searchQuery);
     const matchesAvailability =
       availabilityFilter === "all" ||
@@ -116,7 +116,7 @@ const TimeSlots: React.FC = () => {
       (availabilityFilter === "notAvailable" && !slot.isAvailable);
 
     return matchesSearchQuery && matchesAvailability;
-  });
+  }) : [];
 
   const totalPages = Math.ceil(filteredSlots.length / itemsPerPage);
   const paginatedSlots = filteredSlots.slice(

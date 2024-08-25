@@ -76,7 +76,7 @@ const HomeLayout = () => {
 
   const startIndex = (currentPage - 1) * restaurantsPerPage;
   const endIndex = startIndex + restaurantsPerPage;
-  const paginatedRestaurants = filteredRestaurants.slice(startIndex, endIndex);
+  const paginatedRestaurants = filteredRestaurants ? filteredRestaurants.slice(startIndex, endIndex) : [];
 
   return (
     <>

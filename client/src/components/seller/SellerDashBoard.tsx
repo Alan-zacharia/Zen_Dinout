@@ -35,7 +35,9 @@ const SellerDashBoard = () => {
     axiosInstance
       .get("/restaurant/reservations/")
       .then((res) => {
-        setBookingDetails(res.data.Reservations.slice(0, 4));
+        if(res.data.Reservations){
+          setBookingDetails(res.data.Reservations.slice(0, 4));
+        }
       })
       .catch(({ response }) => {
         console.log(response);

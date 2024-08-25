@@ -9,7 +9,7 @@ const RestauarantAbout: React.FC<RestauarantAboutProps> = ({
 }) => {
   const formatCuisines = (cuisines: string[]) => {
     if (!cuisines || cuisines.length === 0) return "";
-    const allButLast = cuisines.slice(0, -1).join(", ");
+    const allButLast = cuisines ? cuisines.slice(0, -1).join(", ") : [];
     const last = cuisines[cuisines.length - 1];
     return `${allButLast} , ${last}`;
   };

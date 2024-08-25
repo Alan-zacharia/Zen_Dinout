@@ -51,7 +51,7 @@ const useTableData = (userId: string, itemsPerPage: number) => {
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredData.slice(startIndex, startIndex + itemsPerPage);
+    return filteredData ? filteredData.slice(startIndex, startIndex + itemsPerPage) : [];
   }, [filteredData, currentPage, itemsPerPage]);
 
   useEffect(() => {
