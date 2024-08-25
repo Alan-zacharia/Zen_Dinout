@@ -63,7 +63,7 @@ const OtpForm = ({
                 value={formik.values.otp}
                 onChange={handleOtpChange}
                 numInputs={6}
-                renderInput={(props, index) => (
+                renderInput={(props) => (
                   <input
                     {...props}
                     type="number"

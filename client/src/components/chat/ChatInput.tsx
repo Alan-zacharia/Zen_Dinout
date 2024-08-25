@@ -1,22 +1,19 @@
-import React, { FormEvent, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import React, { FormEvent, useState } from "react";
 import axiosInstance from "../../api/axios";
 
 const ChatInput: React.FC = () => {
   const [message, setMessage] = useState("");
-  const { id } = useSelector((state: RootState) => state.user);
-   const handleSubmit = (e : FormEvent)=>{
-     e.preventDefault();
-     if(!message) return;
-     axiosInstance.post("/api/inbox/sendMessage",{
-       
-     }).then((res)=>{
-       console.log(res)
-     }).catch(({response})=>{
-      console.log(response);
-     })
-   }
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!message) return;
+    axiosInstance
+      .post("/api/inbox/sendMessage", {})
+      .then(() => {
+      })
+      .catch(({ response }) => {
+        console.log(response);
+      });
+  };
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex items-center p-3 bg-white border-t border-gray-200">

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const BookingCancel = () => {
+const BookingCancel : React.FC = () => {
   return (
     <div className="h-screen flex ">
       <div className=" flex m-auto shadow-lg shadow-gray-400 rounded-xl w-[25%] h-[50%]">

@@ -1,6 +1,6 @@
 import React from "react";
 
-const Loading = () => {
+const Loading : React.FC = () => {
   return (
     <div className="flex items-center justify-center h-screen flex-col ">
       {" "}

@@ -1,26 +1,40 @@
-import { ApexOptions } from 'apexcharts';
-import React, { useState } from 'react';
-import ReactApexChart from 'react-apexcharts';
+import { ApexOptions } from "apexcharts";
+import React, { useEffect, useState } from "react";
+import ReactApexChart from "react-apexcharts";
 
+interface ChartDataType {
+  data: {
+    series: {
+      name: string;
+      data: number[];
+    }[];
+  };
+}
 const ChartTwo: React.FC = () => {
-  const [state, setState] = useState({
-    series: [
-      {
-        name: 'Sales',
-        data: [44, 55, 41, 67, 22, 43, 65],
-      },
-      {
-        name: 'Revenue',
-        data: [13, 23, 20, 8, 13, 27, 15],
-      },
-    ],
-  });
+  const [state, setState] = useState<ChartDataType | null>(null);
 
+  useEffect(() => {
+    const data: ChartDataType = {
+      data: {
+        series: [
+          {
+            name: "Sales",
+            data: [44, 55, 41, 67, 22, 43, 65],
+          },
+          {
+            name: "Revenue",
+            data: [13, 23, 20, 8, 13, 27, 15],
+          },
+        ],
+      },
+    };
+    setState(data);
+  }, []);
   const options: ApexOptions = {
-    colors: [ '#00BFFF' ],
+    colors: ["#00BFFF"],
     chart: {
-      fontFamily: 'Satoshi, sans-serif',
-      type: 'bar',
+      fontFamily: "Satoshi, sans-serif",
+      type: "bar",
       stacked: true,
       toolbar: {
         show: false,
@@ -33,23 +47,22 @@ const ChartTwo: React.FC = () => {
       bar: {
         horizontal: false,
         borderRadius: 0,
-        borderRadiusApplication: 'end',
-        borderRadiusWhenStacked: 'last',
-        
+        borderRadiusApplication: "end",
+        borderRadiusWhenStacked: "last",
       },
     },
     dataLabels: {
       enabled: false,
     },
     xaxis: {
-      categories: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+      categories: ["M", "T", "W", "T", "F", "S", "S"],
     },
     legend: {
-      position: 'top',
-      horizontalAlign: 'left',
-      fontFamily: 'Satoshi',
+      position: "top",
+      horizontalAlign: "left",
+      fontFamily: "Satoshi",
       fontWeight: 500,
-      fontSize: '14px',
+      fontSize: "14px",
       markers: {
         radius: 99,
       },
@@ -74,8 +87,12 @@ const ChartTwo: React.FC = () => {
               id="#"
               className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
             >
-              <option value="" className='dark:bg-boxdark'>This Week</option>
-              <option value="" className='dark:bg-boxdark'>Last Week</option>
+              <option value="" className="dark:bg-boxdark">
+                This Week
+              </option>
+              <option value="" className="dark:bg-boxdark">
+                Last Week
+              </option>
             </select>
             <span className="absolute top-1/2 right-3 z-10 -translate-y-1/2">
               <svg
@@ -105,7 +122,7 @@ const ChartTwo: React.FC = () => {
         <div id="chartTwo" className="-ml-5 -mb-9">
           <ReactApexChart
             options={options}
-            series={state.series}
+            series={state?.data.series}
             type="bar"
             height={455}
           />

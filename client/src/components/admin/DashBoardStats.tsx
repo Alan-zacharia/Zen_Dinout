@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { BiRestaurant } from "react-icons/bi";
 

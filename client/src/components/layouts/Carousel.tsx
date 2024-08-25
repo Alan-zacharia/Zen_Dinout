@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -58,14 +58,23 @@ const PrevArrow: React.FC<Properties> = (props) => {
   );
 };
 
+interface DataItem {
+  title: string;
+}
+
 function Carousel() {
-  const [array, setArray] = useState([
-    { title: "Sea Food" },
-    { title: "Kubaba" },
-    { title: "Arabian palace" },
-    { title: "America palace" },
-    { title: "Al Reem" },
-  ]);
+  const [array, setArray] = useState<DataItem[]>([]);
+
+  useEffect(() => {
+    const data: DataItem[] = [
+      { title: "Sea Food" },
+      { title: "Kubaba" },
+      { title: "Arabian palace" },
+      { title: "America palace" },
+      { title: "Al Reem" },
+    ];
+    setArray(data);
+  }, []);
 
   const [isMobile, setIsMobile] = useState(false);
 

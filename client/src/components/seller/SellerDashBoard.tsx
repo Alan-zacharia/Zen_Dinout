@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SellerChartOne from "./SellerChartOne";
 import ChartTwo from "./ChartTwo";
-import { BookingDetailsType } from "../../types/restaurantTypes";
 import axiosInstance from "../../api/axios";
 import { Link } from "react-router-dom";
 import { textColours } from "../../utils/dateValidateFunctions";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
 interface Booking {
   _id: string;
@@ -36,13 +35,13 @@ const SellerDashBoard = () => {
     axiosInstance
       .get("/restaurant/reservations/")
       .then((res) => {
-        setBookingDetails(res.data.Reservations.slice(0,4));
+        setBookingDetails(res.data.Reservations.slice(0, 4));
       })
       .catch(({ response }) => {
         console.log(response);
       });
   }, []);
- 
+
   return (
     <div className="container px-4 py-8 ">
       <div className="overflow-hidden">
@@ -88,12 +87,17 @@ const SellerDashBoard = () => {
                         </td>
                         <td>{bookingDetails?.userId?.username}</td>
                         <td>{bookingDetails.bookingTime}</td>
-                        <td>{format(new Date(bookingDetails.bookingDate), 'dd-MM-yyyy')}</td>
+                        <td>
+                          {format(
+                            new Date(bookingDetails.bookingDate),
+                            "dd-MM-yyyy"
+                          )}
+                        </td>
                         <td>{bookingDetails.restaurantId.restaurantName}</td>
 
                         <td
                           className={`font-bold ${textColours(
-                            bookingDetails.bookingStatus                            
+                            bookingDetails.bookingStatus
                           )}`}
                         >
                           {bookingDetails.bookingStatus.toLocaleLowerCase()}

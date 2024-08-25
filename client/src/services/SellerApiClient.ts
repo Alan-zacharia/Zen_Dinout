@@ -41,30 +41,6 @@ export const Logout = async () => {
   };
 
 
-export const imageCloudUpload = async (Image : string) =>{
-     const formData = new FormData();
-      formData.append("file", Image);
-      formData.append("upload_preset", "xkitcf7p");
-      try {
-        console.log(formData);
-        const res = await fetch(
-          "https://api.cloudinary.com/v1_1/dneezqmgu/image/upload",
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-        if (res.ok) {
-          const data = await res.json();
-          return data.secure_url
-        } else {
-          console.error("Upload failed:", res.statusText);
-        }
-      } catch (error) {
-        console.error("Upload error:", error);
-      }   
-}
-
 export const sellerLogin = async (data: Partial<credentials>) => {
   try {
     const {

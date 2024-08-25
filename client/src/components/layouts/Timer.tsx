@@ -1,12 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { localStorageGetItem } from "../../utils/localStorageImpl";
-import { resendOtp } from "../../services/api";
+import { useEffect, useState } from "react";
 
-
-
-  
-
-const Timer = ({resendOtp} : {resendOtp : ()=>void}) => {
+const Timer  = ({resendOtp} : {resendOtp : ()=>void}) => {
   const [seconds, setSeconds] = useState(() => {
     const savedSeconds = localStorage.getItem("remainingSeconds");
     return savedSeconds ? parseInt(savedSeconds, 10) : 30;

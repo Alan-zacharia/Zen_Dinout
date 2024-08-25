@@ -26,7 +26,7 @@ const RestaurantRegister: React.FC = () => {
           contact: credentials.contact,
           password: credentials.password,
         })
-        .then((res) => {
+        .then(() => {
           toast.success("Confrimation message sent to your email address");
           setTimeout(() => {
             navigate("/restaurant/login");

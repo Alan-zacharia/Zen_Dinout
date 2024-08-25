@@ -1,7 +1,4 @@
 import React from "react";
-import { FaTrash } from "react-icons/fa";
-import { FaEdit } from "react-icons/fa";
-import IMg from "../../assets/Login-image.jpg";
 import Form from "../layouts/Form";
 
 const Menu: React.FC = () => {

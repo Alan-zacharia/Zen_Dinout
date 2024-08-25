@@ -22,7 +22,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   const handleCouponRemove = () => {
     axiosInstance
       .delete(`/admin/coupons/${coupon.couponId}`)
-      .then((res) => {
+      .then(() => {
         toast.success("Coupon deleted....");
       })
       .catch(({ response }) => {
