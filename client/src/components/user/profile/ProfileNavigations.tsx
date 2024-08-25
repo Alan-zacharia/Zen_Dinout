@@ -4,15 +4,11 @@ import {
   RiLogoutBoxRFill,
   RiCoupon2Fill,
   RiChatHistoryFill,
-  RiMenuFill,
 } from "react-icons/ri";
 import { FaWallet, FaUserCircle, FaBookmark, FaUserAlt } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import { clearUser } from "../../../redux/user/userSlice";
 import logout from "../../../utils/Logout";
-import {  ProfileNavigationProps} from "../../../types/user/userTypes";
+import { ProfileNavigationProps } from "../../../types/user/userTypes";
 import { IoIosNavigate } from "react-icons/io";
-
 
 const ProfileNavigations: React.FC<ProfileNavigationProps> = ({
   userDetails,

@@ -1,14 +1,8 @@
 import React from "react";
-
 import { IoLogOut } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
 import classNames from "classnames";
 import { SELLER_SIDEBAR_LINKS } from "../../../lib/constants/SellerNavigation";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-
-import { localStorageRemoveItem } from "../../../utils/localStorageImpl";
-import { clearUser } from "../../../redux/user/userSlice";
 import logout from "../../../utils/Logout";
 
 interface SidebarLink {

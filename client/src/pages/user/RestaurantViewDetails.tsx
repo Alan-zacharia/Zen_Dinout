@@ -7,10 +7,7 @@ import RestaurantImagesListed from "../../components/user/shared/RestaurantImage
 import ResturantDetailedSelecting from "../../components/user/shared/ResturantDetailedSelecting";
 import RestaurantMenu from "../../components/user/layouts/Menu";
 import axios from "axios";
-import {
-  RestaurantDetailType,
-  RestaurantImageType,
-} from "../../types/restaurantTypes";
+import { RestaurantDetailType } from "../../types/restaurantTypes";
 
 const RestaurantViewDetails: React.FC = () => {
   const { restaurantId } = useParams();

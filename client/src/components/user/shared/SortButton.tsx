@@ -7,14 +7,7 @@ import Grow from "@mui/material/Grow";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-import {
-  Container,
-  Grid,
-  Box,
-  Paper,
-  Autocomplete,
-  Typography,
-} from "@mui/material";
+import { Paper } from "@mui/material";
 import { RESTAURANT_FOOD_TYPE_OPTIONS } from "../../../constants/SearchConstants";
 
 const SortButton = () => {
@@ -26,10 +19,7 @@ const SortButton = () => {
     console.log(`You clicked ${RESTAURANT_FOOD_TYPE_OPTIONS[selectedIndex]}`);
   };
 
-  const handleMenuItemClick = (
-    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
-    index: number
-  ) => {
+  const handleMenuItemClick = (index: number) => {
     setSelectedIndex(index);
     setOpen(false);
   };
@@ -100,7 +90,7 @@ const SortButton = () => {
                       key={option}
                       disabled={index === 2}
                       selected={index === selectedIndex}
-                      onClick={(event) => handleMenuItemClick(event, index)}
+                      onClick={() => handleMenuItemClick(index)}
                     >
                       {option}
                     </MenuItem>

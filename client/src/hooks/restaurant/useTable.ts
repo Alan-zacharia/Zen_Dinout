@@ -15,11 +15,11 @@ const useTableData = (userId: string, itemsPerPage: number) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [tableToDelete, setTableToDelete] = useState<tableSlotTypes | null>(
     null
-  ); 
+  );
 
   const fetchTableData = async (page: number) => {
     setIsLoading(true);
-    try { 
+    try {
       const res = await getTablesSlots(userId, page);
       setAllTableData(res.data.tables);
       setTotalPage(Math.ceil(res.data.tables.length / itemsPerPage));
@@ -40,9 +40,9 @@ const useTableData = (userId: string, itemsPerPage: number) => {
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
       const matchesFilter =
-        filterValue === "" || data.tableLocation === filterValue; 
+        filterValue === "" || data.tableLocation === filterValue;
       const matchedIsAvailable =
-        filterIsAvailable === "" || 
+        filterIsAvailable === "" ||
         (filterIsAvailable == "true" && data.isAvailable) ||
         (filterIsAvailable == "false" && !data.isAvailable);
       return matchesSearchQuery && matchesFilter && matchedIsAvailable;
@@ -102,9 +102,7 @@ const useTableData = (userId: string, itemsPerPage: number) => {
   const handleDeleteConfirm = useCallback(async () => {
     try {
       if (tableToDelete) {
-        const res = await axiosInstance.delete(
-          `/restaurant/tables/${tableToDelete._id}`
-        );
+        await axiosInstance.delete(`/restaurant/tables/${tableToDelete._id}`);
         setAllTableData((prevTables) =>
           prevTables.filter((table) => table._id !== tableToDelete._id)
         );
@@ -125,10 +123,9 @@ const useTableData = (userId: string, itemsPerPage: number) => {
   const handleAvailable = useCallback(
     async (tableId: string | undefined, isAvailable: boolean) => {
       try {
-         await axiosInstance.patch(
-          `/restaurant/tables/${tableId}`,
-          { isAvailable: !isAvailable }
-        );
+        await axiosInstance.patch(`/restaurant/tables/${tableId}`, {
+          isAvailable: !isAvailable,
+        });
         setAllTableData((prevData) =>
           prevData.map((table) =>
             table._id == tableId
@@ -137,7 +134,7 @@ const useTableData = (userId: string, itemsPerPage: number) => {
           )
         );
       } catch (error) {
-        console.log(error);  
+        console.log(error);
         toast.error("Something went wrong try again later....");
       }
     },

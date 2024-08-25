@@ -4,7 +4,6 @@ import GoogleMap from "../../GoogleMap";
 import CuisinesAddForm from "../forms/CuisinesAddForm";
 import { useFormik } from "formik";
 import {
-  RestaurantDetailType,
   RestaurantImageType,
 } from "../../../types/restaurantTypes";
 import { RootState } from "../../../redux/store";
@@ -18,8 +17,6 @@ import { TiDeleteOutline } from "react-icons/ti";
 
 const RestaurantProfileAddForm: React.FC = () => {
   const { id } = useSelector((state: RootState) => state.user);
-  const [restaurantDetails, setRestaurantDetails] =
-    useState<RestaurantDetailType | null>(null);
   const featuredImageRef = useRef<HTMLInputElement | null>(null);
   const [suggestion, setSuggestions] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -135,7 +132,6 @@ const RestaurantProfileAddForm: React.FC = () => {
         });
         setLat(restaurantDetails.location.coordinates[1]);
         setLng(restaurantDetails.location.coordinates[0]);
-        setRestaurantDetails(restaurantDetails);
         setFeaturedImage(restaurantDetails.featuredImage);
         setImages(restaurantDetails.secondaryImages);
       } catch (error) {
@@ -209,7 +205,7 @@ const RestaurantProfileAddForm: React.FC = () => {
   const handleImageDelete = (imageId: string) => {
     axiosInstance
       .delete("/restaurant/featuredImage", { params: { imageId } })
-      .then((res) => {
+      .then(() => {
         setFeaturedImage(null);
         setImage(null);
         toast.success("Deleted successfully...");
@@ -257,7 +253,7 @@ const RestaurantProfileAddForm: React.FC = () => {
       .delete("/restaurant/secondary-images", {
         params: { ids: selectedImagesForDeletion },
       })
-      .then((res) => {
+      .then(() => {
         setImages((img) => {
           return img.filter(
             (img) => !selectedImagesForDeletion.includes(img.public_id)

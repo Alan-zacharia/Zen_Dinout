@@ -15,7 +15,7 @@ import {
   MdOutlineRestaurant,
   MdOutlinePayment,
 } from "react-icons/md";
-import { FaRupeeSign, FaUsers } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
 import {
   textColours,
   textPaymentStatusColours,
@@ -76,11 +76,11 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
   const handleCancelBooking = (bookingId: string) => {
     axiosInstance
       .patch(`/api/booking-details/${bookingId}`)
-      .then((res) => {
+      .then(() => {
         fetchBookingDetails();
       })
       .catch(({ response }) => {
-        console.log(response); 
+        console.log(response);
       });
   };
   const handleOpenConfirmation = () => {

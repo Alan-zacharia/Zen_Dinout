@@ -1,9 +1,5 @@
 import React from 'react'
 import { GiHamburgerMenu } from "react-icons/gi";
-import { MdDateRange  ,MdOutlineRestaurant, MdTableRestaurant , MdDashboard  } from "react-icons/md";
-import { LuTimer } from "react-icons/lu";
-import { BiFoodMenu } from "react-icons/bi";
-import { BsFillBoxSeamFill } from "react-icons/bs";
 import { IoLogOut } from "react-icons/io5";
 import { SELLER_SIDEBAR_LINKS } from "../../../lib/constants/SellerNavigation";
 import { SideBarLinks } from './SideBar';

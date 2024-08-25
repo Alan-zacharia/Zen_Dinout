@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import GoogleMap from "../GoogleMap";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoMdTimer } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
@@ -145,7 +144,7 @@ const RestaurantViewComponent = ({
   const handleTimeSlot = (time: string) => {
     setTimeSlotSelect(time);
   };
-  const handleComfirmation = (guestCount: number) => {
+  const handleComfirmation = () => {
     if (!isAuthenticated && role !== "user") {
       toast.error("Please login.......");
       return;
@@ -382,7 +381,7 @@ const RestaurantViewComponent = ({
                             <button
                               className="w-full btn bg-red-500 text-white font-semibold rounded-md hover:bg-red-600"
                               type="button"
-                              onClick={() => handleComfirmation(guestCount)}
+                              onClick={() => handleComfirmation()}
                             >
                               Continue
                             </button>

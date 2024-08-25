@@ -1,4 +1,3 @@
-import React from 'react'
 import Gif from "../assets/bubble-gum-error-404.gif"
 import Page404 from "../assets/404Page.jpg"
 import { Link } from 'react-router-dom'

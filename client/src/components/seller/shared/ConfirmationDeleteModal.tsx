@@ -26,7 +26,7 @@ const confrimationModal : React.FC<ConfirmationModalProps>  = ({
       const handleRemoveTimeSlot = () => {
         axiosInstance
           .delete(`/restaurant/delete-timeSlot/${timeSlotId}`)
-          .then((response) => {
+          .then(() => {
             toast.success("Slot removed successfully...");
             setTimeSlots(prevSlots=>prevSlots.filter(slot=>slot._id !== timeSlotId));
             onConfirm();

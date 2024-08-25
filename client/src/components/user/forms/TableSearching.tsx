@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { SiGooglecalendar } from "react-icons/si";
@@ -11,44 +11,37 @@ import { RootState } from "../../../redux/store";
 import toast from "react-hot-toast";
 
 const TableSearching = () => {
-    
-const formatTime = (time: string): string => {
+  const formatTime = (time: string): string => {
     const date = new Date(time);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
-  const { id, isAuthenticated, role } = useSelector(
+  const { isAuthenticated, role } = useSelector(
     (state: RootState) => state.user
   );
-  const navigate = useNavigate();
-  const [isSaved, setIsSave] = useState<boolean>(false);
-  const [selectdTable, setSelectTable] = useState<boolean>(false);
   const [timeSlot, setTimeSlots] = useState<TimeSlots[]>([]);
   const [guestCount, setGuestCount] = useState<number>(0);
   const [timeSlotSelect, setTimeSlotSelect] = useState<string>("");
-  const [slotId, setSlotId] = useState<string>("");
   const [date, setDate] = useState(() => {
     const today = new Date();
     return today.toISOString().split("T")[0];
   });
   const { restaurantId } = useParams();
   const selectTableListRef = useRef<HTMLDivElement>(null);
-  
+
   const handleDate = (e: ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);
   };
   const handleGuestCount = () => {
     if (guestCount < 15) {
       setGuestCount((count) => count + 1);
-      setSelectTable(false);
     }
   };
   const handleGuestsCountReduce = () => {
     if (guestCount > 0) {
       setGuestCount((count) => count - 1);
-      setSelectTable(false);
     }
   };
-  
+
   useEffect(() => {
     if (date) {
       getRestaurantTableSlot(restaurantId, date)
@@ -63,12 +56,12 @@ const formatTime = (time: string): string => {
   const handleTimeSlot = (time: string) => {
     setTimeSlotSelect(formatTime(time));
   };
-  const handleComfirmation = (guestCount: number) => {
+  const handleComfirmation = () => {
     if (!isAuthenticated && role !== "user") {
       toast.error("Please login.......");
       return;
     }
-    setSelectTable(true);
+
     setTimeout(() => {
       selectTableListRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 0);
@@ -108,7 +101,6 @@ const formatTime = (time: string): string => {
                       className="bg-blue-500 p-1 h-8 w-20 text-center font-bold cursor-pointer text-white rounded-md"
                       onClick={() => {
                         handleTimeSlot(value.startTime);
-                        setSlotId(value._id);
                       }}
                     >
                       {formatTime(value.startTime)}
@@ -187,7 +179,7 @@ const formatTime = (time: string): string => {
                   <button
                     className="w-full btn bg-red-500 text-white font-semibold rounded-md hover:bg-red-600"
                     type="button"
-                    onClick={() => handleComfirmation(guestCount)}
+                    onClick={() => handleComfirmation()}
                   >
                     Continue
                   </button>

@@ -34,7 +34,6 @@ const ChatPage: React.FC = () => {
     receiverId,
     senderTyping,
     handleMessage,
-    lastMessage,
     notifications
   } = useChat(id as string, selectedChat);
 

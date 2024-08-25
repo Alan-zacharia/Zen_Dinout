@@ -1,7 +1,7 @@
 import React from 'react'
 import ForgotPasswordComponent from '../../components/user/ForgotPasswordComponent'
 
-const ForgotPassword = () => {
+const ForgotPassword : React.FC = () => {
   return (
     <div className='flex h-screen w-full'>
         <div className=' lg:flex absolute p-10 pt-20  lg:p-20 lg:px-44'>

@@ -142,7 +142,7 @@ const TimeSlots: React.FC = () => {
   ) => {
     axiosInstance
       .patch(`/restaurant/timeslots/${id}?available=${!isAvailable}`)
-      .then((res) => {
+      .then(() => {
         setTimeSlots((prevSlots) =>
           prevSlots.map((slot) =>
             slot._id === id ? { ...slot, isAvailable: !isAvailable } : slot

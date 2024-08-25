@@ -1,5 +1,4 @@
 import React from "react";
-import { RestaurantImageType } from "../../../types/restaurantTypes";
 
 interface restaurantImagesComponentProps {
   restaurantImages: string[] | undefined;

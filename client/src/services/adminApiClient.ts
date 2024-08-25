@@ -31,11 +31,6 @@ export const validateToken_admin = async()=>{
   
 };
 
-export const adminLogout = async()=>{
-    const response = await axios.post("/admin/logout");
-    if (response.status !== 200) {
-      throw new Error("Error during sign out...");
-    }
-};
+
 
 

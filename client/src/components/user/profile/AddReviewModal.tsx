@@ -64,7 +64,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
         <div className="mt-4">
           <p className="mb-2">Rating: </p>
           <div className="flex">
-            {[...Array(5)].map((star, index) => {
+            {[...Array(5)].map((_, index) => {
               const currentRating = index + 1;
               return (
                 <label key={index}>

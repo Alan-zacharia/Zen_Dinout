@@ -33,12 +33,7 @@ export const validateToken = async () => {
     return response;
   }; 
 
-export const Logout = async () => {
-  const response = await axios.post("/restaurant/logout");
-  if (response.status !== 200) {
-    throw new Error("Error during sign out...");
-  }
-  };
+
 
 
 export const sellerLogin = async (data: Partial<credentials>) => {
@@ -48,7 +43,6 @@ export const sellerLogin = async (data: Partial<credentials>) => {
     } = await axios.post("/restaurant/login", data);
     return { data: { message, user, token } };
   } catch (error) {
-    console.log(error); 
     throw error;
   }
 };
@@ -56,21 +50,18 @@ export const sellerLogin = async (data: Partial<credentials>) => {
 
 export const tablesSlotCreationApi = async(tableAddingDatas : tableSlotTypes , restaurantId : string)=>{
   try{
-    console.log(tableAddingDatas)
-    const {data : {message , status , newTableSlot}} = await axios.post("/restaurant/add-table" , {tableAddingDatas} ); 
+    const {data : {message , status , newTableSlot}} = await axios.post(`/restaurant/add-table?${restaurantId}` , {tableAddingDatas} ); 
     return {data : {message , status , newTableSlot}};
   }catch(error){
-    console.log(error); 
     throw error;
   }
 }
 
 export const getTablesSlots = async(restaurantId : string , currentPage : number)=>{
   try{
-    const {data : {message , tables , totalPages }} = await axios.get(`/restaurant/tables?page=${currentPage}`); 
+    const {data : {message , tables , totalPages }} = await axios.get(`/restaurant/tables?page=${currentPage}?${restaurantId}`); 
     return {data : {message , tables , totalPages }};
-  }catch(error){
-    console.log(error);  
+  }catch(error){ 
     throw error;
   }
 }
@@ -78,8 +69,7 @@ export const getAddedSlots = async(tableId : string)=>{
   try{
     const {data : {message , tableSlotDatas}} = await axios.get(`/restaurant/table-slot-list/${tableId}`); 
     return {data : {message , tableSlotDatas}};
-  }catch(error){
-    console.log(error);    
+  }catch(error){  
     throw error;
   }
 }
@@ -87,8 +77,7 @@ export const tablesSlotTimeCreatingApi = async(tableSlotTimeData : object , tabl
   try{
     const {data : {message , addedTableSlotTime}} = await axios.post(`/restaurant/table-slot-add/`,{tableSlotTimeData , tableId}); 
     return {data : {message , addedTableSlotTime}};
-  }catch(error){
-    console.log(error);   
+  }catch(error){  
     throw error;
   }
 }
@@ -96,8 +85,7 @@ export const deleteTableTimeSlot = async(tableId : string)=>{
   try{
     const {data : {message , addedTableSlotTime}} = await axios.put(`/restaurant/table-slot-delete/`,{tableId}); 
     return {data : {message , addedTableSlotTime}};
-  }catch(error){
-    console.log(error);    
+  }catch(error){  
     throw error;
   }
 }
