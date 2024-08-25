@@ -102,7 +102,7 @@ export const useReservation = () => {
   );
 
   const filteredData = useMemo(() => {
-    return bookingDetails.filter((data) => {
+    return bookingDetails ? bookingDetails.filter((data) => {
       const matchesSearchQuery =
         data.userId.username
           .toLowerCase()
@@ -124,7 +124,7 @@ export const useReservation = () => {
         matchesTimeFilter &&
         matchesDateFilter
       );
-    });
+    }) : [];
   }, [
     bookingDetails,
     searchQuery,

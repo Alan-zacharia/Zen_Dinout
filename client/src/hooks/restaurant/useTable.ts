@@ -35,7 +35,7 @@ const useTableData = (userId: string, itemsPerPage: number) => {
   }, [userId]);
 
   const filteredData = useMemo(() => {
-    return allTableData.filter((data) => {
+    return allTableData ? allTableData.filter((data) => {
       const matchesSearchQuery = data.tableNumber
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
@@ -46,7 +46,7 @@ const useTableData = (userId: string, itemsPerPage: number) => {
         (filterIsAvailable == "true" && data.isAvailable) ||
         (filterIsAvailable == "false" && !data.isAvailable);
       return matchesSearchQuery && matchesFilter && matchedIsAvailable;
-    });
+    }) : [];
   }, [allTableData, searchQuery, filterValue, filterIsAvailable]);
 
   const paginatedData = useMemo(() => {

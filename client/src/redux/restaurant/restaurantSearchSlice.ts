@@ -69,7 +69,7 @@ const restaurantsSlice = createSlice({
     filterRestaurants: (state) => {
       const radius = 20;
       const normalize = (str: string) => str.replace(/\s+/g, "").toLowerCase();
-      state.filteredRestaurants = state.restaurants.filter((restaurant) => {
+      state.filteredRestaurants =  state.restaurants ? state.restaurants.filter((restaurant) => {
         const normalizedSearchTerm = normalize(state.searchQuery);
         const normalizedRestaurantName = normalize(restaurant.restaurantName);
 
@@ -102,7 +102,7 @@ const restaurantsSlice = createSlice({
         return (
           matchesSearch && matchesLocation && matchesRate && matchesVegOrNonVeg
         );
-      });
+      }) : [];
     },
   },
   extraReducers: (builder) => {
