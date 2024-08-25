@@ -13,9 +13,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <PersistGate persistor={persistor}>
       <Provider store={store}>
         <RecoilRoot>
-   
-            <App />
-       
+          <App />
         </RecoilRoot>
       </Provider>
     </PersistGate>

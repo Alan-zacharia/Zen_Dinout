@@ -17,11 +17,12 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer , {
   cors :{
-    origin : "http://localhost:3000",
+    origin : configuredKeys.CLIENT_URL,
     methods : ["GET", "POST" ],
     credentials : true
   }
 })
+console.log(configuredKeys.CLIENT_URL)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: configuredKeys.CLIENT_URL }));
