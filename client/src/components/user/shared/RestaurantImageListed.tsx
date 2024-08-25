@@ -2,7 +2,7 @@ import React from "react";
 import { RestaurantImageType } from "../../../types/restaurantTypes";
 
 interface restaurantImagesComponentProps {
-  restaurantImages: RestaurantImageType[] | undefined;
+  restaurantImages: string[] | undefined;
 }
 const RestaurantImagesListed: React.FC<restaurantImagesComponentProps> = ({
   restaurantImages,
@@ -12,11 +12,12 @@ const RestaurantImagesListed: React.FC<restaurantImagesComponentProps> = ({
       <div className="flex gap-4 flex-col ">
         <div className="flex gap-4 flex-wrap w-2/3 ">
           {restaurantImages &&
-            restaurantImages.map((image) => {
+            restaurantImages.map((image, index) => {
               return (
                 <>
                   <img
-                    src={image.url}
+                    key={index}
+                    src={image}
                     alt="restuarntImages"
                     className="w-[250px] rounded-xl cursor-pointer transition duration-200 hover:scale-105 "
                   />

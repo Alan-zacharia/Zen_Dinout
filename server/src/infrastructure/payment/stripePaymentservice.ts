@@ -1,17 +1,18 @@
 import Stripe from "stripe";
-import configuredKeys from "../../configs/config";
+import configuredKeys from "../../configs/envConfig";
 
 const stripe = new Stripe(configuredKeys.STRIPE_SECRET_KEY);
 
 type userData = {
-  userUsername: string;
-  userEmail: string;
+  name : string;
+  email: string;
 };
-export const createPayment = async (userData: userData, totalCost: number) => {
+export const createPaymentIntent = async (userData: userData, totalCost: number , bookingId : string) => {
   try {
+    console.log(userData)
     const user = await stripe.customers.create({
-      name: userData.userUsername,
-      email: userData.userEmail,
+      name: userData.name,
+      email: userData.email,
     });
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -22,6 +23,9 @@ export const createPayment = async (userData: userData, totalCost: number) => {
             currency: "inr",
             product_data: {
               name: "Guests",
+              metadata:{
+                bookingId : bookingId
+              },
               description: "Table booking",
             },
             unit_amount: Math.round(totalCost * 100),
@@ -30,8 +34,8 @@ export const createPayment = async (userData: userData, totalCost: number) => {
         },
       ],
       mode: "payment",
-      success_url: "http://localhost:4000/success",
-      cancel_url: "http://localhost:4000/cancel",
+      success_url: `${configuredKeys.CLIENT_URL}/success?status=true`,
+      cancel_url: `${configuredKeys.CLIENT_URL}/cancel?status=false`,
     });
     return session;
   } catch (error) {

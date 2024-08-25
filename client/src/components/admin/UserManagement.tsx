@@ -19,9 +19,10 @@ const Customer: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const { users, totalPages } = await axiosGetUser(currentPage);
+      console.log(totalPages) 
       setUser(users);
       setTotalPages(totalPages);
-    };
+    }; 
     setTimeout(() => {
       fetchData();
     },300);
@@ -95,14 +96,16 @@ const Customer: React.FC = () => {
           <tbody>
             {users == null ? (
               <tr>
-                <td colSpan={4} className="pt-5">
+                <td colSpan={10} className="pt-5">
                   <div className="w-full p-4 space-y-4 -y flex flex-col gap-5  rounded shadow animate-pulse">
                     {[1, 2, 3, 4, 5].map((index) => (
-                      <div key={index} className="flex items-center  w-full">
-                        <div className="h-8 bg-gray-300 rounded-full w-1/6 me-8"></div>
-                        <div className="h-8 bg-gray-300 rounded-full w-[37%] ml-2 me-2"></div>
-                        <div className="h-8 bg-gray-300 rounded-full w-1/5 ml-2 me-5"></div>
-                        <div className="h-8 bg-gray-300 rounded-full w-24 ml-2"></div>
+                      <div key={index} className="flex items-center   gap-8">
+                        <div className="h-8 bg-gray-300 rounded-full w-24 ml-1"></div>
+                        <div className="h-8 bg-gray-300 rounded-full w-44 ml-2"></div>
+                        <div className="h-8 bg-gray-300 rounded-full w-44 ml-1"></div>
+                        <div className="h-8 bg-gray-300 rounded-full w-32 ml-1"></div>
+                        <div className="h-8 bg-gray-300 rounded-full w-24 ml-1"></div>
+                        <div className="h-8 bg-gray-300 rounded-full w-24 ml-1"></div>
                       </div>
                     ))}
                   </div>

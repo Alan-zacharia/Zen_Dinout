@@ -1,14 +1,7 @@
 import { useFormik } from "formik";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { tableSlotTypes } from "../../../types/restaurantTypes";
-import { validateTableSlot } from "../../../utils/validations";
-import {
-  imageCloudUpload,
-  tablesSlotCreationApi,
-} from "../../../services/SellerApiClient";
 import { toast, Toaster } from "react-hot-toast";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { restaurantTableValidationSchema } from "../../../validations/restaurantValidationSchema";
 import axiosInstance from "../../../api/axios";
 
@@ -63,13 +56,13 @@ const TableCreateModal: React.FC<TableCreateModalProps> = ({
         formData.append("tableLocation", tableAddingDatas.tableLocation);
         formData.append("tableImage", tableAddingDatas.tableImage);
 
-        const res = await axiosInstance.post("/restaurant/add-table", formData);
+        const res = await axiosInstance.post("/restaurant/tables", formData);
         toast.success(res.data.message);
         setShowModal(false);
         resetForm();
-        MountAfterUpdate(res.data.newTableSlot);
+        MountAfterUpdate(res.data.newTable);
       } catch (error) {
-        console.log(error);
+        console.log(error); 
       } finally {
         setLoading(false);
       }
@@ -221,6 +214,7 @@ const TableCreateModal: React.FC<TableCreateModalProps> = ({
                     <option value="4">4</option>
                     <option value="6">6</option>
                     <option value="8">8</option>
+                    <option value="10">10</option>
                   </select>
                 </div>
                 {formik.touched.tableNumber &&
@@ -255,7 +249,7 @@ const TableCreateModal: React.FC<TableCreateModalProps> = ({
                   type="submit"
                   disabled={loading}
                 >
-                  {loading ? "loading....." : "Save"}
+                  {loading ? "uploading....." : "Save"}
                 </button>
               </form>
             </div>

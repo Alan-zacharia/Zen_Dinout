@@ -51,8 +51,6 @@ const Table: React.FC = () => {
               <option value="">Filter</option>
               <option value="In">Indoor</option>
               <option value="Out">Outdoor</option>
-              <option value="true">Available</option>
-              <option value="false">Not Available</option>
             </select>
             <select
               className="select select-bordered join-item focus:outline-none w-2"

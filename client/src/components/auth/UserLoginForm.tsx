@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../../services/api";
 import { setUser } from "../../redux/user/userSlice";
+import { HiEye, HiEyeOff } from "react-icons/hi";
 
 interface UserType {
   email: string;
@@ -22,6 +23,7 @@ const UserLoginForm: React.FC = () => {
   const userRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setError] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   useEffect(() => {
     userRef.current?.focus();
   }, []);
@@ -37,10 +39,8 @@ const UserLoginForm: React.FC = () => {
     validate: loginValidation,
     onSubmit: async (credentials: UserType) => {
       setLoading(true);
-      console.log(credentials);
       await login(credentials)
         .then((res) => {
-          console.log(res.data.user);
           const { username, role, _id } = res.data.user;
           const { token } = res.data;
           dispatch(
@@ -57,7 +57,6 @@ const UserLoginForm: React.FC = () => {
         })
         .catch(({ response }) => {
           setLoading(false);
-          console.log(response?.data?.message);
           setError(response?.data?.message);
         });
     },
@@ -116,17 +115,35 @@ const UserLoginForm: React.FC = () => {
                 formik.errors.email && (
                   <div className="text-red-500">{formik.errors.email}</div>
                 )}
-              <input
-                type="password"
-                placeholder="Password"
-                className="w-full py-2 px-2 my-2 bg-transparent text-black border-black border-b outline-none focus:outline-none"
-                {...formik.getFieldProps("password")}
-              />
-              {formik.touched.password &&
-                formik.submitCount > 0 &&
-                formik.errors.password && (
-                  <div className="text-red-500">{formik.errors.password}</div>
-                )}
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  className="w-full py-2 px-2 my-2 bg-transparent text-black border-black border-b outline-none focus:outline-none"
+                  {...formik.getFieldProps("password")}
+                />
+                {formik.values.password &&
+                  (showPassword ? (
+                    <span
+                      className="absolute inset-y-0 flex items-center right-3 text-black cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <HiEyeOff size={17} />
+                    </span>
+                  ) : (
+                    <span
+                      className="absolute inset-y-0 flex items-center right-3 text-black cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <HiEye size={17} />
+                    </span>
+                  ))}
+                {formik.touched.password &&
+                  formik.submitCount > 0 &&
+                  formik.errors.password && (
+                    <div className="text-red-500">{formik.errors.password}</div>
+                  )}
+              </div>
               <p className="ml-auto text-sm underline flex justify-end">
                 <Link to={"/reset-password"}>
                   <a className="cursor-pointer ">Forgot password ?</a>

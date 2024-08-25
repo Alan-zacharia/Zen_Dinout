@@ -32,7 +32,6 @@ const restaurantVerificationMiddleware = async (
         req.userId = restaurant._id as string;
         next();
       }
-      console.log(restaurant)
     } catch (error) {
       console.log("Jwt verification error :", (error as Error).message);
       return res.status(401).json({ message: "Invalid Token" });

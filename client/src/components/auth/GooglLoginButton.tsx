@@ -17,15 +17,12 @@ const GoogleLoginButton = ({ label }: { label: string }) => {
   const login = useGoogleLogin({
     onSuccess: async (response) => {
       try {
-        const res = await axios.get(
-          import.meta.env.VITE_API_GOOGLE_LOGIN_API,
-          {
-            headers: {
-              Authorization: `Bearer ${response.access_token}`,
-            },
-            withCredentials: false,
-          }
-        );
+        const res = await axios.get(import.meta.env.VITE_API_GOOGLE_LOGIN_API, {
+          headers: {
+            Authorization: `Bearer ${response.access_token}`,
+          },
+          withCredentials: false,
+        });
         if (label === "In") {
           await axiosInstance
             .post("/api/login", {
@@ -52,13 +49,12 @@ const GoogleLoginButton = ({ label }: { label: string }) => {
             });
         } else {
           await axiosInstance
-            .post("/api/google-register", {
+            .post("/api/google-login", {
               username: res.data.given_name,
               email: res.data.email,
               password: res.data.sub + PASS_KEY,
             })
             .then((res) => {
-              console.log(res);
               const { token } = res.data;
               const { username, role, _id } = res.data.user;
               dispatch(
@@ -72,7 +68,7 @@ const GoogleLoginButton = ({ label }: { label: string }) => {
               localStorageSetItem("accessToken", token);
               navigate("/");
             })
-            .catch(({response}) => {
+            .catch(({ response }) => {
               toast.error(response.data.message);
             });
         }

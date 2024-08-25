@@ -1,5 +1,8 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { MdTableRestaurant } from "react-icons/md";
+import { MdDateRange } from "react-icons/md";
+import { FaUserGroup } from "react-icons/fa6";
 import axiosInstance from "../../api/axios";
 import { toast } from "react-hot-toast";
 import { formatDate } from "../../utils/dateValidateFunctions";
@@ -11,7 +14,9 @@ interface Booking {
     username: string;
     email: string;
   };
-  tableSlotId: string;
+  table: {
+    tableNumber : string
+  };
   restaurantId: {
     _id: string;
     restaurantName: string;
@@ -23,7 +28,6 @@ interface Booking {
   totalAmount: number;
   bookingDate: string;
   guestCount: number;
-  table: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -33,31 +37,32 @@ const SingleReservationDetailedView: React.FC = () => {
   const [bookingDetails, setBookingDetails] = useState<Booking>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { bookingId } = useParams();
+  const [statusData, setStatusChange] = useState<string | undefined>(
+    bookingDetails?.bookingStatus
+  );
+  const [isDisabled , setIsDisabled] = useState<boolean>(true);
   useEffect(() => {
     setTimeout(() => {
       axiosInstance
-        .get(`/restaurant/reservations/view/${bookingId}`)
+        .get(`/restaurant/reservations/${bookingId}`)
         .then((res) => {
           setBookingDetails(res.data.bookingDetails);
           setIsLoading(false);
         })
         .catch(({ response }) => {
           setIsLoading(false);
-          console.log(response);
+          console.log(response);   
         });
-    }, 1000);
+    }, 500);
   }, []);
   const handleStatusChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const updateStatus = e.target.value;
-    console.log(updateStatus);
     setStatusChange(updateStatus);
+    setIsDisabled(false)
   };
-  const [statusData, setStatusChange] = useState<string | undefined>(
-    bookingDetails?.bookingStatus
-  );
   const handleUpdate = () => {
     axiosInstance
-      .patch(`/restaurant/reservation/update-status/${bookingId}`, {
+      .patch(`/restaurant/reservations/${bookingId}`, {
         statusData,
       })
       .then((res) => {
@@ -67,10 +72,9 @@ const SingleReservationDetailedView: React.FC = () => {
         navigate("/restaurant/reservations");
       })
       .catch(({ response }) => {
-        console.log(response);
+        console.log(response); 
       });
   };
-
   return (
     <>
       <div className="flex justify-center">
@@ -90,7 +94,7 @@ const SingleReservationDetailedView: React.FC = () => {
                         <p className="font-bold text-gray-600">
                           Booking ID &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; :
                         </p>
-                        <p className="text-gray-800">
+                        <p className="text-gray-800 font-semibold text-base ">
                           #{bookingDetails.bookingId}
                         </p>
                         <p className="font-bold text-gray-600">
@@ -132,7 +136,7 @@ const SingleReservationDetailedView: React.FC = () => {
                         </p>
                         <p className="text-gray-500 font-semibold">
                           {bookingDetails?.paymentMethod} -{" "}
-                          <span className="">
+                          <span className={bookingDetails?.paymentStatus == "PAID" ? "text-green-500 font-bold": ""}>
                             {bookingDetails?.paymentStatus}
                           </span>
                         </p>
@@ -160,24 +164,24 @@ const SingleReservationDetailedView: React.FC = () => {
                             {bookingDetails.userId.email}
                           </span>
                         </p>
-                        <p className="font-bold text-gray-600">
-                          Table &nbsp; :{" "}
+                        <p className="font-bold text-gray-600 flex items-center">
+                        <MdTableRestaurant size={25}/> &nbsp; : {" "}
                           <span className="text-gray-700">
-                            {bookingDetails.table}
+                          &nbsp;{bookingDetails.table.tableNumber}
                           </span>
                         </p>
 
-                        <p className="font-bold text-gray-600">
-                          Date &nbsp;&nbsp; :{" "}
+                        <p className="font-bold text-gray-600 flex items-center">
+                          <MdDateRange size={25}/> &nbsp;&nbsp; :{" "}
                           <span className="text-gray-800">
-                            {formatDate(bookingDetails.bookingDate)}
+                          &nbsp;{formatDate(bookingDetails.bookingDate)}
                           </span>
                         </p>
 
-                        <p className="font-bold text-gray-600">
-                          Guest &nbsp;:{" "}
+                        <p className="font-bold text-gray-600 flex items-center">
+                          <FaUserGroup size={25}/> &nbsp;:{" "}
                           <span className="text-gray-800">
-                            {bookingDetails.guestCount}
+                          &nbsp; {bookingDetails.guestCount}
                           </span>
                         </p>
                       </div>
@@ -185,9 +189,9 @@ const SingleReservationDetailedView: React.FC = () => {
                   </div>
                   <div className="flex justify-center">
                     <button
-                      className="font-bold bg-green-500 p-2 rounded-lg px-3 text-white hover:bg-green-600"
+                      className="font-bold bg-green-500 p-2 rounded-lg px-3 text-white hover:bg-green-600 disabled:bg-red-400"
                       onClick={handleUpdate}
-                    >
+                      disabled={isDisabled}>
                       Update
                     </button>
                   </div>

@@ -9,11 +9,12 @@ interface SelectTableProps {
   restaurantId: string;
   tableSize: number;
   selectedDate: string;
-  selectedTime:string;
-  restaurantName : string;
-  tableRatePerPerson : string;
-  slotId:string;
+  selectedTime: string;
+  restaurantName: string;
+  tableRatePerPerson: string;
+  slotId: string;
 }
+
 const SelectTableList: React.FC<SelectTableProps> = ({
   restaurantId,
   tableSize,
@@ -21,53 +22,46 @@ const SelectTableList: React.FC<SelectTableProps> = ({
   selectedTime,
   restaurantName,
   tableRatePerPerson,
-  slotId
+  slotId,
 }) => {
-  if (!tableSize || !restaurantId || !slotId) {
-    return;
-  }
-
-  const tablesPerPage = 4;
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [tablesPerPage, setTablePerPage] = useState<number>(4);
   const [tables, setTables] = useState<tableSlotTypes[]>([]);
+  const [totalTables, setTotalTables] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] =
     useState<boolean>(false);
+  const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false);
   const [selectedTable, setSelectedTable] = useState<{
     tableNumber: string;
     geustCount: number;
     tableImage: string;
     restaurantId: string;
     selectedDate: string;
-    selectedTime:string;
-    restaurantName : string;
-    tableRatePerPerson : string;
+    selectedTime: string;
+    restaurantName: string;
+    tableRatePerPerson: string;
     tableId: string;
-    timeSlotId : string;
+    timeSlotId: string;
   } | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axiosInstance.get(
-          `/api/restaurant/${restaurantId}/table-list?size=${tableSize}&slot=${slotId}&date=${selectedDate}`
+          `/api/restaurant/${restaurantId}/tables?size=${tableSize}&slot=${slotId}&date=${selectedDate}&page=${currentPage}`
         );
         setTables(res.data.availableTables);
+        setTablePerPage(res.data.tablesPerPage);
+        setTotalTables(res.data.totalTables);
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  }, []);
-
-  const totalPage = Math.ceil(tables.length / tablesPerPage);
-
-  const currentTables = tables.slice(
-    (currentPage - 1) * tablesPerPage,
-    currentPage * tablesPerPage
-  );
-
+  }, [currentPage, restaurantId, tableSize, slotId, selectedDate]);
+  const totalPage = Math.ceil(totalTables / tablesPerPage);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -88,11 +82,11 @@ const SelectTableList: React.FC<SelectTableProps> = ({
     tableImage: string;
     restaurantId: string;
     selectedDate: string;
-    selectedTime:string;
-    tableRatePerPerson:string;
-    restaurantName : string;
-    tableId : string;
-    timeSlotId : string
+    selectedTime: string;
+    restaurantName: string;
+    tableRatePerPerson: string;
+    tableId: string;
+    timeSlotId: string;
   }) => {
     setSelectedTable(table);
     setIsConfirmationModalOpen(true);
@@ -105,13 +99,13 @@ const SelectTableList: React.FC<SelectTableProps> = ({
   };
 
   return (
-    <section className="py-10 lg:px-[100px] ">
-      <h1 className="px-10 lg:px-0 text-xl xl:text-2xl font-bold text-black mb-6 ">
+    <section className="py-10 lg:px-[100px]">
+      <h1 className="px-10 lg:px-0 text-xl xl:text-2xl font-bold text-black mb-6">
         Available Tables
       </h1>
 
       <div className="container mx-auto">
-        {!currentTables || currentTables.length < 1 ? (
+        {!tables || tables.length < 1 ? (
           <div className="flex flex-col items-center gap-7">
             <img
               src={NoTables}
@@ -131,17 +125,31 @@ const SelectTableList: React.FC<SelectTableProps> = ({
           </div>
         ) : (
           <div className="flex flex-wrap lg:justify-start justify-center gap-7">
-            {currentTables.map((table) => (
+            {tables.map((table) => (
               <div
                 key={table._id}
                 className="w-[290px] flex flex-col rounded overflow-hidden shadow-lg bg-white cursor-pointer"
               >
-                <img
-                  className="object-cover h-32 w-full"
-                  src={table.tableImage.url as string}
-                  alt="Table"
-                  onClick={() => handleImageClick(table.tableImage.url as string)}
-                />
+                <div className="relative">
+                  {!isImageLoaded && (
+                     <div className="flex justify-center items-center h-32 w-full">
+                     <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
+                       <span className="sr-only">Loading...</span>
+                     </div>
+                   </div>
+                  )}
+                  <img
+                    className={`object-cover h-32 w-full ${
+                      isImageLoaded ? "block" : "hidden"
+                    }`}
+                    src={table.tableImage.url as string}
+                    alt="Table"
+                    onLoad={() => setIsImageLoaded(true)}
+                    onClick={() =>
+                      handleImageClick(table.tableImage.url as string)
+                    }
+                  />
+                </div>
                 <div className="px-3 py-3 flex-grow">
                   <div className="font-bold text-lg mb-2">
                     {table.tableNumber}
@@ -162,11 +170,11 @@ const SelectTableList: React.FC<SelectTableProps> = ({
                           tableImage: table.tableImage.url as string,
                           restaurantId: restaurantId,
                           selectedDate: selectedDate,
-                          selectedTime:selectedTime,
+                          selectedTime: selectedTime,
                           restaurantName,
                           tableRatePerPerson,
-                          tableId : table._id as string,
-                          timeSlotId : slotId
+                          tableId: table._id as string,
+                          timeSlotId: slotId,
                         })
                       }
                     >
@@ -179,12 +187,12 @@ const SelectTableList: React.FC<SelectTableProps> = ({
           </div>
         )}
 
-        <div className="flex justify-end px-72  pt-6">
+        <div className="flex justify-end px-72 pt-6">
           <div className="join">
             {Array.from({ length: totalPage }, (_, i) => (
               <input
                 key={i}
-                className={`join-item btn btn-square  ${
+                className={`join-item btn btn-square ${
                   currentPage === i + 1 ? "btn-active btn-primary" : ""
                 }`}
                 type="button"

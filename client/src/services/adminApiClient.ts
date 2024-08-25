@@ -2,9 +2,9 @@ import axios from "../api/axios";
 axios.defaults.withCredentials = true;
 
 export const axiosGetUser = async(page : number)=>{
-    try{
-        const {data : {users , message , totalPages}} = await axios.get(`/admin/users-list?page=${page}`);
-         console.log({users , message , totalPages})  
+    try{ 
+        const {data : {users , message , totalPages}} = await axios.get(`/admin/users?page=${page}`);
+         console.log({users , message , totalPages})    
           return { users , message , totalPages};
     }catch(error : any){
         console.log(error.message); 

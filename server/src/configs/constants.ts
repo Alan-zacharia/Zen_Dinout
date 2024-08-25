@@ -21,12 +21,14 @@ export const MESSAGES = {
   LOGIN_FAILURE: "Invalid email or password",
   PAYMENT_REQUIRED: "Payment required",
   FORBIDDEN_ACCESS: "Forbidden access",
-  RESOURCE_NOT_FOUND: "Not found..",
+  RESOURCE_NOT_FOUND: "User Not found..",
+  DATA_NOT_FOUND: "Data Not found..",
   USER_ALREADY_EXISTS: "A user with this email already exists",
   SOMETHING_WENT_WRONG: "Something went wrong....",
   ADMIN_DOESNOT_EXIST: "Admin does not exists",
   INVALID_DATA: "Please provide all required fields.",
   INVALID_FORMAT: "Invalid format....",
+  NO_TABLES_AVAILABLE : "No tables available"
 };
 
 export const SUCCESS_MESSAGES = {
@@ -34,10 +36,10 @@ export const SUCCESS_MESSAGES = {
   LOGIN_SUCCESS: "Login successful..",
   RESOURCE_CREATED: "Created successfully....",
   REGISTRATION_SUCCESS: "Registeration successful...",
-  UPDATED_SUCCESSFULLY : "Updated  succesfully....",
-  RESTAURANT_REJECT : "Restaurant rejected successfully ....",
-  APPROVED_SUCCESS : "Restaurant approved successfully...",
-  REMOVED_SUCCESS : "Removed successfully..."
+  UPDATED_SUCCESSFULLY: "Updated  succesfully....",
+  RESTAURANT_REJECT: "Restaurant rejected successfully ....",
+  APPROVED_SUCCESS: "Restaurant approved successfully...",
+  REMOVED_SUCCESS: "Removed successfully...",
 };
 
 export const JWT_CONSTANTS = {

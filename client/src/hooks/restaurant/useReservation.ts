@@ -163,7 +163,7 @@ export const useReservation = () => {
   useEffect(() => {
     const fetchReservations = () => {
       axiosInstance
-        .get("/restaurant/reservations/")
+        .get("/restaurant/reservations")
         .then((res) => {
           setBookingDetails(res.data.Reservations);
           setTotalPage(Math.ceil(res.data.Reservations.length / itemsPerPage));

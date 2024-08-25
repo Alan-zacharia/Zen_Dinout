@@ -6,8 +6,6 @@ import {
 import { IAdminRepositories } from "../../domain/interface/repositories/IAdminRepositories";
 import UserModel from "../database/model.ts/userModel";
 import restaurantModel from "../database/model.ts/restaurantModel";
-import nodeMailerRejectionEmail from "../../functions/mailer/nodeMailerRejectionEmail";
-import nodeMailerConfirmationEmail from "../../functions/mailer/nodeMailerConfirmationEmail";
 import { generateTokens } from "../utils/jwtUtils";
 import { hashedPasswordCompare } from "../../domain/entities/auth";
 import { MESSAGES, ROLES, SUCCESS_MESSAGES } from "../../configs/constants";
@@ -15,6 +13,7 @@ import { ObjectId } from "mongoose";
 import { RestaurantType } from "../../domain/entities/RestaurantType";
 import couponModel from "../database/model.ts/couponModel";
 import membershipModel from "../database/model.ts/membershipModel";
+import EmailService from "../lib/EmailService";
 
 export class adminRepositoryImpl implements IAdminRepositories {
   public async adminLoginRepo(credentials: {
@@ -46,9 +45,9 @@ export class adminRepositoryImpl implements IAdminRepositories {
           admin._id as string,
           ROLES.ADMIN
         );
-        const { password, ...adminData } = admin;
+        const { password, ...adminData } = admin.toObject();
         return {
-          admin: adminData.toObject(),
+          admin: adminData as UserType,
           message: SUCCESS_MESSAGES.LOGIN_SUCCESS,
           refreshToken: generatedRefreshToken,
           token: generatedAccessToken,
@@ -66,21 +65,21 @@ export class adminRepositoryImpl implements IAdminRepositories {
     }
   }
 
-  public async getUsersListRepo(): Promise<{
+  public async getUsersListRepo(pageNumber: number): Promise<{
     users: UserType[] | null;
     message: string;
     totalPages: number;
   }> {
-    const totalPages = 1;
+    const itemsPerPage = 6;
     try {
-      const users = await UserModel.find();
+      const users = await UserModel.find()
+        .select("-password")
+        .skip((pageNumber - 1) * itemsPerPage)
+        .limit(itemsPerPage);
+      const totalUsers = await UserModel.countDocuments();
+      const totalPages = Math.ceil(totalUsers / itemsPerPage);
       const sanitizedUsers: UserType[] = users.map((user) => {
-        const userObj = user.toObject();
-        const { password, _id, ...userWithoutPassword } = userObj;
-        return {
-          ...userWithoutPassword,
-          id: (_id as ObjectId).toString(),
-        };
+        return user.toObject();
       });
       return {
         users: sanitizedUsers,
@@ -194,7 +193,7 @@ export class adminRepositoryImpl implements IAdminRepositories {
         if (!restaurant) {
           return { success: false, message: MESSAGES.RESOURCE_NOT_FOUND };
         }
-        await nodeMailerRejectionEmail(
+        await EmailService.sendRestaurantRejectionEmail(
           restaurant?.email as string,
           rejectReason
         );
@@ -206,7 +205,9 @@ export class adminRepositoryImpl implements IAdminRepositories {
       if (!restaurant) {
         return { success: false, message: MESSAGES.RESOURCE_NOT_FOUND };
       }
-      await nodeMailerConfirmationEmail(restaurant?.email as string);
+      await EmailService.sendRestaurantConfrimationEmail(
+        restaurant?.email as string
+      );
       return { success: true, message: SUCCESS_MESSAGES.APPROVED_SUCCESS };
     } catch (error) {
       throw error;
@@ -251,7 +252,7 @@ export class adminRepositoryImpl implements IAdminRepositories {
     status: boolean;
   }> {
     const {
-      couponcode,
+      couponCode,
       description,
       discount,
       discountPrice,
@@ -261,7 +262,7 @@ export class adminRepositoryImpl implements IAdminRepositories {
     } = couponDetails;
     try {
       const coupon = new couponModel({
-        couponcode,
+        couponCode,
         description,
         discount,
         discountPrice,
@@ -328,4 +329,5 @@ export class adminRepositoryImpl implements IAdminRepositories {
       throw error;
     }
   }
+  
 }

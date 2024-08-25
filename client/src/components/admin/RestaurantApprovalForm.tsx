@@ -10,10 +10,10 @@ const RestaurantApprovalForm = () => {
   useEffect(()=>{
   const fetchData = async()=>{
    
-     await axios.get(`/admin/restaurant-approval/${id}`).then((res)=>{ 
-      setRestautrantDetails(res.data.restaurants);
+     await axios.get(`/admin/approval-restaurant/${id}`).then((res)=>{ 
+      setRestautrantDetails(res.data.restaurant);
      }).catch((error)=>{ 
-      console.log(error);  
+      console.log(error);   
      });
      
    
@@ -31,7 +31,7 @@ const RestaurantApprovalForm = () => {
         return 
       }
     }  
-     await axios.put(`/admin/restaurant-approval/${id}`,{logic , rejectReason}).then((response)=>{
+     await axios.patch(`/admin/approval-restaurant/${id}`,{logic , rejectReason}).then((response)=>{
       if(logic == "approve"){
         toast.success("Approved success.....")
       }else{

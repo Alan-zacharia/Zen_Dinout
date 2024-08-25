@@ -14,7 +14,7 @@ const RestaurantMangement: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       await axios
-        .get("/admin/restaurants-approval-lists")
+        .get("/admin/approval-restaurants")
         .then((response) => {
           setRestaurant(response.data.restaurants);
         })
@@ -71,7 +71,7 @@ const RestaurantMangement: React.FC = () => {
                     )}
                     <td className="p-3 px-5 flex justify-end">
                       <Link
-                        to={`/admin/restaurant-approval/:${restaurant._id}`}
+                        to={`/admin/restaurant-approval/${restaurant._id}`}
                       >
                         <button className="p-2 bg-green-500 text-white rounded-xl px-4 hover:bg-green-400">
                           Veiw

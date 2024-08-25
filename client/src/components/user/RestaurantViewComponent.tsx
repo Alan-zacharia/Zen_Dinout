@@ -11,7 +11,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { SiGooglecalendar } from "react-icons/si";
 import { getRestaurantTableSlot } from "../../services/api";
-import { RestaurantDetailType, TimeSlotType } from "../../types/restaurantTypes";
+import {
+  RestaurantDetailType,
+  TimeSlotType,
+} from "../../types/restaurantTypes";
 import { getTodayDate } from "../../utils/dateValidateFunctions";
 import { BsChatDotsFill } from "react-icons/bs";
 import axiosInstance from "../../api/axios";
@@ -49,19 +52,18 @@ const RestaurantViewComponent = ({
     return today.toISOString().split("T")[0];
   });
 
-
   const { restaurantId } = useParams();
   const selectTableListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (restaurantId) {
       axiosInstance
-        .get(`/api/check-bookmark/${restaurantId}`)
-        .then((res) => {
-          setIsSave(res.data.isBookmarked);
+        .get(`/api/chek-bookmark/${restaurantId}`)
+        .then((res) => { 
+          setIsSave(res.data.isBookmark);
         })
         .catch((error) => {
-          console.log(error);
+          console.log(error);  
         });
     }
   }, [restaurantId]);
@@ -71,24 +73,24 @@ const RestaurantViewComponent = ({
       .post("/api/save-restaurant", { restaurantId })
       .then((res) => {
         toast.success(res.data.message);
+        setIsSave(!isSaved);
       })
       .catch(({ response }) => {
-        console.log(response);
+        console.log(response);  
       });
-    setIsSave(!isSaved);
   };
 
   const handleDate = (e: ChangeEvent<HTMLInputElement>) => {
     const today = new Date();
-    today.setHours(today.getHours() + 5); 
+    today.setHours(today.getHours() + 5);
     today.setMinutes(today.getMinutes() + 30);
 
-    const todayString = today.toISOString().split("T")[0]; 
+    const todayString = today.toISOString().split("T")[0];
     const selectedDate = e.target.value;
 
     if (selectedDate < todayString) {
-        toast.error("Please select a valid date.");
-        return;
+      toast.error("Please select a valid date.");
+      return;
     }
     setDate(selectedDate);
   };
@@ -124,7 +126,7 @@ const RestaurantViewComponent = ({
           setTimeSlots(timeSlots);
         })
         .catch((error) => {
-          console.log(error); 
+          console.log(error);
         });
     }
   }, [date, restaurantId]);
@@ -326,7 +328,7 @@ const RestaurantViewComponent = ({
                           </span>
                           <button
                             className="py-0.5 px-2 bg-red-500 rounded-lg text-white mx-8"
-                            onClick={() => setTimeSlotSelect("")}
+                            onClick={() =>{ setTimeSlotSelect("") ,  setSelectTable(false) , setGuestCount(0)}}
                           >
                             clear
                           </button>

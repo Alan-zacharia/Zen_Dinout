@@ -1,4 +1,3 @@
-import { boolean } from "joi";
 import mongoose, { Schema } from "mongoose";
 
 const timeSlotSchema = new mongoose.Schema({
@@ -10,8 +9,8 @@ const timeSlotSchema = new mongoose.Schema({
   date: { type: String, required: true },
   time: { type: Date, required: true },
   maxTables: { type: Number, required: true },
-  isAvailable: { type: Boolean, default : true },
-  isBooked : { type: Boolean, default : false }
+  isAvailable: { type: Boolean, default: true },
+  isBooked: { type: Boolean, default: false },
 });
 
 const TimeSlot = mongoose.model("RestaurantTimeSlot", timeSlotSchema);

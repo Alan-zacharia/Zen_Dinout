@@ -80,7 +80,7 @@ export interface BookingsHistory {
   paymentMethod: string;
   guestCount: number;
   subTotal: string;
-  table: {
+  table?: {
     tableNumber : string
   };
   createdAt: string;

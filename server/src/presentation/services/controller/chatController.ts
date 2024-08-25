@@ -47,11 +47,11 @@ export class chatController {
         `Error in create new conversation ${(error as Error).message}`
       );
       return res.status(500).json("Internal server error...");
-    } 
+    }
   }
 
   async sendMessage(req: Request, res: Response) {
-    const newMessage = new messageModel(req.body);      
+    const newMessage = new messageModel(req.body);
     const id = req.body.conversationId;
     try {
       console.log(req.body);
@@ -62,7 +62,7 @@ export class chatController {
         },
       });
       const savedMessage = await newMessage.save();
-      return res.status(200).json({ savedMessage , conversation });
+      return res.status(200).json({ savedMessage, conversation });
     } catch (error) {
       logger.error(
         `Error in create new conversation ${(error as Error).message}`
@@ -114,9 +114,9 @@ export class chatController {
     const userId = req.params.userId;
     try {
       const notifications = await notificationModel.find({
-        receiverId : userId,
+        receiverId: userId,
       });
-      console.log(notifications)
+      console.log(notifications);
       return res.status(200).json({ notifications });
     } catch (error) {
       logger.error(

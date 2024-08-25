@@ -70,7 +70,10 @@ export interface savedRestaurantsType {
     _id : string;
     restaurantName : string;
     email: string;
-    featuredImage: string;
+    featuredImage: {
+      url : string;
+      public_id : string;
+    };
     address : string;
     openingTime : string;
     closingTime : string

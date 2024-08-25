@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { sellerController } from "../services/controller/restaurantController";
-import { sellerInteractor } from "../../application/usecases/sellerInteractor";
-import { sellerRepository } from "../../infrastructure/repositories/sellerRepository";
+import { sellerInteractor } from "../../application/usecases/restaurantInteractor";
+import { sellerRepository } from "../../infrastructure/repositories/restaurantRepository";
 import { sellerVerifyToken } from "../middlewares/sellerAuth";
-import seller_Exists from "../middlewares/seller_Exists";
 import { loginValidation } from "../middlewares/expressValidatorValidation";
 import restaurantVerificationMiddleware from "../middlewares/restuarantVerificationMiddleware";
 
@@ -12,56 +11,97 @@ const interactor = new sellerInteractor(repository);
 const controller = new sellerController(interactor);
 const restaurantRouter: Router = Router();
 
-/** Get Methods  */
-restaurantRouter.get(
-  "/restaurant-details/:restaurantId",restaurantVerificationMiddleware,
-  controller.restuarntDetails.bind(controller)
-);
-restaurantRouter.get(
-  "/table-lists/:restaurantId",restaurantVerificationMiddleware,
-  controller.getRestaurantTables.bind(controller)
-);
-restaurantRouter.get(
-  "/table-slot-list/:tableId",restaurantVerificationMiddleware,
-  controller.getRestaurantTablesTimeSlots.bind(controller)
-);
-
-/** POST METHODS  */
+/** HTTP POST METHODS  */
 restaurantRouter.post(
   "/login",
   loginValidation(),
-  controller.restaurantLogin.bind(controller)
+  controller.loginRestaurantController.bind(controller)
 );
 restaurantRouter.post(
-  "/restaurant-regiseteration",
-  seller_Exists,
-  controller.restaurantRegisteration.bind(controller)
-);
-restaurantRouter.post(
-  "/add-table",restaurantVerificationMiddleware,
-  controller.addNewTableSlot.bind(controller)
-);
-restaurantRouter.post(
-  "/table-slot-add",restaurantVerificationMiddleware,
-  controller.addNewTableTimeSlot.bind(controller)
+  "/register",
+  controller.registerRestaurantController.bind(controller)
 );
 
-/** PUT METHODS  */
-restaurantRouter.put(
-  "/restaurant-updation",restaurantVerificationMiddleware,
-  controller.restaurantUpdation.bind(controller)
+/** HTTP GET METHODS  */
+restaurantRouter.get(
+  "/restaurant-details/:restaurantId",
+  restaurantVerificationMiddleware,
+  controller.getRestaurantDetailController.bind(controller)
 );
-restaurantRouter.put(
-  "/table-slot-delete/",restaurantVerificationMiddleware,
-  controller.deleteTableTimeSlot.bind(controller)
+restaurantRouter.get(
+  "/reservations",
+  restaurantVerificationMiddleware,
+  controller.getReservationListController.bind(controller)
+);
+restaurantRouter.get(
+  "/reservations/:reservationId",
+  restaurantVerificationMiddleware,
+  controller.getReservationController.bind(controller)
+);
+restaurantRouter.get(
+  "/tables",
+  restaurantVerificationMiddleware,
+  controller.getRestaurantTableController.bind(controller)
+);
+restaurantRouter.get(
+  "/timeslots/:date",
+  restaurantVerificationMiddleware,
+  controller.getTimeSlotController.bind(controller)
 );
 
-restaurantRouter.get("/validate-token", sellerVerifyToken, (req, res) => {
-  res.status(200).send({ userId: req.userId });
-});
-restaurantRouter.put(
-  "/restaurant-logout",
-  controller.sellerLogout.bind(controller)
+/** HTTP PATCH METHODS  */
+restaurantRouter.patch(
+  "/reservations/:reservationId",
+  restaurantVerificationMiddleware,
+  controller.updateReservationStatusController.bind(controller)
 );
+restaurantRouter.patch(
+  "/tables/:tableId",
+  restaurantVerificationMiddleware,
+  controller.updateRestaurantTableIsAvailableController.bind(controller)
+);
+restaurantRouter.patch(
+  "/timeslots/:timeSlotId",
+  restaurantVerificationMiddleware,
+  controller.updateRestaurantTimeSlotAvailableController.bind(controller)
+);
+
+/** HTTP POST METHODS  */
+restaurantRouter.post(
+  "/tables",
+  restaurantVerificationMiddleware,
+  controller.createRestaurantTableController.bind(controller)
+);
+
+restaurantRouter.post(
+  "/times",
+  restaurantVerificationMiddleware,
+  controller.createTimeSlotController.bind(controller)
+);
+
+/** HTTP DELETE METHODS  */
+restaurantRouter.delete(
+  "/tables/:tableId",
+  restaurantVerificationMiddleware,
+  controller.deleteRestaurantTableController.bind(controller)
+);
+restaurantRouter.delete(
+  "/featuredImage",
+  restaurantVerificationMiddleware,
+  controller.deleteRestaurantFeaturedImageController.bind(controller)
+);
+restaurantRouter.delete(
+  "/secondary-images",
+  restaurantVerificationMiddleware,
+  controller.deleteRestaurantSecondaryImagesController.bind(controller)
+);
+
+/** HTTP PUT METHODS  */
+restaurantRouter.put(
+  "/restaurant-details/:restaurantId",
+  restaurantVerificationMiddleware,
+  controller.restaurantProfileUpdateController.bind(controller)
+);
+
 
 export default restaurantRouter;

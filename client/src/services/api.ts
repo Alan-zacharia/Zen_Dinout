@@ -117,7 +117,7 @@ const validateToken = async () => {
 
 const getRestaurantTableSlot = async (restaurantId : string | undefined , date : string )=>{
   try {
-    const { data } = await axios.post("/api/time-slots",{restaurantId , date });
+    const { data } = await axios.post("/api/slots",{restaurantId , date });
     return { data };
   } catch (error) {
     console.log(error);  

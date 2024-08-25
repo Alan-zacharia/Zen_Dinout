@@ -68,30 +68,24 @@ const TimeSlots: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const availableTablesNumber = Number(availableTables);
     const maxTablesNumber = Number(maxTables);
-
     if (isNaN(availableTablesNumber) || isNaN(maxTablesNumber)) {
       toast.error(
         "Please enter valid numbers for available tables and max tables."
       );
       return;
     }
-
-    
-
-    const newSlot: TimeSlot = {
+    const newSlotData: TimeSlot = {
       date: selectedDate,
-      time,
+      time,  
       maxTables: maxTablesNumber,
     };
-
     try {
-      const response = await axiosInstance.post("/restaurant/timeslots", {
-        newSlot,
+      const response = await axiosInstance.post("/restaurant/times", {
+        newSlotData,
       });
-      const timeInIST = new Date(response.data.time).toLocaleTimeString(
+      const timeInIST = new Date(response.data.newSlot.time).toLocaleTimeString(
         "en-IN",
         {
           hour: "2-digit",
@@ -102,7 +96,7 @@ const TimeSlots: React.FC = () => {
       );
 
       const updatedSlot = {
-        ...newSlot,
+        ...response.data.newSlot,
         time: timeInIST,
       };
 
@@ -147,18 +141,17 @@ const TimeSlots: React.FC = () => {
     isAvailable: boolean | undefined
   ) => {
     axiosInstance
-      .patch(`/restaurant/manage-slot/${id}/${!isAvailable}`)
+      .patch(`/restaurant/timeslots/${id}?available=${!isAvailable}`)
       .then((res) => {
         setTimeSlots((prevSlots) =>
           prevSlots.map((slot) =>
             slot._id === id ? { ...slot, isAvailable: !isAvailable } : slot
           )
         );
-    
         toast.success("Slot availability updated successfully!");
       })
       .catch(({ response }) => {
-        console.log(response.data.message); 
+        console.log(response.data.message);
       });
   };
   return (

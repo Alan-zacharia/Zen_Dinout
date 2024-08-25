@@ -1,5 +1,4 @@
 import { MESSAGES } from "../../configs/constants";
-import { memberShipType } from "../../domain/entities/admin";
 import { RestaurantType } from "../../domain/entities/RestaurantType";
 import {
   CouponType,
@@ -45,7 +44,7 @@ export class adminInteractorImpl implements IAdminInteractor {
     totalPages: number;
   }> {
     try {
-      const result = await this.repository.getUsersListRepo();
+      const result = await this.repository.getUsersListRepo(pageNumber);
       const { message, users, totalPages } = result;
       return { users, message, totalPages };
     } catch (error) {
@@ -161,7 +160,7 @@ export class adminInteractorImpl implements IAdminInteractor {
     status: boolean;
   }> {
     const {
-      couponcode,
+      couponCode,
       description,
       discount,
       discountPrice,
@@ -169,8 +168,9 @@ export class adminInteractorImpl implements IAdminInteractor {
       startDate,
       expiryDate,
     } = couponDetails;
+    console.log(couponDetails)
     if (
-      !couponcode ||
+      !couponCode ||
       !description ||
       !discount ||
       !discountPrice ||

@@ -19,9 +19,7 @@ const RestaurantViewDetails: React.FC = () => {
   const [restaurantDetails, setRestaurantDetails] = useState<
     RestaurantDetailType | undefined
   >(undefined);
-  const [restuarantImages, setRestaurantImages] = useState<
-    RestaurantImageType[]
-  >([]);
+  const [restuarantImages, setRestaurantImages] = useState<string[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       try {

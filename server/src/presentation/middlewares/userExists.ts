@@ -18,7 +18,6 @@ export const userExists = async (
       const errorMessage = errors.array()[0].msg;
       return res.status(400).json({ message: errorMessage });
     };
-    console.log(req.body)
     const { email } = req.body;
     const user = await UserModel.findOne({ email: email });
     if (user) {

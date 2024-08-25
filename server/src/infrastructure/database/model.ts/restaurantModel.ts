@@ -44,8 +44,8 @@ const restaurantSchema = new mongoose.Schema(
         default: [0, 0],
       },
     },
-    openingTime: String,
-    closingTime: String,
+    openingTime: Date,
+    closingTime: Date,
     isListed: {
       type: Boolean,
       default: true,
@@ -60,6 +60,14 @@ const restaurantSchema = new mongoose.Schema(
         public_id: String,
       },
     ],
+    cuisines: [
+      {
+        type: String,
+      },
+    ],
+    vegOrNonVegType: {
+      type: String,
+    },
     isApproved: {
       type: Boolean,
       default: false,

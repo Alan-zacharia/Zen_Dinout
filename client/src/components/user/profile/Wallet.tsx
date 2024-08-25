@@ -4,11 +4,8 @@ import { FaRupeeSign } from "react-icons/fa";
 import { WalletType } from "../../../types/userTypes";
 
 const Wallet: React.FC = () => {
-  const [balance, setBalance] = useState<number>(0);
-  const [transactions, setTransactions] = useState<any[]>([]);
   const [wallet, setWallet] = useState<WalletType | null>(null);
   const [amount, setAmount] = useState<number>(0);
-  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchWalletData = async () => {
@@ -17,7 +14,6 @@ const Wallet: React.FC = () => {
         setWallet(res.data.wallet);
       } catch (error) {
         console.log(error);
-        setError("Failed to fetch wallet data.");
       }
     };
     fetchWalletData();

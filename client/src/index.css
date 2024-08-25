@@ -19,6 +19,14 @@ body{
       scrollbar-width: none; 
 }
 }
+@layer components{
+  .spinner-border {
+    border-top-color: #3688be;
+    border-right-color: transparent; 
+    border-bottom-color: transparent; 
+    border-left-color: #ececec;
+  }
+}
 
 ::-webkit-scrollbar {
   width: 6px;

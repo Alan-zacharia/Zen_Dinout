@@ -30,7 +30,7 @@ const UserProfileDetails: React.FC<ProfileNavigationProps> = ({
       return;
     }
     try {
-      await axiosInstance.patch(`/api/update-userdetails/${id}`, {
+      await axiosInstance.patch(`/api/account/${id}`, {
         credentials: { username: name },
       });
       toast.success("Name Updated Successfully");
@@ -49,7 +49,7 @@ const UserProfileDetails: React.FC<ProfileNavigationProps> = ({
       return;
     }
     try {
-      await axiosInstance.patch(`/api/update-userdetails/${id}`, {
+      await axiosInstance.patch(`/api/account/${id}`, {
         credentials: { phone: contact },
       });
       toast.success("Contact Updated Successfully");

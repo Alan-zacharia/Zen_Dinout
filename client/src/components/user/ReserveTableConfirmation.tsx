@@ -40,8 +40,9 @@ const ReserveTableConfirmation = () => {
     }
 
     axiosInstance
-      .get(`/api/user-details/${id}`)
+      .get(`/api/account/${id}`)
       .then((res) => {
+         console.log(res.data.userData)
         setUser(res.data.userData);
       })
       .catch(({ response }) => {
@@ -58,13 +59,16 @@ const ReserveTableConfirmation = () => {
       parseInt(bookingDetails.tableRate) * bookingDetails.guests;
     if (userData?.isPrimeMember) {
       const discountAmount = (amount * userData.primeSubscription.membershipId.discount) / 100;
-      return amount - discountAmount;
+      const price = amount - discountAmount
+      return price.toFixed(2);
     }
     if (discount > 20) {
-      return amount - discountPrice;
+      const price = amount - discountPrice;
+      return price.toFixed(2);
     }
     const discountAmount = (amount * discount) / 100;
-    return amount - discountAmount;
+    const price = amount - discountAmount
+    return price.toFixed(2);
   };
 
   const handleCouponData = (e: ChangeEvent<HTMLInputElement>) => {
@@ -131,6 +135,11 @@ const ReserveTableConfirmation = () => {
     console.log(e.target.value);
     setPaymentMethod(e.target.value);
   };
+  const discountPriceFunction = ()=>{
+    const price = (parseInt(bookingDetails?.tableRate as string) || 0) * (bookingDetails?.guests || 0) - (parseFloat(calculatedAmount() || "0"));
+    return price.toFixed(2)
+  }
+  
   return (
     <>
       <section className="max-w-5xl mx-auto p-6 m-10 bg-white shadow-lg rounded-lg ">
@@ -226,9 +235,7 @@ const ReserveTableConfirmation = () => {
                   <p className=" text-sm font-semibold">Discount :</p>
                   <p className="text-sm">
                     - ₹{" "}
-                    {(parseInt(bookingDetails?.tableRate as string) || 0) *
-                      (bookingDetails?.guests || 0) -
-                      (calculatedAmount() || 0)}
+                    {discountPriceFunction()}
                   </p>
                 </div>
               </div>

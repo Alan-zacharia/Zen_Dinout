@@ -12,29 +12,71 @@ const controller = new adminController(interactor);
 const adminRouter: Router = Router();
 
 /** HTTP POST METHODS  */
-adminRouter.post("/login", loginValidation(), controller.adminLoginController.bind(controller))
-adminRouter.post("/coupons", loginValidation(), controller.createCouponController.bind(controller))
-adminRouter.post("/memeberships", loginValidation(), controller.createMembershipController.bind(controller))
-
+adminRouter.post(
+  "/login",
+  loginValidation(),
+  controller.adminLoginController.bind(controller)
+);
+adminRouter.post(
+  "/coupons",
+  loginValidation(),
+  controller.createCouponController.bind(controller)
+);
+adminRouter.post(
+  "/memeberships",
+  loginValidation(),
+  controller.createMembershipController.bind(controller)
+);
 
 /** HTTP GET METHODS  */
-adminRouter.get("/users", adminVerifyMiddleware, controller.getUserListContoller.bind(controller));
-adminRouter.get("/approval-restaurants", adminVerifyMiddleware, controller.getApproveRestaurantListController.bind(controller));
-adminRouter.get("/restaurants", adminVerifyMiddleware, controller.getRestaurantListController.bind(controller));
-adminRouter.get("/approve-restaurant/:restaurantId", adminVerifyMiddleware, controller.getApproveRestaurantController.bind(controller));
-adminRouter.get("/coupons", adminVerifyMiddleware, controller.getCouponController.bind(controller));
-adminRouter.get("/memberships", adminVerifyMiddleware, controller.getMembershipController.bind(controller));
-
+adminRouter.get(
+  "/users",
+  adminVerifyMiddleware,
+  controller.getUserListContoller.bind(controller)
+);
+adminRouter.get(
+  "/approval-restaurants",
+  adminVerifyMiddleware,
+  controller.getApproveRestaurantListController.bind(controller)
+);
+adminRouter.get(
+  "/restaurants",
+  adminVerifyMiddleware,
+  controller.getRestaurantListController.bind(controller)
+);
+adminRouter.get(
+  "/approval-restaurant/:restaurantId",
+  adminVerifyMiddleware,
+  controller.getApproveRestaurantController.bind(controller)
+);
+adminRouter.get(
+  "/coupons",
+  adminVerifyMiddleware,
+  controller.getCouponController.bind(controller)
+);
+adminRouter.get(
+  "/memberships",
+  adminVerifyMiddleware,
+  controller.getMembershipController.bind(controller)
+);
 
 /** HTTP PATCH METHODS */
-adminRouter.patch("/users/:userId/:action", adminVerifyMiddleware, controller.userActionController.bind(controller));
-adminRouter.patch("/approval-restaurant/:restaurantId", adminVerifyMiddleware, controller.approveRestaurantController.bind(controller));
-
+adminRouter.patch(
+  "/users/:userId/:action",
+  adminVerifyMiddleware,
+  controller.userActionController.bind(controller)
+);
+adminRouter.patch(
+  "/approval-restaurant/:restaurantId",
+  adminVerifyMiddleware,
+  controller.approveRestaurantController.bind(controller)
+);
 
 /** HTTP DELETE METHODS */
-adminRouter.delete("/coupons", loginValidation(), controller.removeCouponController.bind(controller))
-
-
-
+adminRouter.delete(
+  "/coupons/:couponId",
+  adminVerifyMiddleware,
+  controller.removeCouponController.bind(controller)
+);
 
 export default adminRouter;

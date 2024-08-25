@@ -89,7 +89,7 @@ const RestaurantProfileAddForm: React.FC = () => {
         }
 
         const res = await axiosInstance.put(
-          "/restaurant/restaurant-updation",
+          `/restaurant/restaurant-details/${id}`,
           formData
         );
         setFeaturedImage(res.data.restaurant.featuredImage);
@@ -201,21 +201,21 @@ const RestaurantProfileAddForm: React.FC = () => {
 
   const handleFeaturedImageDelete = () => {
     setImage("");
-      if(featuredImageRef.current){
+    if (featuredImageRef.current) {
       featuredImageRef.current.value = "";
     }
   };
 
   const handleImageDelete = (imageId: string) => {
     axiosInstance
-      .delete("/restaurant/delete-featuredImage", { params: { imageId } })
+      .delete("/restaurant/featuredImage", { params: { imageId } })
       .then((res) => {
         setFeaturedImage(null);
         setImage(null);
         toast.success("Deleted successfully...");
       })
-      .catch(({ response }) => {
-        console.log(response.data.message);
+      .catch((response) => {
+        console.log(response); 
       });
   };
 
@@ -254,7 +254,7 @@ const RestaurantProfileAddForm: React.FC = () => {
   };
   const handleDeleteSelectedImages = async () => {
     await axiosInstance
-      .delete("/restaurant/delete-image", {
+      .delete("/restaurant/secondary-images", {
         params: { ids: selectedImagesForDeletion },
       })
       .then((res) => {
@@ -356,7 +356,7 @@ const RestaurantProfileAddForm: React.FC = () => {
               >
                 <option value="veg">Veg</option>
                 <option value="non-veg">Non-Veg</option>
-                <option value="both">Both</option>
+                <option value="both">veg&Non-veg</option>
               </select>
               {formik.submitCount > 0 && formik.errors.vegOrNonVegType && (
                 <div className="text-red-500 text-sm absolute ">

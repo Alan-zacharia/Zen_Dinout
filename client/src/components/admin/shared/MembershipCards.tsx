@@ -11,7 +11,7 @@ const MembershipCards: React.FC<MembershipCardsProps> = ({ mount }) => {
 
   useEffect(() => {
     axiosInstance
-      .get("/admin/get-memberships")
+      .get("/admin/memberships")
       .then(({ data }) => {
         setMemberships(data.memberships);
       })
@@ -72,7 +72,7 @@ const MembershipCards: React.FC<MembershipCardsProps> = ({ mount }) => {
           </div>
         ))
       ) : (
-        <div className="col-span-full text-center text-gray-500 dark:text-gray-400">
+        <div className="col-span-full text-center text-black">
           No memberships available.
         </div>
       )}

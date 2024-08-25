@@ -51,12 +51,11 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
   const socket = useRef<Socket>();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-
+  
   const receiverId = useMemo(
     () => selectedChat?.members.find((user) => user !== userId),
     [selectedChat, userId]
   );
-
   useEffect(() => {
     const socketInstance = io(`${import.meta.env.VITE_API_BASE_URL}`);
     socket.current = socketInstance;
@@ -91,7 +90,7 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
       socketInstance.off("notification");
       socketInstance.disconnect();
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     const hanldeLableMessageSeen = ({
@@ -137,7 +136,7 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
         if(selectedChat?._id){
           setNotifications((prevNotifications) => [
             ...prevNotifications,
-            {
+            { 
               conversationId: selectedChat._id,
               senderId : arrivalMessage.sender,
               text:arrivalMessage.text ,
@@ -203,7 +202,7 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
         const res = await axiosInstance.get(`/api/inbox/${userId}`);
         setConversations(res.data.conversations);
       } catch (error) {
-        console.log(error);
+        console.log(error); 
       } finally {
         setLoadingConversations(false);
       }

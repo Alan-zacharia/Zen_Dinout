@@ -41,7 +41,6 @@ const AdminLogin: FC = () => {
           navigate("/admin/");
         })
         .catch(({ response }) => {
-          console.log(response);
           setLoading(false);
           toast.error(response?.data?.message);
         });

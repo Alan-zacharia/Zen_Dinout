@@ -37,7 +37,6 @@ const userVerifyMiddleware = async (
       if (user && user.isBlocked) {
         return res.status(403).json({ message: "User Blocked" });
       }
-      console.log(user);
       if (user) {
         req.userId = user._id as string;
         next();

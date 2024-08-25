@@ -4,10 +4,6 @@ import { validationResult } from "express-validator";
 import UserModel from "../../../infrastructure/database/model.ts/userModel";
 import restaurantModel from "../../../infrastructure/database/model.ts/restaurantModel";
 import logger from "../../../infrastructure/lib/Wintson";
-import {
-  CouponDetailsInterface,
-  memberShipType,
-} from "../../../domain/entities/admin";
 import { AppError } from "../../middlewares/appError";
 import { STATES } from "mongoose";
 import { MESSAGES, STATUS_CODES } from "../../../configs/constants";
@@ -30,6 +26,7 @@ export class adminController {
     try {
       const { admin, message, token, refreshToken } =
         await this.interactor.adminLoginInteractor({ email, password });
+      console.log(admin);
       if (!admin) {
         return res.status(STATUS_CODES.UNAUTHORIZED).json({ message });
       }
@@ -279,6 +276,9 @@ export class adminController {
     try {
       const result = await this.interactor.removeCouponInteractor(couponId);
       const { message, status } = result;
+      if(!status){
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ message, status });
+      }
       return res.status(STATUS_CODES.NO_CONTENT).json({ message, status });
     } catch (error) {
       logger.error(`Error in remove coupon ${(error as Error).message}`);

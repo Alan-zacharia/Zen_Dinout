@@ -19,7 +19,7 @@ const Coupons: React.FC = () => {
 
   const fetchCoupons = () => {
     axiosInstance
-      .get("/admin/get-coupons")
+      .get("/admin/coupons")
       .then((res) => {
         setCoupons(res.data.Coupons);
       })

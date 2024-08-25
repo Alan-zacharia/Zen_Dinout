@@ -9,7 +9,7 @@ const Coupons: React.FC = () => {
   useEffect(() => {
     const fetchCoupons = async () => {
       try {
-        const res = await axiosInstance.get("/api/get-coupons");
+        const res = await axiosInstance.get("/api/coupons");
         setCoupons(res.data.coupons);
       } catch (error) {
         console.error(error);
@@ -18,7 +18,7 @@ const Coupons: React.FC = () => {
     fetchCoupons();
   }, []);
 
-  const handleCopy = (couponCode: string) => {
+  const handleCopy = (couponCode: string) => { 
     navigator.clipboard.writeText(couponCode)
     toast.success("Coupon code copied to clipboard!");
   };

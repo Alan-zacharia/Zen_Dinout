@@ -127,27 +127,13 @@ const ChatPage: React.FC = () => {
               <div className="flex items-center md:my-6 mx-5 mb-2 md:mx-10">
                 <h3 className="text-[15px] font-bold text-black">Messages</h3>
               </div>
-              {/* {conversations.map((c) => (
-                <div
-                  className={`flex items-center  p-1 px-4 md:p-2 md:px-8 cursor-pointer relative  "hover:bg-slate-50`}
-                  key={c._id}
-                  onClick={() => setSelectedChat(c)}
-                >
-                  <ChatNamesListing
-                    conversation={c}
-                    onlineUser={onlineUser}
-                    senderTyping={senderTyping}
-                    notification={notification}
-                  />
-                </div>
-              ))} */}
               {conversations.map(renderConversation)}
             </div>
           </>
         )}
       </section>
       {!selectedChat && <ChatMobileViewSlide />}
-      <section className="hidden flex-1 md:flex flex-col bg-neutral-50 relative">
+      <section className="hidden flex-1 md:flex flex-col bg-neutral-50 relative w-0">
         {!selectedChat && (
           <div className=" absolute md:flex md:flex-col items-center top-[30%] right-[45%] text-center text-gray-400 p-6">
             <img
@@ -196,7 +182,6 @@ const ChatPage: React.FC = () => {
       </section>
       {selectedChat && (
         <section className="flex flex-1 md:hidden flex-col bg-neutral-50 relative">
-          {/* <ChatMessages /> */}
           <form onSubmit={sendMessage}>
             <div className="flex items-center p-3 bg-white border-t border-gray-200">
               <input

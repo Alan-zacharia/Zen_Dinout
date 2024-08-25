@@ -41,10 +41,10 @@ const SignupForm: React.FC = () => {
       setError(null);
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/api/generate-otp`,
+          `${import.meta.env.VITE_API_BASE_URL}/api/otp`,
           {
             email: credentials.email,
-            username: credentials.username,
+            username: credentials.username, 
             password: credentials.password,
           }
         );
@@ -63,7 +63,7 @@ const SignupForm: React.FC = () => {
   const resendOtp = async () => {
     setOtp(null);
     const response = await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL}/api/generate-otp`,
+      `${import.meta.env.VITE_API_BASE_URL}/api/otp`,
       { email: formik.values.email }
     );
     setOtp(response.data.otp);
@@ -210,9 +210,7 @@ const SignupForm: React.FC = () => {
                 className="block overflow-hidden border-r-2 border-white typewriter
         text-blue-500"
               >
-            
-                  Join Zen Dinout and book your table in seconds.....&nbsp;
-       
+                Join Zen Dinout and book your table in seconds.....&nbsp;
               </span>
             </h2>
           </div>

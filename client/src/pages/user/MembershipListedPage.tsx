@@ -47,7 +47,7 @@
 //       });
 //       await stripe?.redirectToCheckout({ sessionId: res.data.sessionId });
 //     } catch (error) {
-//       console.log(error); 
+//       console.log(error);
 //     }
 //   };
 
@@ -189,6 +189,7 @@ import toast from "react-hot-toast";
 import moment from "moment"; // For date formatting
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import axios from "axios";
 
 export interface Membership {
   _id: string;
@@ -202,64 +203,76 @@ export interface Membership {
 
 const MembershipListedPage: React.FC = () => {
   const [memberships, setMemberships] = useState<Membership[]>([]);
-  const [existingMembership, setExistingMembership] = useState<Membership | null>(null);
+  const [existingMembership, setExistingMembership] =
+    useState<Membership | null>(null);
   const [expirationDate, setExpirationDate] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const {id} = useSelector((state : RootState)=>state.user)
-  useEffect(() => {
-    const fetchMemberships = async () => {
-      try {
-        const res = await axiosInstance.get("/api/memberships");
-        const memberships = res.data.memberships || [];
-        const existingMembership = res.data.existingMembership || null;
+  const { id } = useSelector((state: RootState) => state.user);
 
-        if (memberships.length === 0) {
-          setExistingMembership(existingMembership);
-        } else {
-          setMemberships(memberships);
-        }
-
-        const userRes = await axiosInstance.get(`/api/user-profile/${id}`); 
-        setExpirationDate(userRes.data.userData.primeSubscription.endDate);
-
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-        setLoading(false);
+  const fetchMemberships = async () => {
+    try {
+      const res = await axiosInstance.get(`/api/membership/${id}`);
+      const memberships = res.data.memberships || [];
+      const existingMembership = res.data.existingMembership || null;
+      if (memberships.length === 0) {
+        setExistingMembership(existingMembership);
+      } else {
+        setMemberships(memberships);
       }
-    };
+
+      const userRes = await axiosInstance.get(`/api/account/${id}`);
+      setExpirationDate(userRes.data.userData.primeSubscription.endDate);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchMemberships();
   }, []);
 
   const handlePayment = async (membershipId: string) => {
     try {
-      const stripe = await loadStripe(import.meta.env.VITE_API_STRIPE_KEY);
-      const res = await axiosInstance.post("/api/create-membership-payment", {
+      const stripe = await loadStripe(import.meta.env.VITE_API_STRIPE_KEY); 
+      const res = await axiosInstance.post("/api/membership", {
         membershipId,
       });
       await stripe?.redirectToCheckout({ sessionId: res.data.sessionId });
     } catch (error) {
-      console.log(error); 
+      console.log(error);
     }
   };
 
   const handleCancel = async (membershipId: string) => {
     try {
-      const res = await axiosInstance.put("/api/cancel-membership", {
-        membershipId,
-      });
+      const res = await axiosInstance.delete(`/api/membership/${membershipId}`);
       toast.success(res.data.message);
+      setExistingMembership(null)
+      setTimeout(()=>{
+        fetchMemberships()
+      },500)
     } catch (error) {
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message || "Failed to cancel membership"
+        );
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
   };
 
   return (
     <section className="py-10 px-4 lg:px-80 min-h-screen">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Membership Plans</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        Membership Plans
+      </h1>
       <div className="flex flex-wrap gap-6">
         {loading ? (
-          <div className="w-full text-center text-xl font-semibold text-gray-700">Loading...</div>
+          <div className="w-full text-center text-xl font-semibold text-gray-700">
+            Loading...
+          </div>
         ) : (
           <>
             {existingMembership ? (
@@ -268,7 +281,9 @@ const MembershipListedPage: React.FC = () => {
                   {existingMembership.planName}
                 </h5>
                 <div className="flex items-baseline mb-4">
-                  <span className="text-3xl font-semibold text-gray-900 dark:text-white">₹</span>
+                  <span className="text-3xl font-semibold text-gray-900 dark:text-white">
+                    ₹
+                  </span>
                   <span className="text-5xl font-extrabold text-gray-900 dark:text-white">
                     {existingMembership.cost}
                   </span>
@@ -289,13 +304,20 @@ const MembershipListedPage: React.FC = () => {
                     Expiration Date:
                   </span>
                   <span className="text-lg font-medium text-gray-900 dark:text-white ml-2">
-                    {expirationDate ? moment(expirationDate).format("MMMM D, YYYY") : "N/A"}
+                    {expirationDate
+                      ? moment(expirationDate).format("MMMM D, YYYY")
+                      : "N/A"}
                   </span>
                 </div>
                 <ul className="space-y-3 mb-6">
-                  <li className="text-lg font-semibold text-gray-900 dark:text-white">Benefits:</li>
+                  <li className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Benefits:
+                  </li>
                   {existingMembership.benefits.map((benefit, index) => (
-                    <li key={index} className="flex items-center text-gray-600 dark:text-gray-400">
+                    <li
+                      key={index}
+                      className="flex items-center text-gray-600 dark:text-gray-400"
+                    >
                       <svg
                         className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400"
                         aria-hidden="true"
@@ -327,7 +349,9 @@ const MembershipListedPage: React.FC = () => {
                     {membership.planName}
                   </h5>
                   <div className="flex items-baseline mb-4">
-                    <span className="text-3xl font-semibold text-gray-900 dark:text-white">₹</span>
+                    <span className="text-3xl font-semibold text-gray-900 dark:text-white">
+                      ₹
+                    </span>
                     <span className="text-5xl font-extrabold text-gray-900 dark:text-white">
                       {membership.cost}
                     </span>
@@ -344,9 +368,14 @@ const MembershipListedPage: React.FC = () => {
                     </span>
                   </div>
                   <ul className="space-y-3 mb-6">
-                    <li className="text-lg font-semibold text-gray-900 dark:text-white">Benefits:</li>
+                    <li className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Benefits:
+                    </li>
                     {membership.benefits.map((benefit, index) => (
-                      <li key={index} className="flex items-center text-gray-600 dark:text-gray-400">
+                      <li
+                        key={index}
+                        className="flex items-center text-gray-600 dark:text-gray-400"
+                      >
                         <svg
                           className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400"
                           aria-hidden="true"
@@ -370,7 +399,9 @@ const MembershipListedPage: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className="w-full text-center text-xl font-semibold text-gray-700">No memberships available</div>
+              <div className="w-full text-center text-xl font-semibold text-gray-700">
+                No memberships available
+              </div>
             )}
           </>
         )}

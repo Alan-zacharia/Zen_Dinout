@@ -33,7 +33,7 @@ const CouponAddModal: React.FC<CouponAddModalProps> = ({ onCouponAdded }) => {
     onSubmit: async (data: CouponDetailsType) => {
       setIsLoading(true);
       axiosInstance
-        .post("/admin/add-coupon", data)
+        .post("/admin/coupons", data)
         .then((response) => {
           toast.success(response.data.message);
           setTimeout(() => {
@@ -43,7 +43,7 @@ const CouponAddModal: React.FC<CouponAddModalProps> = ({ onCouponAdded }) => {
           }, 1000);
         })
         .catch(({ response }) => {
-          console.log(response.message);
+          console.log(response.data.message);
           setIsLoading(false);
           toast.error("Something went wrong..");
         });
@@ -181,11 +181,11 @@ const CouponAddModal: React.FC<CouponAddModalProps> = ({ onCouponAdded }) => {
                         {formik.errors.discount}
                       </div>
                     )}
-                      <label
+                  <label
                     htmlFor="discount"
                     className="block font-bold mb-0.5  sm:mb-1 text-sm sm:text-base"
                   >
-                  Discount amount 
+                    Discount amount
                   </label>
                   <input
                     type="text"

@@ -27,13 +27,13 @@ const UserProfile: React.FC = () => {
     const fetchData = async () => {
       try {
         if (isAuthenticated && role === "user") {
-          const response = await axios.get(`/api/user-profile/${id}`);
+          const response = await axios.get(`/api/account/${id}`);
           setUserDetails(response.data.userData);
           if (response.data.userData) {
           }
         }
       } catch (error) {
-        console.log(error);
+        console.log(error); 
       }
     };
     fetchData();

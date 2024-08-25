@@ -8,7 +8,7 @@ export interface IAdminRepositories {
     refreshToken: string | null;
     token: string | null;
   }>;
-  getUsersListRepo(): Promise<{
+  getUsersListRepo(pageNumber : number): Promise<{
     users: UserType[] | null;
     message: string;
     totalPages: number;

@@ -42,7 +42,7 @@ const socketConfig = (io: Server) => {
       }
     );
 
-    socket.on("senderTyping", ({ receiverId, conversationId, status }) => {
+    socket.on("senderTyping", ({ receiverId, conversationId, statsus }) => {
       const user = getUser(receiverId);
       if (user) {
         io.to(user.socketId).emit("getSenderTyping", {

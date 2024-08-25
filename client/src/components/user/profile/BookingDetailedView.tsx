@@ -44,8 +44,10 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
 
   const fetchBookingDetails = async () => {
     try {
-      const response = await axiosInstance.get(`/api/bookings/${bookingId}`);
-      setBookingDetails(response.data.bookingDetails);
+      const response = await axiosInstance.get(
+        `/api/booking-details/${bookingId}`
+      );
+      setBookingDetails(response.data.bookingData);
     } catch (error) {
       if (isAxiosError(error)) {
         console.log(error.message);
@@ -53,7 +55,6 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
     }
   };
   const handleChatSetup = async (restaurantId: string) => {
-    console.log(restaurantId);
     try {
       const res = await axiosInstance.post("/api/inbox/", {
         senderId: id,
@@ -62,7 +63,7 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
       const conversationId = res.data.savedConversation._id;
       navigate(`/chat?conversation=${conversationId}`);
     } catch (error) {
-      console.log(error);  
+      console.log(error);
     }
   };
 
@@ -74,12 +75,12 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
 
   const handleCancelBooking = (bookingId: string) => {
     axiosInstance
-      .patch(`/api/cancel-booking/${bookingId}`)
+      .patch(`/api/booking-details/${bookingId}`)
       .then((res) => {
         fetchBookingDetails();
       })
       .catch(({ response }) => {
-        console.log(response);
+        console.log(response); 
       });
   };
   const handleOpenConfirmation = () => {
@@ -127,7 +128,7 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
               </li>
               <li className="flex items-center gap-2 font-semibold">
                 <MdTableRestaurant />
-                {bookingDetails.table.tableNumber}
+                {bookingDetails?.table?.tableNumber}
               </li>
               {bookingDetails.bookingStatus !== "CANCELLED" &&
                 bookingDetails.bookingStatus !== "CHECKED" && (
@@ -174,9 +175,20 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
               </li>
               <li className="flex gap-2 font-semibold">
                 <div className="w-72 rounded-lg p-2 bg-neutral-100 h-32 flex flex-col gap-3">
-                  <p className="text-base text-black">Subtotal: ₹ {parseInt(bookingDetails.subTotal) * bookingDetails.guestCount }</p>
-                  <p className="text-base text-black">Discount: - ₹ {parseInt(bookingDetails.subTotal) *  bookingDetails.guestCount - bookingDetails.totalAmount}</p>
-                  <p className="text-base text-black font-bold">Total : ₹{bookingDetails.totalAmount} </p>
+                  <p className="text-base text-black">
+                    Subtotal: ₹{" "}
+                    {parseInt(bookingDetails.subTotal) *
+                      bookingDetails.guestCount}
+                  </p>
+                  <p className="text-base text-black">
+                    Discount: - ₹{" "}
+                    {parseInt(bookingDetails.subTotal) *
+                      bookingDetails.guestCount -
+                      bookingDetails.totalAmount}
+                  </p>
+                  <p className="text-base text-black font-bold">
+                    Total : ₹{bookingDetails.totalAmount}{" "}
+                  </p>
                 </div>
               </li>
             </ul>
@@ -194,7 +206,7 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
             </div>
           </div>
         </div>
-      ) : ( 
+      ) : (
         <div
           role="status"
           className="flex gap-2 w-full space-y-8 animate-pulse md:space-y-0 md:space-x-8 "

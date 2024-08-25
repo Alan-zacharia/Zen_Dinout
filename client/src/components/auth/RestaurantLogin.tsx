@@ -32,11 +32,11 @@ const RestaurantLogin: React.FC = () => {
         await restaurantLoginApi(values)
           .then((res) => {
             const { token } = res.data;
-            console.log(res); 
+            console.log(res);
             const { restaurantName, _id } = res.data.restaurant;
             dispatch(
               setUser({
-                isAuthenticated: true, 
+                isAuthenticated: true,
                 name: restaurantName,
                 role: "seller",
                 id: _id,

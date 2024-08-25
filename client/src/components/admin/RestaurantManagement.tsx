@@ -18,7 +18,7 @@ const RestaurantMangement: React.FC = () => {
   useEffect(() => {
     setTimeout(() => {
       axios
-        .get(`/admin/restaurants-list?page=${currentPage}`)
+        .get(`/admin/restaurants?page=${currentPage}`)
         .then((res) => {
           setRestaurant(res.data.restaurants);
           setTotalPage(res.data.totalPages);

@@ -21,9 +21,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   if (!openConfirmation || !coupon) return null;
   const handleCouponRemove = () => {
     axiosInstance
-      .delete(`/admin/remove-coupon/${coupon.couponId}`)
+      .delete(`/admin/coupons/${coupon.couponId}`)
       .then((res) => {
-        toast.success(res.data.message);
+        toast.success("Coupon deleted....");
       })
       .catch(({ response }) => {
         console.log(response);

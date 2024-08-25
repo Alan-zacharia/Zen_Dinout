@@ -15,11 +15,11 @@ const useTableData = (userId: string, itemsPerPage: number) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [tableToDelete, setTableToDelete] = useState<tableSlotTypes | null>(
     null
-  );
+  ); 
 
   const fetchTableData = async (page: number) => {
     setIsLoading(true);
-    try {
+    try { 
       const res = await getTablesSlots(userId, page);
       setAllTableData(res.data.tables);
       setTotalPage(Math.ceil(res.data.tables.length / itemsPerPage));
@@ -40,11 +40,11 @@ const useTableData = (userId: string, itemsPerPage: number) => {
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
       const matchesFilter =
-        filterValue === "" || data.tableLocation === filterValue;
+        filterValue === "" || data.tableLocation === filterValue; 
       const matchedIsAvailable =
-        filterIsAvailable === "" ||
-        (filterIsAvailable === "true" && data.isAvailable) ||
-        (filterIsAvailable === "false" && !data.isAvailable);
+        filterIsAvailable === "" || 
+        (filterIsAvailable == "true" && data.isAvailable) ||
+        (filterIsAvailable == "false" && !data.isAvailable);
       return matchesSearchQuery && matchesFilter && matchedIsAvailable;
     });
   }, [allTableData, searchQuery, filterValue, filterIsAvailable]);
@@ -103,12 +103,12 @@ const useTableData = (userId: string, itemsPerPage: number) => {
     try {
       if (tableToDelete) {
         const res = await axiosInstance.delete(
-          `/restaurant/delete-table/${tableToDelete._id}`
+          `/restaurant/tables/${tableToDelete._id}`
         );
         setAllTableData((prevTables) =>
           prevTables.filter((table) => table._id !== tableToDelete._id)
         );
-        toast.success(res.data.message);
+        toast.success("Table Removed successfully....");
         setModalOpen(false);
         setTableToDelete(null);
       }
@@ -126,7 +126,7 @@ const useTableData = (userId: string, itemsPerPage: number) => {
     async (tableId: string | undefined, isAvailable: boolean) => {
       try {
          await axiosInstance.patch(
-          `/restaurant/table-available/${tableId}`,
+          `/restaurant/tables/${tableId}`,
           { isAvailable: !isAvailable }
         );
         setAllTableData((prevData) =>
@@ -137,7 +137,7 @@ const useTableData = (userId: string, itemsPerPage: number) => {
           )
         );
       } catch (error) {
-        console.log(error);
+        console.log(error);  
         toast.error("Something went wrong try again later....");
       }
     },

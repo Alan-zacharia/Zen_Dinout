@@ -8,11 +8,10 @@ import { Link } from "react-router-dom";
 
 const BookMarks: React.FC = () => {
   const [bookmarks, setBookMarks] = useState<savedRestaurantsType[]>([]);
-
   useEffect(() => {
     const fetchBookMarkedRestaurant = async () => {
       try {
-        const res = await axiosInstance.get("/api/saved-restaurants");
+        const res = await axiosInstance.get("/api/bookmarks");
         setBookMarks(res.data.savedRestaurants);
       } catch (error) {
         console.log(error);
@@ -21,32 +20,43 @@ const BookMarks: React.FC = () => {
     fetchBookMarkedRestaurant();
   }, []);
 
-  return (
-    <div className="p-8 flex flex-col gap-4 w-[300px]">
+  return (    
+    <div className="lg:p-8 flex flex-col gap-4 w-[400px] lg:w-[500px]">
       {bookmarks.length === 0 ? (
         <p className="text-gray-500 font-bold">No saved Restaurants.</p>
       ) : (
         bookmarks.map((restaurant) => (
-          <div className="bg-white shadow-lg rounded-lg p-7 flex flex-col gap-2" key={restaurant._id}>
+          <div
+            className="bg-white shadow-lg rounded-lg p-7 flex flex-col gap-2"
+            key={restaurant._id}
+          >
             <Link to={`/restaurant-view/${restaurant.restaurantId._id}`}>
-            <div className="flex items-center gap-6 cursor-pointer" >
-              <img
-                src={restaurant.restaurantId.featuredImage}
-                alt={restaurant.restaurantId.restaurantName}
-                className="w-24 h-24 object-cover rounded-lg"
-              />
-              <div className="flex flex-col"> 
-                <h2 className="text-xl font-semibold">{restaurant.restaurantId.restaurantName}</h2>
-                <p className="text-gray-600 flex items-center gap-1">
-                  <FaLocationDot size={16} />
-                  {restaurant.restaurantId.address}
-                </p>
-                <p className="text-gray-600 flex items-center gap-1">
-                  <IoMdTimer size={16} />
-                  {`${format(new Date(restaurant.restaurantId.openingTime), 'p')} - ${format(new Date(restaurant.restaurantId.closingTime), 'p')}`}
-                </p>
+              <div className="flex items-center gap-6 cursor-pointer">
+                <img
+                  src={restaurant?.restaurantId?.featuredImage.url}
+                  alt={restaurant?.restaurantId?.restaurantName}
+                  className="w-24 h-24 object-cover rounded-lg"
+                />
+                <div className="flex flex-col">
+                  <h2 className="text-xl font-semibold">
+                    {restaurant.restaurantId.restaurantName}
+                  </h2>
+                  <p className="text-gray-600 flex items-center gap-1">
+                    <FaLocationDot size={16} />
+                    {restaurant?.restaurantId?.address}
+                  </p>
+                  <p className="text-gray-600 flex items-center gap-1">
+                    <IoMdTimer size={16} />
+                    {`${format(
+                      new Date(restaurant.restaurantId.openingTime),
+                      "p"
+                    )} - ${format(
+                      new Date(restaurant.restaurantId.closingTime),
+                      "p"
+                    )}`}
+                  </p>
+                </div>
               </div>
-            </div>
             </Link>
           </div>
         ))

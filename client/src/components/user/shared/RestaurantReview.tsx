@@ -30,7 +30,7 @@ const RestaurantReview = ({
         );
         setReviews(res.data.reviews);
       } catch (error) {
-        console.log(error);
+        console.log(error); 
       }
     };
 

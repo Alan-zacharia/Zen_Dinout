@@ -36,7 +36,6 @@ const SellerDashBoard = () => {
     axiosInstance
       .get("/restaurant/reservations/")
       .then((res) => {
-        console.log(res.data.Reservations);
         setBookingDetails(res.data.Reservations.slice(0,4));
       })
       .catch(({ response }) => {
@@ -87,7 +86,7 @@ const SellerDashBoard = () => {
                         <td>
                           <p>{bookingDetails.bookingId.substring(0, 12)}...</p>
                         </td>
-                        <td>{bookingDetails.userId.username}</td>
+                        <td>{bookingDetails?.userId?.username}</td>
                         <td>{bookingDetails.bookingTime}</td>
                         <td>{format(new Date(bookingDetails.bookingDate), 'dd-MM-yyyy')}</td>
                         <td>{bookingDetails.restaurantId.restaurantName}</td>

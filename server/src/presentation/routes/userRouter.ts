@@ -17,89 +17,56 @@ const interactor = new userInteractorImpl(repository);
 const controller = new userController(interactor);
 const userRouter: Router = Router();
 
-/** Post Methods  */
-userRouter.post(
-  "/login",
-  loginValidation(),
-  userBlocked,
-  controller.userLogin.bind(controller)
-);
-userRouter.post(
-  "/google-login",
-  signupValidation(),
-  userBlocked,
-  userExistGoogle,
-  controller.googleLoginService.bind(controller)
-);
-userRouter.post(
-  "/register",
-  signupValidation(),
-  userExists,
-  controller.userRegister.bind(controller)
-);
-userRouter.post(
-  "/generate-otp",
-  signupValidation(),
-  userExists,
-  controller.generateOtp.bind(controller)
-);
-userRouter.post(
-  "/reset-password",
-  controller.resetPasswordGetUser.bind(controller)
-);
-userRouter.post(
-  "/restaurant-slots",
-  controller.restaurantTableSlots.bind(controller)
-);
-userRouter.post(
-  "/create-payment",
-  userVerifyMiddleware,
-  controller.createPayment.bind(controller)
-);
 
-/** Get Methods  */
-userRouter.get("/get-restaurants", controller.getRestaurants.bind(controller));
-userRouter.get(
-  "/restaurant-view/:restaurantId",
-  controller.restaurantDetails.bind(controller)
-);
-userRouter.get(
-  "/user-profile/:userId",
-  userVerifyMiddleware,
-  controller.getProfile.bind(controller)
-);
-userRouter.get(
-  "/user-details/:userId",
-  controller.getUserData.bind(controller)
-);
-userRouter.get(
-  "/restaurant-photos/:restaurantId",
-  controller.getRestaurantImages.bind(controller)
-);
-userRouter.get(
-  "/restaurant-table-details/:tableId",
-  controller.restaurantTableDetails.bind(controller)
-);
+/** HTTP POST METHODS  */
+userRouter.post("/register",signupValidation(),controller.registerUserController.bind(controller));
+userRouter.post("/login",loginValidation(),userBlocked,controller.loginUserController.bind(controller));
+userRouter.post("/otp",signupValidation(),userExists,controller.generateOtpController.bind(controller));
+userRouter.post("/google-login",signupValidation(),userBlocked,controller.googleLoginController.bind(controller));
+userRouter.post("/review",userVerifyMiddleware,controller.addReviewController.bind(controller));
+userRouter.post("/membership",userVerifyMiddleware,controller.createMemberShipPaymentController.bind(controller));
+userRouter.post("/review",userVerifyMiddleware,controller.addReviewController.bind(controller));
+userRouter.post("/apply-coupon",userVerifyMiddleware,controller.applyCouponController.bind(controller));
+userRouter.post("/create-payment",userVerifyMiddleware,controller.createBookingController.bind(controller));
 
-/** Put Methods  */
-userRouter.put(
-  "/reset-password/:id",
-  controller.resetPasswordUpdate.bind(controller)
-);
-userRouter.put(
-  "/update-userdetails/:id",
-  userVerifyMiddleware,
-  controller.updateUserDetails.bind(controller)
-);
 
-userRouter.get(
-  "/validate-token",
-  verifyToken,
-  (req: Request, res: Response) => {
-    res.status(200).send({ userId: req.userId });
-  }
-);
 
-userRouter.post("/logout", controller.userLogout.bind(controller));
+userRouter.post("/reset-password-request",controller.resetPasswordController.bind(controller));
+userRouter.post("/save-restaurant",userVerifyMiddleware,controller.saveRestaurantController.bind(controller));
+userRouter.post("/slots",controller.getTimeSlotController.bind(controller));
+
+// userRouter.post("/restaurant-slots",controller.restaurantTableSlotsController.bind(controller));
+
+/** HTTP PATCH METHODS  */
+userRouter.patch("/account/:userId",userVerifyMiddleware,controller.updateProfileController.bind(controller));
+userRouter.patch("/booking-details/:bookingId",userVerifyMiddleware,controller.cancelBookingController.bind(controller));
+
+
+/** HTTP PUT METHODS  */
+userRouter.put("/reset-password/:useId",controller.resetPasswordUpdateController.bind(controller));
+
+
+/** HTTP GET METHODS  */
+userRouter.get("/account/:userId",userVerifyMiddleware,controller.getProfileController.bind(controller));
+userRouter.get("/get-restaurants", controller.getListedRestuarantsController.bind(controller));
+userRouter.get("/restaurant-view/:restaurantId",controller.getRestauarantDetailedViewController.bind(controller));
+userRouter.get("/bookings/:userId",userVerifyMiddleware,controller.getBookingDataController.bind(controller));
+userRouter.get("/booking-details/:bookingId",userVerifyMiddleware,controller.getBookingDetailedController.bind(controller));
+userRouter.get("/bookmarks",userVerifyMiddleware,controller.getSavedRestaurantContoller.bind(controller));
+userRouter.get("/wallet",userVerifyMiddleware,controller.getUserWalletController.bind(controller));
+userRouter.get("/coupons",userVerifyMiddleware,controller.getCouponsController.bind(controller));
+userRouter.get("/chek-bookmark/:restaurantId",userVerifyMiddleware,controller.getCheckSavedRestaurantController.bind(controller));
+userRouter.get("/reviews/:restaurantId",controller.getReviewsController.bind(controller));
+userRouter.get("/review/:restaurantId",userVerifyMiddleware,controller.getReviewController.bind(controller));
+userRouter.get("/membership/:userId",userVerifyMiddleware,controller.getMembershipController.bind(controller));
+userRouter.get("/restaurant/:restaurantId/tables",controller.getRestaurantTablesController.bind(controller));
+
+
+/** HTTPS DELETE METHODS */
+userRouter.delete("/membership/:membershipId",userVerifyMiddleware , controller.cancelMembershipController.bind(controller));
+
+// userRouter.get("/restaurant-photos/:restaurantId",controller.getSavedRestaurantController.bind(controller));
+// userRouter.get("/restaurant-table-details/:tableId",controller.getRestaurantTablesController.bind(controller));
+
 
 export default userRouter;

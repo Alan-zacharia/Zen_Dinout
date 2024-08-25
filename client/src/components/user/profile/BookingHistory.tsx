@@ -25,12 +25,12 @@ const BookingHistory: React.FC = () => {
   useEffect(() => {
     const fetchBookingHistory = async () => {
       try {
-        const res = await axiosInstance.get(`/api/booking-history/${id}`);
-        setBookings(res.data.Bookings);
+        const res = await axiosInstance.get(`/api/bookings/${id}`);
+        setBookings(res.data.bookingData);
       } catch (error) {
         console.error("Error fetching booking history:", error);
       }
-    };
+    };  
     fetchBookingHistory();
   }, [id]);
 

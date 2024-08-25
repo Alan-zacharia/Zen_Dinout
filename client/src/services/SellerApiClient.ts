@@ -84,14 +84,14 @@ export const tablesSlotCreationApi = async(tableAddingDatas : tableSlotTypes , r
     const {data : {message , status , newTableSlot}} = await axios.post("/restaurant/add-table" , {tableAddingDatas} ); 
     return {data : {message , status , newTableSlot}};
   }catch(error){
-    console.log(error);
+    console.log(error); 
     throw error;
   }
 }
 
 export const getTablesSlots = async(restaurantId : string , currentPage : number)=>{
   try{
-    const {data : {message , tables , totalPages }} = await axios.get(`/restaurant/table-lists/${restaurantId}?page=${currentPage}`); 
+    const {data : {message , tables , totalPages }} = await axios.get(`/restaurant/tables?page=${currentPage}`); 
     return {data : {message , tables , totalPages }};
   }catch(error){
     console.log(error);  
