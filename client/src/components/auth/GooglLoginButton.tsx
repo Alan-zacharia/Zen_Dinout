@@ -1,7 +1,7 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
-import axiosInstance from "../../api/axios";
+import axiosInstance from "axios";
 axios.defaults.withCredentials = true;
 import { useNavigate } from "react-router-dom";
 import { localStorageSetItem } from "../../utils/localStorageImpl";
@@ -25,7 +25,7 @@ const GoogleLoginButton = ({ label }: { label: string }) => {
         });
         if (label === "In") {
           await axiosInstance
-            .post("/api/login", {
+            .post(`${import.meta.env.VITE_API_BASE_URL}/api/login`, {
               email: res.data.email,
               password: res.data.sub + PASS_KEY,
               username: res.data.given_name,
