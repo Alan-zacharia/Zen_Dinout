@@ -46,7 +46,7 @@ userRouter.put("/reset-password/:useId",controller.resetPasswordUpdateController
 
 /** HTTP GET METHODS  */
 userRouter.get("/account/:userId",userVerifyMiddleware,controller.getProfileController.bind(controller));
-userRouter.get("/get-restaurants", controller.getListedRestuarantsController.bind(controller));
+userRouter.get("/restaurants", controller.getListedRestuarantsController.bind(controller));
 userRouter.get("/restaurant-view/:restaurantId",controller.getRestauarantDetailedViewController.bind(controller));
 userRouter.get("/bookings/:userId",userVerifyMiddleware,controller.getBookingDataController.bind(controller));
 userRouter.get("/booking-details/:bookingId",userVerifyMiddleware,controller.getBookingDetailedController.bind(controller));

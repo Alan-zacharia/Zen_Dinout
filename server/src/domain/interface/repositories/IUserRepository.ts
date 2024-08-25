@@ -119,3 +119,4 @@ export interface IUserRepository {
     paymentStatus: string
   ): Promise<{ status: boolean }>;
 }
+ 

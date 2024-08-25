@@ -138,7 +138,6 @@
 
 // export default HomeLayout;
 
-
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -180,7 +179,7 @@ const HomeLayout = () => {
 
   useEffect(() => {
     dispatch(filterRestaurants());
-    setCurrentPage(1); // Reset to page 1 on new filters
+    setCurrentPage(1);
   }, [
     searchQuery,
     selectedLocation,

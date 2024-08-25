@@ -219,6 +219,7 @@ export class userController {
     try {
       const { listedRestaurants } =
         await this.interactor.getListedRestuarantInteractor();
+        console.log(listedRestaurants)
       return res.status(STATUS_CODES.OK).json({
         restaurant: listedRestaurants,
         message: SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
