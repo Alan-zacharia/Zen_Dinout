@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import TimeSlot from "./restaurantTimeSlot";
 const ObjectId = Schema.Types.ObjectId;
 
 const bookingSchema = new Schema({

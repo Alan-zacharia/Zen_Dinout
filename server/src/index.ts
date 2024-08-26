@@ -10,6 +10,7 @@ import configuredKeys from "./configs/envConfig";
 import routes from "./application/routes/routes";
 import databaseConnection from "./configs/databaseConfig";
 import socketConfig from "./configs/socketConfig";
+import { membershipCronJob } from "./infrastructure/cron/jobs/membershipReminder";
 
 
 const app: Application = express();
@@ -22,7 +23,6 @@ const io = new Server(httpServer , {
     credentials : true
   }
 })
-console.log(configuredKeys.CLIENT_URL)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: configuredKeys.CLIENT_URL }));
@@ -32,7 +32,9 @@ socketConfig(io);
 databaseConnection();
 routes(app);
 
+membershipCronJob()
 
 app.listen(configuredKeys.PORT, () => {
   console.log("Server is running on http://localhost:" + configuredKeys.PORT);
 });
+ 

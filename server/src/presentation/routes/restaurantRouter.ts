@@ -2,9 +2,8 @@ import { Router } from "express";
 import { sellerController } from "../services/controller/restaurantController";
 import { sellerInteractor } from "../../application/usecases/restaurantInteractor";
 import { sellerRepository } from "../../infrastructure/repositories/restaurantRepository";
-import { sellerVerifyToken } from "../middlewares/sellerAuth";
 import { loginValidation } from "../middlewares/expressValidatorValidation";
-import restaurantVerificationMiddleware from "../middlewares/restuarantVerificationMiddleware";
+import authenticateRestaurant from "../middlewares/authenticateRestaurant";
 
 const repository = new sellerRepository();
 const interactor = new sellerInteractor(repository);
@@ -25,83 +24,82 @@ restaurantRouter.post(
 /** HTTP GET METHODS  */
 restaurantRouter.get(
   "/restaurant-details/:restaurantId",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.getRestaurantDetailController.bind(controller)
 );
 restaurantRouter.get(
   "/reservations",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.getReservationListController.bind(controller)
 );
 restaurantRouter.get(
   "/reservations/:reservationId",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.getReservationController.bind(controller)
 );
 restaurantRouter.get(
   "/tables",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.getRestaurantTableController.bind(controller)
 );
 restaurantRouter.get(
   "/timeslots/:date",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.getTimeSlotController.bind(controller)
 );
 
 /** HTTP PATCH METHODS  */
 restaurantRouter.patch(
   "/reservations/:reservationId",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.updateReservationStatusController.bind(controller)
 );
 restaurantRouter.patch(
   "/tables/:tableId",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.updateRestaurantTableIsAvailableController.bind(controller)
 );
 restaurantRouter.patch(
   "/timeslots/:timeSlotId",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.updateRestaurantTimeSlotAvailableController.bind(controller)
 );
 
 /** HTTP POST METHODS  */
 restaurantRouter.post(
   "/tables",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.createRestaurantTableController.bind(controller)
 );
 
 restaurantRouter.post(
   "/times",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.createTimeSlotController.bind(controller)
 );
 
 /** HTTP DELETE METHODS  */
 restaurantRouter.delete(
   "/tables/:tableId",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.deleteRestaurantTableController.bind(controller)
 );
 restaurantRouter.delete(
   "/featuredImage",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.deleteRestaurantFeaturedImageController.bind(controller)
 );
 restaurantRouter.delete(
   "/secondary-images",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.deleteRestaurantSecondaryImagesController.bind(controller)
 );
 
 /** HTTP PUT METHODS  */
 restaurantRouter.put(
   "/restaurant-details/:restaurantId",
-  restaurantVerificationMiddleware,
+  authenticateRestaurant,
   controller.restaurantProfileUpdateController.bind(controller)
 );
-
 
 export default restaurantRouter;

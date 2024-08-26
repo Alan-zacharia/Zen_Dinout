@@ -1,7 +1,5 @@
 import { Router } from "express";
 import { chatController } from "../services/controller/chatController";
-import userVerifyMiddleware from "../middlewares/userVerificationMiddleware";
-import restaurantVerificationMiddleware from "../middlewares/restuarantAuth";
 
 const controller = new chatController();
 

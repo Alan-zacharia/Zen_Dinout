@@ -1,18 +1,9 @@
 import { Response, Request, NextFunction } from "express";
 import { IUserInteractor } from "../../../domain/interface/use-cases/IUserInteractor";
-// import {
-//   bookingConfirmationInterface,
-//   ReviewAddingInterface,
-//   UserInterface,
-// } from "../../../domain/entities/User";
-
 import logger from "../../../infrastructure/lib/Wintson";
 import mongoose from "mongoose";
-// import { tableSlotsGetRequestInterface } from "../../../domain/entities/restaurants";
 import bookingModel from "../../../infrastructure/database/model.ts/bookingModel";
 import couponModel from "../../../infrastructure/database/model.ts/couponModel";
-
-import bookMarkModel from "../../../infrastructure/database/model.ts/bookMarkModel";
 import membershipModel from "../../../infrastructure/database/model.ts/membershipModel";
 import UserModel from "../../../infrastructure/database/model.ts/userModel";
 import Wallet from "../../../infrastructure/database/model.ts/wallet";
@@ -219,7 +210,6 @@ export class userController {
     try {
       const { listedRestaurants } =
         await this.interactor.getListedRestuarantInteractor();
-        console.log(listedRestaurants)
       return res.status(STATUS_CODES.OK).json({
         restaurant: listedRestaurants,
         message: SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
@@ -768,125 +758,99 @@ export class userController {
     }
   }
 
-  public async getTimeSlotController(req: Request, res: Response) {
-    console.log("Fetching time slots...");
+  public async getTimeSlotController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("Get time slots...");
     const { date, restaurantId } = req.body;
     try {
-      const allTimeSlots = await TimeSlot.find({ restaurantId, date });
-      console.log(date);
-      const bookedTimeSlots = await bookingModel
-        .find({
-          restaurantId,
-          bookingDate: date,
-          bookingStatus: { $ne: "CANCELLED" },
-        })
-        .select("timeSlot");
-
-      const table = await restaurantTableModel.find({ restaurantId });
-      const totalTables = table.length || 0;
-      const bookingCountMap: { [key: string]: number } = {};
-      bookedTimeSlots.forEach((booking) => {
-        const timeSlotId = booking.timeSlot.toString();
-        bookingCountMap[timeSlotId] = (bookingCountMap[timeSlotId] || 0) + 1;
-      });
-      const availableTimeSlots = allTimeSlots.filter((timeSlot) => {
-        const isBooked =
-          (bookingCountMap[timeSlot._id.toString()] || 0) >= totalTables;
-        return timeSlot.isAvailable && !isBooked;
-      });
-      console.log(availableTimeSlots);
-      return res.status(200).json({ TimeSlots: availableTimeSlots });
+      const { TimeSlots, status } = await this.interactor.getTimeSlotInteractor(
+        restaurantId,
+        date
+      );
+      if (!status) {
+        return res
+          .status(STATUS_CODES.BAD_REQUEST)
+          .json({ message: MESSAGES.INVALID_FORMAT });
+      }
+      return res.status(STATUS_CODES.OK).json({ TimeSlots });
     } catch (error) {
-      console.log(`Error fetching time slots: ${(error as Error).message}`);
-      return res.status(500).json({ message: "Internal server error" });
+      logger.error(
+        `Error in get time slot service: ${(error as Error).message} `
+      );
+      next(
+        new AppError(
+          MESSAGES.INTERNAL_SERVER_ERROR,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   }
-  public async createMemberShipPaymentController(req: Request, res: Response) {
+  public async createMemberShipPaymentController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     console.log("Create membership payment.....");
     const { membershipId } = req.body;
     const userId = req.userId;
     try {
-      const membership = await membershipModel.findById(membershipId);
-      if (!membership) {
-        return res.status(404).json({ message: "Membership not found." });
-      }
-      await membershipModel.findByIdAndUpdate(membershipId, {
-        $inc: { users: 1 },
-      });
-
-      const totalCost = membership.cost;
-      const now = new Date();
-      let endDate;
-
-      if (membership.type === "Monthly") {
-        endDate = new Date(now.setMonth(now.getMonth() + 1));
-      } else if (membership.type === "Annual") {
-        endDate = new Date(now.setFullYear(now.getFullYear() + 1));
-      } else {
-        return res.status(400).json({ message: "Invalid membership type." });
-      }
-      const user = await UserModel.findByIdAndUpdate(
+      const result = await this.interactor.createMembershipPaymentInteractor(
         userId,
-        {
-          isPrimeMember: true,
-          primeSubscription: {
-            membershipId,
-            startDate: new Date(),
-            endDate,
-            type: membership.type,
-            status: "active",
-          },
-        },
-        { new: true }
+        membershipId
       );
-      if (!user) {
-        return res.status(404).json({ message: "User not found." });
+      const { sessionId, status } = result;
+      if (!status) {
+        return res
+          .status(STATUS_CODES.BAD_REQUEST)
+          .json({ message: MESSAGES.INVALID_FORMAT });
       }
-      const username = user.username;
-      const email = user.email;
-      const session = await createMembershipPaymentIntent(
-        { username, email },
-        totalCost
-      );
-      return res.status(200).json({ sessionId: session.id });
+      return res.status(200).json({ sessionId: sessionId });
     } catch (error) {
-      console.log("Error in payment: ", error);
-      return res.status(500).json({ message: "Internal server error" });
+      logger.error(
+        `Error in create membership service: ${(error as Error).message} `
+      );
+      next(
+        new AppError(
+          MESSAGES.INTERNAL_SERVER_ERROR,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   }
-
   public async getMembershipController(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
+    const userId = req.userId;
     try {
-      const userId = req.userId;
-      const user = await UserModel.findById(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found." });
+      const { existingMembership, memberships, status } =
+        await this.interactor.getMembershipInteractor(userId);
+      if (!status) {
+        return res
+          .status(STATUS_CODES.BAD_REQUEST)
+          .json({ status, message: MESSAGES.INVALID_FORMAT });
       }
-      if (user.isPrimeMember && user.primeSubscription?.status === "active") {
-        const existingMembership = await membershipModel.findById(
-          user.primeSubscription.membershipId
-        );
-        return res.status(200).json({
-          message: "User's active membership fetched successfully.......",
-          existingMembership,
-          membership: [],
-        });
-      } else {
-        const memberships = await membershipModel.find({});
-        return res.status(200).json({
-          message: "All memberships fetched successfully.......",
-          memberships,
-        });
-      }
+      return res
+        .status(STATUS_CODES.OK)
+        .json({ existingMembership, memberships, status });
     } catch (error) {
-      console.error(`Error fetching memberships: ${(error as Error).message}`);
-      return res.status(500).json({ message: "Internal server error." });
+      logger.error(
+        `Error in get membership service: ${(error as Error).message} `
+      );
+      next(
+        new AppError(
+          MESSAGES.INTERNAL_SERVER_ERROR,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   }
+
+  ////////////////////////////////
 
   public async cancelMembershipController(req: Request, res: Response) {
     const membershipId = req.params.membershipId;
@@ -937,6 +901,8 @@ export class userController {
     }
   }
 
+  ////////////////////////////////
+
   public async applyCouponController(req: Request, res: Response) {
     console.log("Apply coupon.......");
     try {
@@ -966,6 +932,8 @@ export class userController {
     }
   }
 
+  ////////////////////////////////
+
   async bookingStatusUpdationController(
     req: Request,
     res: Response,
@@ -980,12 +948,18 @@ export class userController {
         paymentStatus
       );
       if (!status) {
-        return res.status(STATUS_CODES.OK).json({ message: "Failed to book the table" });
+        return res
+          .status(STATUS_CODES.OK)
+          .json({ message: "Failed to book the table" });
       }
       console.log(bookingId, paymentStatus);
-      return res.status(STATUS_CODES.CREATED).json({ message: "Booking Succesfull" });
+      return res
+        .status(STATUS_CODES.CREATED)
+        .json({ message: "Booking Succesfull" });
     } catch (error) {
-      logger.error(`Error in update booking status : ${(error as Error).message}`);
+      logger.error(
+        `Error in update booking status : ${(error as Error).message}`
+      );
       next(
         new AppError(
           MESSAGES.INTERNAL_SERVER_ERROR,
@@ -995,7 +969,12 @@ export class userController {
     }
   }
 
-  public async logoutController(req: Request, res: Response, next: NextFunction) {
+  public async logoutController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("Refresh token removed.......");
     try {
       res.clearCookie("refreshToken");
       return res.status(STATUS_CODES.OK).send("Logout successfull...!");

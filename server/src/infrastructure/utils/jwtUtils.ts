@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import configuredKeys from "../../configs/envConfig";
 import { JWT_CONSTANTS } from "../../configs/constants";
 
@@ -23,19 +23,15 @@ export const jwtGenerateRefreshToken = (userId: string , role : string): string 
 };
 
 /** JWT VERIFY TOKEN */
-export const jwtVerifyToken = (accessToken: string , SECRET_KEY : string) => {
-  jwt.verify(
-    accessToken,
-    SECRET_KEY,
-    (err: any, decode: any) => {
-      if (err) {
-        return { message: "Invalid Token", decode: null };
-      } else {
-        return { message: "Verified successfull", decode };
-      }
-    }
-  );
+export const jwtVerifyToken = (accessToken: string, SECRET_KEY: string): { message: string, decode: JwtPayload | null } => {
+  try {
+    const decode = jwt.verify(accessToken, SECRET_KEY) as JwtPayload;
+    return { message: "Verified successfully", decode };
+  } catch (err) {
+    return { message: "Invalid Token", decode: null };
+  }
 };
+
 
 /** GENERATE TOKENS */
 export const generateTokens = (id: string, role: string) => {

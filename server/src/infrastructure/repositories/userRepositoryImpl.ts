@@ -2,6 +2,7 @@ import {
   BookingConfirmationType,
   BookingDataType,
   CouponType,
+  MemberShipType,
   ReviewType,
   savedRestaurantType,
   UserType,
@@ -9,15 +10,12 @@ import {
 } from "../../domain/entities/UserType";
 import { IUserRepository } from "../../domain/interface/repositories/IUserRepository";
 import userModel from "../database/model.ts/userModel";
-import { otpGenerator } from "../../functions/OtpSetup";
+
 import logger from "../lib/Wintson";
-import {
-  hashedPasswordCompare,
-  hashedPasswordFunction,
-} from "../../functions/bcryptFunctions";
 import {
   RestaurantType,
   TableDataType,
+  TimeSlotType,
 } from "../../domain/entities/RestaurantType";
 import restaurantModel from "../database/model.ts/restaurantModel";
 import { MESSAGES, ROLES, SUCCESS_MESSAGES } from "../../configs/constants";
@@ -30,6 +28,14 @@ import bookMarkModel from "../database/model.ts/bookMarkModel";
 import reviewModel from "../database/model.ts/reviewModel";
 import restaurantTableModel from "../database/model.ts/restaurantTable";
 import { generateBookingId } from "../utils/generateBookingId";
+import { otpGenerator } from "../utils/otpGenerator";
+import {
+  hashedPasswordCompare,
+  hashedPasswordFunction,
+} from "../../domain/entities/auth";
+import TimeSlot from "../database/model.ts/restaurantTimeSlot";
+import membershipModel from "../database/model.ts/membershipModel";
+import createMembershipPaymentIntent from "../payment/stripeMembershipService";
 
 export class userRepositoryImpl implements IUserRepository {
   public async findExistingUser(email: string): Promise<boolean> {
@@ -613,6 +619,43 @@ export class userRepositoryImpl implements IUserRepository {
       throw error;
     }
   }
+  public async getTimeSlotRepo(
+    restaurantId: string,
+    date: string
+  ): Promise<{
+    TimeSlots: TimeSlotType[] | null;
+    status: boolean;
+  }> {
+    try {
+      const allTimeSlots = await TimeSlot.find({ restaurantId, date });
+      const bookedTimeSlots = await bookingModel
+        .find({
+          restaurantId,
+          bookingDate: date,
+          bookingStatus: { $ne: "CANCELLED" },
+        })
+        .select("timeSlot");
+      const table = await restaurantTableModel.find({ restaurantId });
+      const totalTables = table.length || 0;
+      const bookingCountMap: { [key: string]: number } = {};
+      bookedTimeSlots.forEach((booking) => {
+        const timeSlotId = booking.timeSlot.toString();
+        bookingCountMap[timeSlotId] = (bookingCountMap[timeSlotId] || 0) + 1;
+      });
+      const availableTimeSlots = allTimeSlots.filter((timeSlot) => {
+        const isBooked =
+          (bookingCountMap[timeSlot._id.toString()] || 0) >= totalTables;
+        return timeSlot.isAvailable && !isBooked;
+      });
+      const TimeSlots: TimeSlotType[] = availableTimeSlots.map((data) => {
+        return data.toObject();
+      });
+      return { TimeSlots, status: true };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async bookingStatusUpdationRepo(
     bookingId: string,
     paymentStatus: string
@@ -637,6 +680,98 @@ export class userRepositoryImpl implements IUserRepository {
       await bookingData.save();
       return {
         status: true,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async createMembershipPaymentRepo(
+    userId: string,
+    membershipId: string
+  ): Promise<{
+    status: boolean;
+    sessionId: string | null;
+  }> {
+    try {
+      const membership = await membershipModel.findById(membershipId);
+      if (!membership) {
+        return { status: false, sessionId: null };
+      }
+      await this.incrementMembershipUsers(membershipId);
+      const totalCost = membership.cost;
+      const now = new Date();
+      let endDate: Date;
+
+      if (membership.type === "Monthly") {
+        endDate = new Date(now.setMonth(now.getMonth() + 1));
+      } else if (membership.type === "Annual") {
+        endDate = new Date(now.setFullYear(now.getFullYear() + 1));
+      } else {
+        return { status: false, sessionId: null };
+      }
+
+      const user = await userModel.findByIdAndUpdate(
+        userId,
+        {
+          isPrimeMember: true,
+          primeSubscription: {
+            membershipId,
+            startDate: new Date(),
+            endDate,
+            type: membership.type,
+            status: "active",
+          },
+        },
+        { new: true }
+      );
+      if (!user) {
+        return { status: false, sessionId: null };
+      }
+      const { username, email } = user;
+      const session = await createMembershipPaymentIntent(
+        { username, email },
+        totalCost
+      );
+      return { status: true, sessionId: session.id };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async incrementMembershipUsers(membershipId: string) {
+    await membershipModel.findByIdAndUpdate(membershipId, {
+      $inc: { users: 1 },
+    });
+  }
+  public async getMembershipRepo(userId: string): Promise<{
+    status: boolean;
+    memberships: MemberShipType[] | null;
+    existingMembership: MemberShipType | null;
+  }> {
+    try {
+      const user = await userModel.findById(userId);
+      if (!user) {
+        return { status: false, existingMembership: null, memberships: null };
+      }
+      if (user.isPrimeMember && user.primeSubscription?.status === "active") {
+        const existingMembership = await membershipModel.findById(
+          user.primeSubscription.membershipId
+        );
+        if (existingMembership) {
+          return {
+            status: true,
+            existingMembership: existingMembership?.toObject(),
+            memberships: [],
+          };
+        }
+      }
+      const memberships = await membershipModel.find({});
+      const membershipList: MemberShipType[] = memberships.map((data) => {
+        return data.toObject();
+      });
+      return {
+        status: true,
+        memberships: membershipList,
+        existingMembership: null,
       };
     } catch (error) {
       throw error;

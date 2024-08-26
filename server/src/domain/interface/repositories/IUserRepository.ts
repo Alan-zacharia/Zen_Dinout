@@ -2,12 +2,18 @@ import {
   BookingConfirmationType,
   BookingDataType,
   CouponType,
+  MemberShipType,
   ReviewType,
   savedRestaurantType,
   UserType,
   WalletType,
 } from "../../entities/UserType";
-import { RestaurantType, TableDataType } from "../../entities/RestaurantType";
+import {
+  RestaurantType,
+  TableDataType,
+  TimeSlotType,
+} from "../../entities/RestaurantType";
+import { Session } from "inspector";
 
 export interface IUserRepository {
   registerUserRepo(
@@ -72,6 +78,10 @@ export interface IUserRepository {
     restaurantId: string,
     userId: string
   ): Promise<{ isBookmark: boolean; status: boolean }>;
+  getTimeSlotRepo(
+    restaurantId: string,
+    date: string
+  ): Promise<{ TimeSlots: TimeSlotType[] | null; status: boolean }>;
   saveRestaurantRepo(
     restaurantId: string,
     userId: string
@@ -118,5 +128,15 @@ export interface IUserRepository {
     bookingId: string,
     paymentStatus: string
   ): Promise<{ status: boolean }>;
+  createMembershipPaymentRepo(
+    userId: string,
+    membershipId: string
+  ): Promise<{ status: boolean; sessionId: string | null }>;
+  getMembershipRepo(
+    userId: string
+  ): Promise<{
+    status: boolean;
+    memberships: MemberShipType[] | null;
+    existingMembership: MemberShipType | null;
+  }>;
 }
-          

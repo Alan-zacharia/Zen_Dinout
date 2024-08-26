@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import { string } from "joi";
 
 const restaurantSchema = new mongoose.Schema(
   {

@@ -1,4 +1,3 @@
-import { required } from "joi";
 import mongoose, { Schema } from "mongoose";
 
 const bookMarkSchema = new Schema({

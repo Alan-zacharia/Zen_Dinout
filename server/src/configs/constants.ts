@@ -10,6 +10,7 @@ export const STATUS_CODES = {
   INTERNAL_SERVER_ERROR: 500,
   NOT_IMPLEMENTED: 501,
   SERVICE_UNAVAILABLE: 503,
+  BLOCKED : 422
 };
 
 export const MESSAGES = {
@@ -28,7 +29,8 @@ export const MESSAGES = {
   ADMIN_DOESNOT_EXIST: "Admin does not exists",
   INVALID_DATA: "Please provide all required fields.",
   INVALID_FORMAT: "Invalid format....",
-  NO_TABLES_AVAILABLE : "No tables available"
+  NO_TABLES_AVAILABLE : "No tables available",
+  USER_BLOCKED : "Sorry this user blocked by admin..."
 };
 
 export const SUCCESS_MESSAGES = {

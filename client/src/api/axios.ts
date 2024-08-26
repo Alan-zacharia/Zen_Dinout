@@ -12,7 +12,7 @@ axiosInstance.interceptors.request.use(
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
-    } 
+    }
     return config;
   },
   (error) => {
@@ -39,7 +39,7 @@ axiosInstance.interceptors.response.use(
         handleRefreshTokenError(refreshError);
         return Promise.reject(refreshError);
       }
-    } else if (error.response.status == 403) {
+    } else if (error.response.status == 422) {
       localStorage.removeItem("accessToken");
       logout("Sorry, This user has been blocked");
     }
@@ -53,7 +53,7 @@ const handleRefreshTokenError = (error: any) => {
 };
 
 const logoutUser = () => {
-  try {  
+  try {
     logout("Sorry, your session expired. Please log in again.");
     localStorage.removeItem("accessToken");
   } catch (error) {

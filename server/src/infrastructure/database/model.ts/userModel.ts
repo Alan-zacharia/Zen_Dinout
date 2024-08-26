@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
-import { boolean } from "joi";
 
 interface UserDocument extends Document {
   username: string;

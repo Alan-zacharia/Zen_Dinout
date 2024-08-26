@@ -41,7 +41,7 @@ const membershipPlanSchema: Schema<MembershipPlanDocument> = new Schema({
     type: Number,
     default: 0,
   },
-});
+},{timestamps : true});
 
 const membershipModel = mongoose.model<MembershipPlanDocument>(
   "MembershipPlan",

@@ -1,9 +1,9 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import { adminRepositoryImpl } from "../../infrastructure/repositories/adminRepositoryImpl";
 import { adminInteractorImpl } from "../../application/usecases/adminInteractor";
 import { adminController } from "../services/controller/adminController";
 import { loginValidation } from "../middlewares/expressValidatorValidation";
-import adminVerifyMiddleware from "../middlewares/adminAuth";
+import authenticateAdmin from "../middlewares/authenticateAdmin";
 
 const repository = new adminRepositoryImpl();
 const interactor = new adminInteractorImpl(repository);
@@ -31,51 +31,51 @@ adminRouter.post(
 /** HTTP GET METHODS  */
 adminRouter.get(
   "/users",
-  adminVerifyMiddleware,
+  authenticateAdmin,
   controller.getUserListContoller.bind(controller)
 );
 adminRouter.get(
   "/approval-restaurants",
-  adminVerifyMiddleware,
+  authenticateAdmin,
   controller.getApproveRestaurantListController.bind(controller)
 );
 adminRouter.get(
   "/restaurants",
-  adminVerifyMiddleware,
+  authenticateAdmin,
   controller.getRestaurantListController.bind(controller)
 );
 adminRouter.get(
   "/approval-restaurant/:restaurantId",
-  adminVerifyMiddleware,
+  authenticateAdmin,
   controller.getApproveRestaurantController.bind(controller)
 );
 adminRouter.get(
   "/coupons",
-  adminVerifyMiddleware,
+  authenticateAdmin,
   controller.getCouponController.bind(controller)
 );
 adminRouter.get(
   "/memberships",
-  adminVerifyMiddleware,
+  authenticateAdmin,
   controller.getMembershipController.bind(controller)
 );
 
 /** HTTP PATCH METHODS */
 adminRouter.patch(
   "/users/:userId/:action",
-  adminVerifyMiddleware,
+  authenticateAdmin,
   controller.userActionController.bind(controller)
 );
 adminRouter.patch(
   "/approval-restaurant/:restaurantId",
-  adminVerifyMiddleware,
+  authenticateAdmin,
   controller.approveRestaurantController.bind(controller)
 );
 
 /** HTTP DELETE METHODS */
 adminRouter.delete(
   "/coupons/:couponId",
-  adminVerifyMiddleware,
+  authenticateAdmin,
   controller.removeCouponController.bind(controller)
 );
 

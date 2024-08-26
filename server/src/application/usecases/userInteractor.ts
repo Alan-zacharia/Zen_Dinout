@@ -3,6 +3,7 @@ import {
   BookingConfirmationType,
   BookingDataType,
   CouponType,
+  MemberShipType,
   ReviewType,
   savedRestaurantType,
   UserType,
@@ -11,8 +12,8 @@ import {
 import {
   RestaurantType,
   TableDataType,
+  TimeSlotType,
 } from "../../domain/entities/RestaurantType";
-import { IMailer } from "../../domain/interface/external-lib/IMailer";
 import { IUserRepository } from "../../domain/interface/repositories/IUserRepository";
 import { IUserInteractor } from "../../domain/interface/use-cases/IUserInteractor";
 import logger from "../../infrastructure/lib/Wintson";
@@ -414,6 +415,27 @@ export class userInteractorImpl implements IUserInteractor {
       throw error;
     }
   }
+  public async getTimeSlotInteractor(
+    restaurantId: string,
+    date: string
+  ): Promise<{
+    TimeSlots: TimeSlotType[] | null;
+    status: boolean;
+  }> {
+    if (!restaurantId || !date) {
+      return {
+        TimeSlots: null,
+        status: false,
+      };
+    }
+    try {
+      const result = await this.repository.getTimeSlotRepo(restaurantId, date);
+      const { TimeSlots, status } = result;
+      return { TimeSlots, status };
+    } catch (error) {
+      throw error;
+    }
+  }
   public async createBookingInteractor(
     userId: string,
     bookingComfirmationDatas: BookingConfirmationType,
@@ -463,6 +485,43 @@ export class userInteractorImpl implements IUserInteractor {
       );
       const { status } = result;
       return { status };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async createMembershipPaymentInteractor(
+    userId: string,
+    membershipId: string
+  ): Promise<{
+    status: boolean;
+    sessionId: string | null;
+  }> {
+    if (!userId || !membershipId) {
+      return { status: false, sessionId: null };
+    }
+    try {
+      const result = await this.repository.createMembershipPaymentRepo(
+        userId,
+        membershipId
+      );
+      const { status, sessionId } = result;
+      return { status, sessionId };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async getMembershipInteractor(userId: string): Promise<{
+    status: boolean;
+    memberships: MemberShipType[] | null;
+    existingMembership: MemberShipType | null;
+  }> {
+    if (!userId) {
+      return { status: false, memberships: null, existingMembership: null };
+    }
+    try {
+      const result = await this.repository.getMembershipRepo(userId);
+      const { status, existingMembership, memberships } = result;
+      return { status, existingMembership, memberships };
     } catch (error) {
       throw error;
     }

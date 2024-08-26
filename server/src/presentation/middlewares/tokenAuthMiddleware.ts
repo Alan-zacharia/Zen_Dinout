@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-import { jwtGenerateToken } from "../../functions/auth/jwtTokenFunctions";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import configuredKeys from "../../configs/config";
+import configuredKeys from "../../configs/envConfig";
+import { jwtGenerateToken } from "../../infrastructure/utils/jwtUtils";
 
 export async function refreshAccessToken(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
+    console.log(req.cookies)
     console.log("Refresh Token")
     if (!refreshToken) {
         return res.status(402).json({ message: 'No refresh token provided' });
