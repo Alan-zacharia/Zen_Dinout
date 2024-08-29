@@ -1,23 +1,19 @@
 import * as Yup from "yup";
-import { otpType, userType } from "../types/userTypes";
+import { otpType } from "../types/userTypes";
 
 /** User side Login Validation */
-export const loginValidation = (values: Partial<userType>) => {
-  const errors: Partial<userType> = {};
-
-  if (!values.email) {
-    errors.email = "Email is required";
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-    errors.email = "Please enter a valid email address";
-  }
-
-  if (!values.password) {
-    errors.password = "Password is required";
-  } else if (values.password.length < 8) {
-    errors.password = "Password must be 8 characters long";
-  }
-
-  return errors;
+export const loginValidation = () => {
+  return Yup.object().shape({
+    email: Yup.string()
+      .email("Please enter a valid email address")
+      .required("Email is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/,
+        "Password must be strong and include one special character.!"
+      ),
+  });
 };
 
 export const registerValidation = () => {
@@ -34,7 +30,10 @@ export const registerValidation = () => {
 
     password: Yup.string()
       .required("Password is required")
-      .min(8, "Password must be 8 characters long"),
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/,
+        "Password must be strong and contain at least one special character.!"
+      ),
 
     confirmPassword: Yup.string()
       .required("Confirm password is required")

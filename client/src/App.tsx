@@ -1,22 +1,14 @@
-import React from 'react'
-import AppRouter from './routes/AppRouter'
-import { Toaster } from 'react-hot-toast'
+import React from "react";
+import AppRouter from "./routes/AppRouter";
+import { Toaster } from "react-hot-toast";
 
-const App : React.FC = () => {
+const App: React.FC = () => {
   return (
-   <>
+    <>
       <Toaster position="top-center" />
-      <AppRouter/>
-  </>
-  )
-}
+      <AppRouter />
+    </>
+  );
+};
 
-export default App
-
-
-
-
-
-
-
-
+export default App;

@@ -23,7 +23,6 @@ class chatController {
     constructor() { }
     createNewConversation(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(req.body);
             const { senderId, receiverId } = req.body;
             try {
                 const existingConversation = yield conversationModel_1.default.findOne({
@@ -63,16 +62,19 @@ class chatController {
     }
     sendMessage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newMessage = new messageModel_1.default(req.body);
+            console.log(req.body);
             const id = req.body.conversationId;
             try {
-                console.log(req.body);
+                const newMessage = new messageModel_1.default(req.body);
                 const conversation = yield conversationModel_1.default.findByIdAndUpdate(id, {
                     $set: {
-                        "lastMessage.sender": req.body.sender,
-                        "lastMessage.text": req.body.text,
+                        lastMessage: {
+                            sender: req.body.sender,
+                            text: req.body.text,
+                            createdAt: new Date(),
+                        },
                     },
-                });
+                }, { new: true });
                 const savedMessage = yield newMessage.save();
                 return res.status(200).json({ savedMessage, conversation });
             }

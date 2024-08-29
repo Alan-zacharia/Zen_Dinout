@@ -39,6 +39,10 @@ const conversationSchema = new mongoose_1.Schema({
             type: Boolean,
             default: false
         },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+        },
     },
 }, {
     timestamps: true,

@@ -55,7 +55,7 @@ const RestaurantViewComponent = ({
   const selectTableListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (restaurantId) {
+    if (restaurantId && id && role == "user") {
       axiosInstance
         .get(`/api/chek-bookmark/${restaurantId}`)
         .then((res) => { 

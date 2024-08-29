@@ -559,7 +559,7 @@ export class userRepositoryImpl implements IUserRepository {
     try {
       const reviewsList = await reviewModel.find({
         restaurantId,
-      });
+      }).populate("userId","username");
       const reviews: ReviewType[] = reviewsList.map((data) => {
         return data.toObject();
       });

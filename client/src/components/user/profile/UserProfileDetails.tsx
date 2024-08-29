@@ -9,7 +9,10 @@ import { ProfileNavigationProps } from "../../../types/user/userTypes";
 const UserProfileDetails: React.FC<ProfileNavigationProps> = ({
   userDetails,
 }) => {
-  if (!userDetails) return <p>Loading...</p>;
+  if (!userDetails)
+    return (
+      <span className="loading loading-dots loading-lg text-4xl text-blue-500"></span>
+    );
   const { id } = useSelector((state: RootState) => state.user);
 
   const [nameInput, setNameInput] = useState(false);

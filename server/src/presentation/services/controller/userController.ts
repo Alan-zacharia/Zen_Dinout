@@ -734,7 +734,6 @@ export class userController {
           bookingComfirmationDatas,
           totalCost
         );
-      console.log(bookingUsingWallet);
       if (!status) {
         return res
           .status(STATUS_CODES.BAD_REQUEST)

@@ -12,13 +12,7 @@ const useRegister = (): LoginReturnType => {
   const registerFn = async (datas: RegistercredentialsType | {}) => {
     setError(null);
     try {
-      await register(datas)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      await register(datas);
     } catch (error: any) {
       if (
         error.response &&
@@ -27,7 +21,7 @@ const useRegister = (): LoginReturnType => {
       ) {
         setError(error.response.data.message);
       }
-    } 
+    }
   };
   return { registerFn, errors };
 };

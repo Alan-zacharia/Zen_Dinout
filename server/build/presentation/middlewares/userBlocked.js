@@ -18,6 +18,7 @@ const express_validator_1 = require("express-validator");
 const constants_1 = require("../../configs/constants");
 const appError_1 = require("./appError");
 const blockedUserCheck = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("gyggg");
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         const errorMessage = errors.array()[0].msg;

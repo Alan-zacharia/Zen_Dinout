@@ -79,7 +79,7 @@ export interface BookingsHistory {
   totalAmount: number;
   paymentMethod: string;
   guestCount: number;
-  subTotal: string;
+  subTotal: number;
   table?: {
     tableNumber : string
   };

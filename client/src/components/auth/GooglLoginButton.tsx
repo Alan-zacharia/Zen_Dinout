@@ -49,7 +49,7 @@ const GoogleLoginButton = ({ label }: { label: string }) => {
             });
         } else {
           await axiosInstance
-            .post("/api/google-login", {
+            .post(`${import.meta.env.VITE_API_BASE_URL}/api/google-login`, {
               username: res.data.given_name,
               email: res.data.email,
               password: res.data.sub + PASS_KEY,
@@ -69,7 +69,7 @@ const GoogleLoginButton = ({ label }: { label: string }) => {
               navigate("/");
             })
             .catch(({ response }) => {
-              toast.error(response.data.message);
+              toast.error(response.data.message || "Something went wrong....");
             });
         }
       } catch (error) {

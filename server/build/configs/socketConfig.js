@@ -45,7 +45,7 @@ const socketConfig = (io) => {
                 });
             }
         });
-        socket.on("senderTyping", ({ receiverId, conversationId, statsus }) => {
+        socket.on("senderTyping", ({ receiverId, conversationId, status }) => {
             const user = getUser(receiverId);
             if (user) {
                 io.to(user.socketId).emit("getSenderTyping", {
@@ -56,9 +56,7 @@ const socketConfig = (io) => {
             }
         });
         socket.on("sendLastMessage", ({ senderId, text, conversationId }) => {
-            console.log({ senderId, text, conversationId });
             const user = getUser(senderId);
-            console.log(user);
             if (user) {
                 io.to(user.socketId).emit("getLastMessage", {
                     conversationId,
@@ -70,6 +68,7 @@ const socketConfig = (io) => {
         socket.on("markMessageAsSeen", (_a) => __awaiter(void 0, [_a], void 0, function* ({ conversationId, userId }) {
             try {
                 yield messageModel_1.default.updateMany({ conversationId: conversationId, sender: userId, seen: false }, { $set: { seen: true } });
+                console.log(userId);
                 const user = getUser(userId);
                 if (user) {
                     io.to(user === null || user === void 0 ? void 0 : user.socketId).emit("messageSeen", { conversationId });

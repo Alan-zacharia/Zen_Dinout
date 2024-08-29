@@ -36,7 +36,7 @@ const UserLoginForm: React.FC = () => {
       email: "",
       password: "",
     },
-    validate: loginValidation,
+    validationSchema: loginValidation,
     onSubmit: async (credentials: UserType) => {
       setLoading(true);
       await login(credentials)

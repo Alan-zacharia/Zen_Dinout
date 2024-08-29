@@ -5,8 +5,8 @@ import {
   BrowserRouter as Router,
   Routes,
 } from "react-router-dom";
-import Login from "../pages/user/Login";
-import Signup from "../pages/user/Register";
+const Signup = React.lazy(() => import("../pages/user/Register"));
+const Login = React.lazy(() => import("../pages/user/Login"));
 const AdminLogin = React.lazy(() => import("../pages/admin/AdminLogin"));
 import AdminLayout from "../pages/admin/AdminHome";
 import NewRestaurants from "../components/admin/RestaurantRegistrationMan";
@@ -176,7 +176,7 @@ const AppRouter: React.FC = () => {
               <Route path="/restaurant/table" element={<Table />} />
               <Route path="/restaurant/time-slots" element={<TimeSlots />} />
               <Route path="/restaurant/menu" element={<Menu />} />
-             
+
               <Route
                 path="/restaurant/profile"
                 element={<RestaurantProfile />}

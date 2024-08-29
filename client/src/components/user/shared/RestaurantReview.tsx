@@ -30,7 +30,7 @@ const RestaurantReview = ({
         );
         setReviews(res.data.reviews);
       } catch (error) {
-        console.log(error); 
+        console.log(error);
       }
     };
 
@@ -77,71 +77,70 @@ const RestaurantReview = ({
     <div className="xl:mx-16 max-h-auto w-full xl:w-[1200px] bg-white shadow-xl rounded-lg flex mb-10 flex-col">
       <div className="p-5">
         <h4 className="text-xl font-bold pb-5">Reviews</h4>
-        {reviews && reviews.length > 0 ?(
-
-     
-        <div className="flex flex-col gap-5">
-          {reviews.map((data) => (
-            <article key={data._id} >
-              <div className="flex items-center mb-4 ">
-                <FaUserCircle size={25} className="text-gray-700" />&nbsp;&nbsp;
-                <div className="font-medium dark:text-white">
-                  <p className="text-gray-500">{data.userId.username}</p>
+        {reviews && reviews.length > 0 ? (
+          <div className="flex flex-col gap-5">
+            {reviews.map((data) => (
+              <article key={data._id}>
+                <div className="flex items-center mb-4 ">
+                  <FaUserCircle size={25} className="text-gray-700" />
+                  &nbsp;&nbsp;
+                  <div className="font-medium dark:text-white">
+                    <p className="text-gray-500">{data.userId.username}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center mb-1 space-x-1 rtl:space-x-reverse">
-                {renderRatingStars(data.rating)}
-                <h3 className="ms-2 text-sm font-semibold text-gray-900 dark:text-white">
+                <div className="flex items-center mb-1 space-x-1 rtl:space-x-reverse">
+                  {renderRatingStars(data.rating)}
+                  <h3 className="ms-2 text-sm font-semibold text-gray-900 dark:text-white">
+                    {data.reviewText}
+                  </h3>
+                </div>
+
+                <footer className="mb-5 text-sm text-gray-500 dark:text-gray-400">
+                  <p>
+                    Reviewed in{" "}
+                    <time dateTime={data.createdAt}>
+                      {format(data.createdAt)}
+                    </time>
+                  </p>
+                </footer>
+                <p className="mb-2 text-gray-500 dark:text-gray-400">
                   {data.reviewText}
-                </h3>
-              </div>
-
-              <footer className="mb-5 text-sm text-gray-500 dark:text-gray-400">
-                <p>
-                  Reviewed in{" "}
-                  <time dateTime={data.createdAt}>
-                    {format(data.createdAt)}
-                  </time>
                 </p>
-              </footer>
-              <p className="mb-2 text-gray-500 dark:text-gray-400">
-                {data.reviewText}
-              </p>
 
-              <a
-                href="#"
-                className="block mb-5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
-              >
-                Read more
-              </a>
-              <aside>
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  19 people found this helpful
-                </p>
-                <div className="flex items-center mt-3">
-                  <a
-                    href="#"
-                    className="px-2 py-1.5 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                  >
-                    Helpful
-                  </a>
-                  <a
-                    href="#"
-                    className="ps-4 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500 border-gray-200 ms-4 border-s md:mb-0 dark:border-gray-600"
-                  >
-                    Report abuse
-                  </a>
-                </div>
-              </aside>
-              <div className="w-full bg-gray-200 h-0.5 mt-1"/>
-            </article>
-          ))}
-        </div>
-           ):(
+                <a
+                  href="#"
+                  className="block mb-5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
+                >
+                  Read more
+                </a>
+                <aside>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    19 people found this helpful
+                  </p>
+                  <div className="flex items-center mt-3">
+                    <a
+                      href="#"
+                      className="px-2 py-1.5 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >
+                      Helpful
+                    </a>
+                    <a
+                      href="#"
+                      className="ps-4 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500 border-gray-200 ms-4 border-s md:mb-0 dark:border-gray-600"
+                    >
+                      Report abuse
+                    </a>
+                  </div>
+                </aside>
+                <div className="w-full bg-gray-200 h-0.5 mt-1" />
+              </article>
+            ))}
+          </div>
+        ) : (
           <div>
             <h2 className="font-bold text-gray-500">No reviews found</h2>
           </div>
-           )}
+        )}
       </div>
     </div>
   );

@@ -49,7 +49,7 @@ const SignupForm: React.FC = () => {
           }
         );
         setOtpFormModal(true);
-        localStorageSetItem("remainingSeconds", "35");
+        localStorageSetItem("remainingSeconds", "30");
         setOtp(response.data.otp);
       } catch (error: any) {
         if (error && error.response && error.response.data) {
@@ -150,7 +150,7 @@ const SignupForm: React.FC = () => {
               {formik.touched.password &&
                 formik.submitCount > 0 &&
                 formik.errors.password && (
-                  <div className="text-red-500">{formik.errors.password}</div>
+                  <div className="text-red-500 text-sm">{formik.errors.password}</div>
                 )}
               <div className="relative ">
                 <input

@@ -90,6 +90,19 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
   const handleCloseConfirmation = () => {
     setOpenConfirmation(false);
   };
+
+  const isCancelButtonHidden = () => {
+    if (bookingDetails?.bookingDate && bookingDetails?.bookingTime) {
+      const bookingDateTime = new Date(
+        `${bookingDetails.bookingDate} ${bookingDetails.bookingTime}`
+      );
+      const currentTime = new Date();
+      const oneHourLater = new Date(bookingDateTime.getTime() - 60 * 60 * 1000);
+      return currentTime >= oneHourLater;
+    }
+    return false;
+  };
+
   return (
     <>
       <div className="fixed top-0 left-0 w-full z-50">
@@ -130,7 +143,7 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
                 <MdTableRestaurant />
                 {bookingDetails?.table?.tableNumber}
               </li>
-              {bookingDetails.bookingStatus !== "CANCELLED" &&
+              {!isCancelButtonHidden() && bookingDetails.bookingStatus !== "CANCELLED" &&
                 bookingDetails.bookingStatus !== "CHECKED" && (
                   <li className="flex items-center gap-2 font-semibold pt-2">
                     <button
@@ -177,12 +190,12 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
                 <div className="w-72 rounded-lg p-2 bg-neutral-100 h-32 flex flex-col gap-3">
                   <p className="text-base text-black">
                     Subtotal: ₹{" "}
-                    {parseInt(bookingDetails.subTotal) *
+                    {bookingDetails.subTotal *
                       bookingDetails.guestCount}
                   </p>
                   <p className="text-base text-black">
                     Discount: - ₹{" "}
-                    {parseInt(bookingDetails.subTotal) *
+                    {bookingDetails.subTotal *
                       bookingDetails.guestCount -
                       bookingDetails.totalAmount}
                   </p>

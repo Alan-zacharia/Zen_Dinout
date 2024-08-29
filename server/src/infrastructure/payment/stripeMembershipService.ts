@@ -30,8 +30,8 @@ const createMembershipPaymentIntent = async (userData: userData, membershipCost:
         },
       ],
       mode: "payment",
-      success_url: `${configuredKeys.CLIENT_URL}/membership-success?status=true`,
-      cancel_url: `${configuredKeys.CLIENT_URL}/membership-cancel?status=false`,
+      success_url: `${configuredKeys.CLIENT_URL}/memberships?status=true`,
+      cancel_url: `${configuredKeys.CLIENT_URL}/memberships?status=false`,
     });
     return session;
   } catch (error) {

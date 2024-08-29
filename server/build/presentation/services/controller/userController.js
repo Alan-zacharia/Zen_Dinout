@@ -171,7 +171,7 @@ class userController {
                     return res.status(constants_1.STATUS_CODES.NOT_FOUND).json({
                         message: constants_1.MESSAGES.RESOURCE_NOT_FOUND,
                         restaurant: null,
-                        restaurantImages: null,  
+                        restaurantImages: null,
                     });
                 }
                 return res.status(constants_1.STATUS_CODES.OK).json({

@@ -8,6 +8,7 @@ import ResturantDetailedSelecting from "../../components/user/shared/ResturantDe
 import RestaurantMenu from "../../components/user/layouts/Menu";
 import axios from "axios";
 import { RestaurantDetailType } from "../../types/restaurantTypes";
+import Loading from "../../components/layouts/Loading";
 
 const RestaurantViewDetails: React.FC = () => {
   const { restaurantId } = useParams();
@@ -44,32 +45,38 @@ const RestaurantViewDetails: React.FC = () => {
   };
   return (
     <>
-      <div className="flex  ">
-        <RestaurantViewComponent restaurantDetails={restaurantDetails} />
-      </div>
-      <div className="flex flex-col mx-6 gap-10 pb-20">
-        <ResturantDetailedSelecting onSelectTab={handleTabSelect} />
-        {selectedTab === "Overview" && (
-          <>
-            <RestauarantAbout restaurantDetails={restaurantDetails} />
-            <RestaurantMenu />
-            <RestaurantReview restaurantId={restaurantId} />
-          </>
-        )}
-        {selectedTab === "Photos" && (
-          <RestaurantImagesListed restaurantImages={restuarantImages} />
-        )}
-        {selectedTab === "Menu" && (
-          <>
-            <RestaurantMenu />
+      {restaurantDetails ? (
+        <>
+          <div className="flex  ">
+            <RestaurantViewComponent restaurantDetails={restaurantDetails} />
+          </div>
+          <div className="flex flex-col mx-6 gap-10 pb-20">
+            <ResturantDetailedSelecting onSelectTab={handleTabSelect} />
+            {selectedTab === "Overview" && (
+              <>
+                <RestauarantAbout restaurantDetails={restaurantDetails} />
+                <RestaurantMenu />
+                <RestaurantReview restaurantId={restaurantId} />
+              </>
+            )}
+            {selectedTab === "Photos" && (
+              <RestaurantImagesListed restaurantImages={restuarantImages} />
+            )}
+            {selectedTab === "Menu" && (
+              <>
+                <RestaurantMenu />
 
-            <RestauarantAbout restaurantDetails={restaurantDetails} />
-          </>
-        )}
-        {selectedTab === "Reviews" && (
-          <RestaurantReview restaurantId={restaurantId} />
-        )}
-      </div>
+                <RestauarantAbout restaurantDetails={restaurantDetails} />
+              </>
+            )}
+            {selectedTab === "Reviews" && (
+              <RestaurantReview restaurantId={restaurantId} />
+            )}
+          </div>
+        </>
+      ) : (
+        <Loading />
+      )}
     </>
   );
 };

@@ -16,11 +16,13 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const envConfig_1 = __importDefault(require("./envConfig"));
 const databaseConnection = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield mongoose_1.default.connect(envConfig_1.default.DB_HOST);
+        yield mongoose_1.default.connect(envConfig_1.default.DB_HOST, {
+            serverSelectionTimeoutMS: 8000
+        });
         console.log("Database connected succefully......");
     }
     catch (err) {
-        console.log(`Error in database connection ---> ${err.message}`);
+        console.log(`Error in database connection ---> ${err} `);
     }
 });
 exports.default = databaseConnection;
