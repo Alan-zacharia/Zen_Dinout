@@ -6,7 +6,7 @@ const register = async (credentials: credentials | {}) => {
   try {
     const {
       data: { message, user, token },
-    } = await axiosApi.post("http://localhost:3000/api/register", credentials);
+    } = await axiosApi.post(`${import.meta.env.VITE_API_BASE_URL}/api/register`, credentials);
     return { data: { message, user, token } };
   } catch (error) {
     throw error;
@@ -17,7 +17,7 @@ const login = async (data: Partial<credentials>) => {
   try {
     const {
       data: { message, user, token, refreshToken },
-    } = await axiosApi.post("http://localhost:3000/api/login", data);
+    } = await axiosApi.post(`${import.meta.env.VITE_API_BASE_URL}/api/login`, data);
     return { data: { message, user, token, refreshToken } };
   } catch (error) {
     throw error;
@@ -28,7 +28,7 @@ const restaurantLoginApi = async (data: Partial<credentials>) => {
   try {
     const {
       data: { message, restaurant, token, refreshToken },
-    } = await axiosApi.post("http://localhost:3000/restaurant/login", data);
+    } = await axiosApi.post(`${import.meta.env.VITE_API_BASE_URL}/restaurant/login`, data);
     return { data: { message, restaurant, token, refreshToken } };
   } catch (error) {
     throw error;
@@ -39,7 +39,7 @@ const adminLogin = async (data: Partial<credentials>) => {
   try {
     const {
       data: { message, user, token, refreshToken },
-    } = await axiosApi.post("http://localhost:3000/admin/login", data);
+    } = await axiosApi.post(`${import.meta.env.VITE_API_BASE_URL}/admin/login`, data);
     return { data: { message, user, token, refreshToken } };
   } catch (error) {
     throw error;
