@@ -3,10 +3,14 @@ import configuredKeys from "./envConfig";
 
 const databaseConnection = async () => {
   try {
-    await mongoose.connect(configuredKeys.DB_HOST);
+    await mongoose.connect(configuredKeys.DB_HOST,
+      {
+        serverSelectionTimeoutMS: 8000 
+      }
+    );
     console.log("Database connected succefully......");
   } catch (err) {
-    console.log(`Error in database connection ---> ${(err as Error).message}`);
+    console.log(`Error in database connection ---> ${err} `);
   }
 };
   

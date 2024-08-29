@@ -6,7 +6,7 @@ import { ConversationType } from "../../types/chatTypes";
 import axiosInstance from "../../api/axios";
 import { senderTypingType } from "../../types/chatTypes";
 import { format } from "timeago.js";
-import { formatDistanceToNow } from 'date-fns';
+
 
 interface onlineUserFindType {
   userId: string;

@@ -19,7 +19,7 @@ export class sellerController {
 
   public async loginRestaurantController(
     req: Request,
-    res: Response,
+    res: Response, 
     next: NextFunction
   ) {
     const { email, password } = req.body;
