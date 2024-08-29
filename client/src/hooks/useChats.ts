@@ -15,7 +15,6 @@ import {
 } from "../types/chatTypes";
 import { io, Socket } from "socket.io-client";
 
-
 interface onlineUserFindType {
   userId: string;
 }
@@ -35,23 +34,26 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
   const [newMessage, setNewMessage] = useState<string>("");
   const [arrivalMessage, setArrivalMessage] = useState<MessageType | null>(
     null
-  ); 
-  const [senderTyping, setSenderTyping] = useState<senderTypingType | null>(null);
+  );
+  const [senderTyping, setSenderTyping] = useState<senderTypingType | null>(
+    null
+  );
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
     null
   );
 
   const [lastMessage, setLastMessage] = useState<lastMessageType[]>([]);
-  const [notifications, setNotifications] = useState<{
-    conversationId: string;
-    senderId : string
-    text:string;
-  }[]>([]);
+  const [notifications, setNotifications] = useState<
+    {
+      conversationId: string;
+      senderId: string;
+      text: string;
+    }[]
+  >([]);
 
   const socket = useRef<Socket>();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  
   const receiverId = useMemo(
     () => selectedChat?.members.find((user) => user !== userId),
     [selectedChat, userId]
@@ -73,6 +75,7 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
               lastMessage: {
                 text: data.text,
                 sender: data.senderId,
+                createdAt: new Date().toISOString(),
               },
             };
           }
@@ -81,13 +84,9 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
         return updatedConversation;
       });
     });
-    socketInstance.on("notification", (data) => {
-      console.log("Notification received:", data);
-      setNotifications((prev)=>[...prev , data])
-    });
+
     return () => {
       socketInstance.off("getMessage");
-      socketInstance.off("notification");
       socketInstance.disconnect();
     };
   }, [userId]);
@@ -98,7 +97,6 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
     }: {
       conversationId: string;
     }) => {
-      
       setConversations((prev) => {
         const updatedConversation = prev.map((conversation) => {
           if (conversation._id === conversationId) {
@@ -122,27 +120,22 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
     };
   }, [socket, setConversations, selectedChat]);
 
-  // useEffect(() => {
-  //   arrivalMessage &&
-  //     selectedChat?.members.includes(arrivalMessage.sender) &&
-  //     setMessages((prev) => [...prev, arrivalMessage]);
-     
-  //   setArrivalMessage(null);
-  // }, [arrivalMessage, selectedChat]);
+  useEffect(() => {
+    if (!socket.current) return;
+
+    socket.current.on("notification", (data) => {
+      setNotifications((prev) => [data, ...prev]);
+    });
+
+    return () => {
+      socket.current?.off("notification");
+    };
+  }, []);
+
   useEffect(() => {
     if (arrivalMessage) {
       selectedChat?.members.includes(arrivalMessage.sender) &&
         setMessages((prev) => [...prev, arrivalMessage]);
-        if(selectedChat?._id){
-          setNotifications((prevNotifications) => [
-            ...prevNotifications,
-            { 
-              conversationId: selectedChat._id,
-              senderId : arrivalMessage.sender,
-              text:arrivalMessage.text ,
-            },
-          ]);
-        }
     }
     setArrivalMessage(null);
   }, [arrivalMessage, selectedChat]);
@@ -156,7 +149,10 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
   useEffect(() => {
     if (!selectedChat) return;
     const lastMessageIsFromOtherUser =
-    messages && messages.length && messages[messages.length - 1].sender !== userId;
+      messages &&
+      messages.length &&
+      messages[messages.length - 1].sender !== userId;
+
     if (lastMessageIsFromOtherUser) {
       socket.current?.emit("markMessageAsSeen", {
         conversationId: selectedChat._id,
@@ -179,7 +175,7 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
           prev.map((message) =>
             message.seen ? message : { ...message, seen: true }
           )
-        );  
+        );
       }
     };
     socket.current?.on("messageSeen", handleMessageSeen);
@@ -200,9 +196,21 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
       setLoadingConversations(true);
       try {
         const res = await axiosInstance.get(`/api/inbox/${userId}`);
-        setConversations(res.data.conversations);
+        // setConversations(res.data.conversations);
+        const sortedConversations = res.data.conversations.sort(
+          (a: any, b: any) => {
+            const aLastMessageDate = new Date(
+              a.lastMessage.createdAt as string
+            ).getTime();
+            const bLastMessageDate = new Date(
+              b.lastMessage.createdAt as string
+            ).getTime();
+            return bLastMessageDate - aLastMessageDate;
+          }
+        );
+        setConversations(sortedConversations);
       } catch (error) {
-        console.log(error); 
+        console.log(error);
       } finally {
         setLoadingConversations(false);
       }
@@ -232,56 +240,59 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const sendMessage = useCallback(async (e: FormEvent) => {
-    e.preventDefault();
-    if (!newMessage || !selectedChat) return;
+  const sendMessage = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
+      if (!newMessage || !selectedChat) return;
 
-    const message = {
-      sender: userId,
-      text: newMessage,
-      conversationId: selectedChat._id,
-    };
-    socket.current?.emit("sendMessage", {
-      senderId: userId,
-      receiverId: receiverId,
-      text: newMessage,
-      conversationId: selectedChat._id,
-    });
-
-    try {
-      socket.current?.emit("senderTyping", {
-        receiverId: receiverId,
-        conversationId: selectedChat?._id,
-        status: false,
-      });
-      socket.current?.emit("sendLastMessage", {
-        senderId: userId,
+      const message = {
+        sender: userId,
         text: newMessage,
-        conversationId: selectedChat?._id,
+        conversationId: selectedChat._id,
+      };
+      socket.current?.emit("sendMessage", {
+        senderId: userId,
+        receiverId: receiverId,
+        text: newMessage,
+        conversationId: selectedChat._id,
       });
-      const res = await axiosInstance.post("/api/inbox/sendMessage", message);
-      setMessages((prevMessages) => [...prevMessages, res.data.savedMessage]);
-      setConversations((prev) => {
-        const updatedConversation = prev.map((conversation) => {
-          if (conversation._id == selectedChat?._id) {
-            return {
-              ...conversation,
-              lastMessage: {
-                text: newMessage,
-                sender: userId, 
-              },
-            };
-          }
-          return conversation;
+
+      try {
+        socket.current?.emit("senderTyping", {
+          receiverId: receiverId,
+          conversationId: selectedChat?._id,
+          status: false,
         });
-        return updatedConversation;
-      });
-      setNewMessage("");
-    } catch (error) {
-      console.log(error);
-    }
-  },[newMessage, selectedChat, userId, receiverId, socket, axiosInstance]);
-  
+        socket.current?.emit("sendLastMessage", {
+          senderId: userId,
+          text: newMessage,
+          conversationId: selectedChat?._id,
+        });
+        const res = await axiosInstance.post("/api/inbox/sendMessage", message);
+        setMessages((prevMessages) => [...prevMessages, res.data.savedMessage]);
+        setConversations((prev) => {
+          const updatedConversation = prev.map((conversation) => {
+            if (conversation._id == selectedChat?._id) {
+              return {
+                ...conversation,
+                lastMessage: {
+                  text: newMessage,
+                  sender: userId,
+                },
+              };
+            }
+            return conversation;
+          });
+          return updatedConversation;
+        });
+        setNewMessage("");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [newMessage, selectedChat, userId, receiverId, socket, axiosInstance]
+  );
+
   const handleTyping = () => {
     if (typingTimeout) {
       clearTimeout(typingTimeout);
@@ -306,7 +317,7 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
   const handleMessage = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     handleTyping();
     setNewMessage(e.target.value);
-  },[]);
+  }, []);
 
   useEffect(() => {
     socket.current?.on("getLastMessage", (data) => {
@@ -316,7 +327,7 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
 
   return {
     conversations,
-    loadingConversations, 
+    loadingConversations,
     messages,
     newMessage,
     setNewMessage,
@@ -327,7 +338,7 @@ const useChat = (userId: string, selectedChat: ConversationType | null) => {
     senderTyping,
     handleMessage,
     lastMessage,
-    notifications
+    notifications,
   };
 };
 

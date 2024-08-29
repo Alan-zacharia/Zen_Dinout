@@ -4,8 +4,8 @@ import { BsArrowLeft } from "react-icons/bs";
 import axiosInstance from "../../api/axios";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { ConversationType , senderTypingType } from "../../types/chatTypes";
-
+import { ConversationType, senderTypingType } from "../../types/chatTypes";
+import { format } from "timeago.js";
 
 interface ChatHeaderProps {
   setSelectedChat: Dispatch<SetStateAction<ConversationType | null>>;
@@ -34,7 +34,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   });
   const { role, id } = useSelector((state: RootState) => state.user);
   const communicatorId = selectedChat.members.find((member) => member !== id);
-  console.log(selectedChat); 
+  console.log(selectedChat);
   useEffect(() => {
     const getCommunicator = async () => {
       try {
@@ -86,7 +86,11 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
             ) : onlineUserId ? (
               " Online"
             ) : (
-              "offline"
+              <p>
+            {selectedChat?.lastMessage?.createdAt &&
+               format(selectedChat.lastMessage.createdAt)
+              }
+    </p>
             )}
           </span>
         </div>

@@ -728,12 +728,25 @@ export class userController {
     const userId = req.userId;
     const totalCost = restaurantDatas.price;
     try {
-      const { status, bookingId } =
+      const { status, bookingId, bookingUsingWallet } =
         await this.interactor.createBookingInteractor(
           userId,
           bookingComfirmationDatas,
           totalCost
         );
+      console.log(bookingUsingWallet);
+      if (!status) {
+        return res
+          .status(STATUS_CODES.BAD_REQUEST)
+          .json({ message: MESSAGES.INVALID_FORMAT });
+      }
+      if (bookingUsingWallet) {
+        return res.status(STATUS_CODES.CREATED).json({
+          bookingId: bookingId,
+          message: "Booking confirmed....",
+          status: true,
+        });
+      }
       if (bookingId) {
         const session = await createPaymentIntent(
           { name, email },
@@ -849,90 +862,74 @@ export class userController {
       );
     }
   }
-
-  ////////////////////////////////
-
-  public async cancelMembershipController(req: Request, res: Response) {
+  public async cancelMembershipController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("Cancel membership.......");
     const membershipId = req.params.membershipId;
     const userId = req.userId;
-
     try {
-      const membership = await membershipModel.findByIdAndUpdate(membershipId, {
-        $inc: { users: -1 },
-      });
-
-      if (!membership) {
-        return res.status(404).json({ message: "Membership not found" });
-      }
-      const wallet = await Wallet.findOne({ userId });
-      if (wallet) {
-        const amount = membership.cost;
-        wallet.balance += amount;
-        wallet.transactions.push({
-          amount,
-          type: "credit",
-          description: "Added funds",
-        });
-        await wallet.save();
-      }
-      const user = await UserModel.findByIdAndUpdate(
+      const result = await this.interactor.cancelMembershipIntearctor(
         userId,
-        {
-          isPrimeMember: false,
-          primeSubscription: {
-            membershipId: null,
-            startDate: null,
-            endDate: null,
-            type: null,
-            status: "inactive",
-          },
-        },
-        { new: true }
+        membershipId
       );
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
+      const { message, status } = result;
+      if (!status) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ message });
       }
-      return res
-        .status(200)
-        .json({ message: "Membership canceled successfully" });
+      return res.status(STATUS_CODES.OK).json({ message });
     } catch (error: any) {
-      console.error(`Error canceling membership: ${error.message}`);
-      return res.status(500).json({ message: "Internal server error" });
+      logger.error(
+        `Error in cancel membership service: ${(error as Error).message} `
+      );
+      next(
+        new AppError(
+          MESSAGES.INTERNAL_SERVER_ERROR,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   }
 
-  ////////////////////////////////
-
-  public async applyCouponController(req: Request, res: Response) {
+  public async applyCouponController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     console.log("Apply coupon.......");
+    const { couponCode, minPurchase } = req.body;
+    const today = new Date();
     try {
-      const { couponCode, minPurchase } = req.body;
-      console.log(couponCode, minPurchase);
-      const today = new Date();
-      const coupon = await couponModel.findOne({
-        couponCode: { $eq: couponCode },
-        expiryDate: { $gt: today },
-        minPurchase: { $lte: minPurchase },
-      });
+      const result = await this.interactor.applyCouponInteractor(
+        couponCode,
+        minPurchase,
+        today
+      );
+      const { coupon, message, status } = result;
       if (!coupon) {
         return res
-          .status(400)
-          .json({ success: false, message: "Invalid or expired coupon code." });
+          .status(STATUS_CODES.BAD_REQUEST)
+          .json({ success: status, message });
       }
-      return res.status(200).json({
+      return res.status(STATUS_CODES.OK).json({
         success: true,
         discount: coupon.discount,
         discountPrice: coupon.discountPrice,
       });
-    } catch (error: any) {
-      console.log(
-        `Oops an error in apply coupon... : ${(error as Error).message}`
+    } catch (error) {
+      logger.error(
+        `Error in apply coupon service: ${(error as Error).message} `
       );
-      return res.status(500).json({ message: "Internal server error" });
+      next(
+        new AppError(
+          MESSAGES.INTERNAL_SERVER_ERROR,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
     }
   }
-
-  ////////////////////////////////
 
   async bookingStatusUpdationController(
     req: Request,

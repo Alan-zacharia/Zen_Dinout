@@ -9,6 +9,6 @@ const databaseConnection = async () => {
     console.log(`Error in database connection ---> ${(err as Error).message}`);
   }
 };
-
+  
 export default databaseConnection;
-     
+        

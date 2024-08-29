@@ -132,7 +132,7 @@ export interface IUserInteractor {
     userId: string,
     bookingComfirmationDatas: BookingConfirmationType,
     totalCost: string
-  ): Promise<{ status: boolean; bookingId: string | null }>;
+  ): Promise<{ status: boolean; bookingId: string | null ; bookingUsingWallet : boolean;}>;
   bookingStatusUpdationInteractor(
     bookingId: string,
     paymentStatus: string
@@ -148,4 +148,21 @@ export interface IUserInteractor {
     memberships: MemberShipType[] | null;
     existingMembership: MemberShipType | null;
   }>;
+  cancelMembershipIntearctor(
+    userId: string,
+    membershipId: string
+  ): Promise<{
+    status: boolean;
+    message : string
+  }>;
+  applyCouponInteractor(
+    couponCode: string,
+    minPurchase: string,
+    todayDate: Date
+  ): Promise<{
+    status: boolean;
+    message: string;
+    coupon: CouponType | null;
+  }>;
 }
+ 

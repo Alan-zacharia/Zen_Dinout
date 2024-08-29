@@ -41,8 +41,7 @@ const socketConfig = (io: Server) => {
         }
       }
     );
-
-    socket.on("senderTyping", ({ receiverId, conversationId, statsus }) => {
+    socket.on("senderTyping", ({ receiverId, conversationId, status }) => {
       const user = getUser(receiverId);
       if (user) {
         io.to(user.socketId).emit("getSenderTyping", {
@@ -53,9 +52,7 @@ const socketConfig = (io: Server) => {
       }
     });
     socket.on("sendLastMessage", ({ senderId, text, conversationId }) => {
-      console.log({ senderId, text, conversationId });
       const user = getUser(senderId);
-      console.log(user);
       if (user) {
         io.to(user.socketId).emit("getLastMessage", {
           conversationId,
@@ -70,6 +67,7 @@ const socketConfig = (io: Server) => {
           { conversationId: conversationId, sender: userId, seen: false },
           { $set: { seen: true } }
         );
+        console.log(userId)
         const user = getUser(userId);
         if (user) {
           io.to(user?.socketId).emit("messageSeen", { conversationId });

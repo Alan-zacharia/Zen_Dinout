@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import axiosInstance from "../../../api/axios";
 import { FaRupeeSign } from "react-icons/fa";
 import { WalletType } from "../../../types/userTypes";
+import moment from "moment";
 
 const Wallet: React.FC = () => {
   const [wallet, setWallet] = useState<WalletType | null>(null);
   const [amount, setAmount] = useState<number>(0);
+
 
   useEffect(() => {
     const fetchWalletData = async () => {
@@ -57,7 +59,7 @@ const Wallet: React.FC = () => {
             >
               <div className="flex flex-col gap-2">
                 <span className="font-semibold text-gray-700">
-                  {transaction.date}
+                  {moment(transaction.date).format('DD-MM-YYYY  hh:mm A')}
                 </span>
                 <span
                   className={`${
@@ -77,7 +79,7 @@ const Wallet: React.FC = () => {
                 } flex items-center`}
               >
                 <FaRupeeSign size={15} />
-                {transaction.amount.toFixed(2)}
+                {transaction?.amount?.toFixed(2)}
               </span>
             </div>
           ))}

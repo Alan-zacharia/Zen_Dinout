@@ -10,7 +10,6 @@ export class chatController {
   constructor() {}
 
   async createNewConversation(req: Request, res: Response) {
-    console.log(req.body);
     const { senderId, receiverId } = req.body;
     try {
       const existingConversation = await conversationModel.findOne({
@@ -51,16 +50,19 @@ export class chatController {
   }
 
   async sendMessage(req: Request, res: Response) {
-    const newMessage = new messageModel(req.body);
+    console.log(req.body);
     const id = req.body.conversationId;
     try {
-      console.log(req.body);
+      const newMessage = new messageModel(req.body);
       const conversation = await conversationModel.findByIdAndUpdate(id, {
         $set: {
-          "lastMessage.sender": req.body.sender,
-          "lastMessage.text": req.body.text,
+          lastMessage: {
+            sender: req.body.sender,
+            text: req.body.text,
+            createdAt: new Date(), 
+          },
         },
-      });
+      },{new : true});
       const savedMessage = await newMessage.save();
       return res.status(200).json({ savedMessage, conversation });
     } catch (error) {

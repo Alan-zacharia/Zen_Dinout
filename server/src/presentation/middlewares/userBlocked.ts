@@ -9,6 +9,7 @@ export const blockedUserCheck = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log("gyggg")
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const errorMessage = errors.array()[0].msg;

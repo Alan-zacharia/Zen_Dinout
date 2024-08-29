@@ -5,7 +5,6 @@ import { jwtGenerateToken } from "../../infrastructure/utils/jwtUtils";
 
 export async function refreshAccessToken(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
-    console.log(req.cookies)
     console.log("Refresh Token")
     if (!refreshToken) {
         return res.status(402).json({ message: 'No refresh token provided' });

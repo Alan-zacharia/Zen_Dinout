@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 import { ConversationType } from "../../types/chatTypes";
 import axiosInstance from "../../api/axios";
 import { senderTypingType } from "../../types/chatTypes";
+import { format } from "timeago.js";
+import { formatDistanceToNow } from 'date-fns';
 
 interface onlineUserFindType {
   userId: string;
@@ -28,6 +30,12 @@ type ReceiverType = {
   email: string;
 };
 
+type unreadMessages = {
+  conversationId: string;
+  senderId: string;
+  text: string;
+};
+
 const ChatNamesListing: React.FC<ChatNameListingProps> = React.memo(
   ({ conversation, onlineUser, notifications }) => {
     const { role, id } = useSelector((state: RootState) => state.user);
@@ -37,7 +45,9 @@ const ChatNamesListing: React.FC<ChatNameListingProps> = React.memo(
       restaurantName: "",
       username: "",
     });
-
+    const [unreadMessages, setUnreadMessages] = useState<
+      unreadMessages | undefined
+    >(undefined);
     const communicatorId = conversation.members.find((m) => m !== id);
 
     useEffect(() => {
@@ -62,16 +72,19 @@ const ChatNamesListing: React.FC<ChatNameListingProps> = React.memo(
       getCommunicator();
     }, [conversation, id, role, communicatorId]);
 
-    const onlineUserId = onlineUser.find(
+    useEffect(() => {
+      const notification = notifications.find(
+        (notification) => notification.conversationId === conversation._id
+      );
+      setUnreadMessages(notification);
+    }, [notifications, conversation._id]);
+    const isOnline = onlineUser.some(
       (member) => member.userId === receiver._id && member.userId !== id
-    );
-    const unreadMessages = notifications.find(
-      (notification) => notification.conversationId === conversation._id
     );
     return (
       <div className="flex items-center">
         <div className="relative">
-          {onlineUserId?.userId === communicatorId && (
+          {isOnline && (
             <div className="bg-green-500 h-4 w-4 rounded-lg absolute left-2"></div>
           )}
           <PiUserCircleDuotone className="size-16 md:size-14" />
@@ -79,7 +92,9 @@ const ChatNamesListing: React.FC<ChatNameListingProps> = React.memo(
         <div className="ml-3">
           {role === "user" ? (
             <h3 className="text-sm font-semibold">
-              { receiver && receiver.restaurantName && receiver.restaurantName.length > 13
+              {receiver &&
+              receiver.restaurantName &&
+              receiver.restaurantName.length > 13
                 ? `${receiver.restaurantName.substring(0, 13)}...`
                 : receiver.restaurantName}
             </h3>
@@ -91,13 +106,21 @@ const ChatNamesListing: React.FC<ChatNameListingProps> = React.memo(
             </h3>
           )}
           <div className="flex flex-row items-center gap-2">
-            {unreadMessages &&
-              unreadMessages.conversationId == conversation._id && (
-                <p className="text-black font-bold flex items-center gap-1">
-                  <div className="bg-red-500 h-2.5 w-2.5 text-xs rounded-full" />
-                  New message..
-                </p>
-              )}
+            {!unreadMessages && conversation?.lastMessage && conversation?.lastMessage.sender == communicatorId &&(
+              <p className="text-gray-600 text-sm"> {conversation.lastMessage?.text}</p>
+            )}
+            {!unreadMessages && conversation?.lastMessage && conversation?.lastMessage.sender !== communicatorId &&(
+              <p className="text-gray-700 text-sm">sent : {conversation.lastMessage?.text}</p>
+            )}
+            {!unreadMessages && conversation?.lastMessage && conversation.lastMessage.createdAt && (
+             <p className="text-gray-500 text-xs">{format(conversation.lastMessage.createdAt)}</p>
+            )}
+            {unreadMessages && (
+              <p className="text-black font-bold flex items-center gap-1">
+                <div className="bg-red-500 h-2.5 w-2.5 text-xs rounded-full" />
+                {unreadMessages && unreadMessages.text}
+              </p>
+            )}
           </div>
         </div>
       </div>

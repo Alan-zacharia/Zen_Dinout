@@ -5,6 +5,7 @@ export interface ConversationType {
   lastMessage: {
     text: string;
     sender: string;
+    createdAt?: string;
   };
 }
 

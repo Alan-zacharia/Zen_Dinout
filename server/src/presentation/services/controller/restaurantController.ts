@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { IRestaurantInteractor } from "../../../domain/interface/use-cases/IRestaurantInteractor";
-
 import logger from "../../../infrastructure/lib/Wintson";
 import { RestaurantType } from "../../../domain/entities/RestaurantType";
 import {
@@ -10,7 +9,6 @@ import {
 } from "../../../configs/constants";
 import { AppError } from "../../middlewares/appError";
 import formidable from "formidable";
-import { uploadImages } from "../shared/imageService";
 import { handleImageUploads } from "../../../infrastructure/helper/ImageUploadHelper";
 import { prepareFromidableData } from "../../../application/helpers/dataPreperationHelpers";
 import { parseFormData } from "../../../application/helpers/formParsingHelper";

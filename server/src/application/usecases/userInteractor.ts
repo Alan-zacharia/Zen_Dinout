@@ -443,8 +443,8 @@ export class userInteractorImpl implements IUserInteractor {
   ): Promise<{
     status: boolean;
     bookingId: string | null;
+    bookingUsingWallet: boolean;
   }> {
-    console.log(bookingComfirmationDatas);
     const { bookingTime, Date, paymentMethod, restaurantDatas, timeSlotId } =
       bookingComfirmationDatas;
     if (
@@ -455,16 +455,24 @@ export class userInteractorImpl implements IUserInteractor {
       !restaurantDatas ||
       !timeSlotId
     ) {
-      return { status: false, bookingId: null };
+      return { status: false, bookingId: null, bookingUsingWallet: false };
     }
     try {
-      const result = await this.repository.createBookingRepo(
-        userId,
-        bookingComfirmationDatas,
-        totalCost
-      );
+      const result =
+        paymentMethod == "Wallet"
+          ? await this.repository.createBookingUsingWalletRepo(
+              userId,
+              bookingComfirmationDatas,
+              totalCost
+            )
+          : await this.repository.createBookingRepo(
+              userId,
+              bookingComfirmationDatas,
+              totalCost
+            );
+      const bookingUsingWallet = paymentMethod == "Wallet";
       const { bookingId, status } = result;
-      return { bookingId, status };
+      return { bookingId, status, bookingUsingWallet };
     } catch (error) {
       throw error;
     }
@@ -522,6 +530,51 @@ export class userInteractorImpl implements IUserInteractor {
       const result = await this.repository.getMembershipRepo(userId);
       const { status, existingMembership, memberships } = result;
       return { status, existingMembership, memberships };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async cancelMembershipIntearctor(
+    userId: string,
+    membershipId: string
+  ): Promise<{
+    status: boolean;
+    message: string;
+  }> {
+    if (!userId || !membershipId) {
+      return { status: false, message: MESSAGES.INVALID_FORMAT };
+    }
+    try {
+      const result = await this.repository.cancelMembershipRepo(
+        userId,
+        membershipId
+      );
+      const { status, message } = result;
+      return { status, message };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async applyCouponInteractor(
+    couponCode: string,
+    minPurchase: string,
+    todayDate: Date
+  ): Promise<{
+    status: boolean;
+    message: string;
+    coupon: CouponType | null;
+  }> {
+    if (!couponCode || !minPurchase || !todayDate) {
+      return { status: false, message: MESSAGES.INVALID_FORMAT, coupon: null };
+    }
+    try {
+      const result = await this.repository.applyCouponRepo(
+        couponCode,
+        minPurchase,
+        todayDate
+      );
+      const { status, message, coupon } = result;
+      return { status, message, coupon };
     } catch (error) {
       throw error;
     }

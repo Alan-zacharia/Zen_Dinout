@@ -45,6 +45,7 @@ import MemberShip from "../components/admin/MemberShip";
 import Loading from "../components/layouts/Loading";
 import ChatPage from "../pages/ChatPage";
 import TimeSlots from "../components/seller/TimeAdd";
+import BookingWalletStatus from "../components/layouts/BookingWalletStatus";
 const HomePage = React.lazy(() => import("../pages/user/Home"));
 const DashBoard = React.lazy(() => import("../components/admin/DashBoard"));
 const RestaurantsListingPage = React.lazy(
@@ -95,6 +96,10 @@ const AppRouter: React.FC = () => {
               <Route
                 path="/payment-status/:id"
                 element={<BookingPaymentStatus />}
+              />
+              <Route
+                path="/booking-confirmed/:id"
+                element={<BookingWalletStatus />}
               />
               <Route path="/memberships" element={<MembershipListedPage />} />
             </Route>

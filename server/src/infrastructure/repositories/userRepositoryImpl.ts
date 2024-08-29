@@ -10,7 +10,6 @@ import {
 } from "../../domain/entities/UserType";
 import { IUserRepository } from "../../domain/interface/repositories/IUserRepository";
 import userModel from "../database/model.ts/userModel";
-
 import logger from "../lib/Wintson";
 import {
   RestaurantType,
@@ -480,7 +479,51 @@ export class userRepositoryImpl implements IUserRepository {
       if (!newBooking) {
         return { status: false, bookingId: null };
       }
-
+      return { bookingId: newBooking.bookingId as string, status: true };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async createBookingUsingWalletRepo(
+    userId: string,
+    bookingComfirmationDatas: BookingConfirmationType,
+    totalCost: string
+  ): Promise<{ status: boolean; bookingId: string | null }> {
+    const { bookingTime, Date, paymentMethod, restaurantDatas, timeSlotId } =
+      bookingComfirmationDatas;
+    const { Capacity, price, restaurantId, subTotal, table } = restaurantDatas;
+    try {
+      const wallet = await Wallet.findOne({ userId });
+      if (!wallet || (wallet && wallet.balance < parseInt(price))) {
+        return { status: false, bookingId: null };
+      }
+      const newBooking = new bookingModel({
+        bookingId: generateBookingId(),
+        userId,
+        table,
+        restaurantId,
+        timeSlot: timeSlotId,
+        guestCount: Capacity,
+        bookingDate: Date,
+        bookingTime,
+        paymentMethod,
+        totalAmount: price,
+        subTotal,
+      });
+      if (!newBooking) {
+        return { status: false, bookingId: null };
+      }
+      newBooking.paymentStatus = "PAID";
+      newBooking.bookingStatus = "CONFIRMED";
+      wallet.balance -= parseInt(price);
+      wallet.transactions.push({
+        amount: price,
+        type: "debit",
+        description: "Booking payment",
+      });
+      await newBooking.save();
+      await wallet.save();
+      console.log(newBooking);
       return { bookingId: newBooking.bookingId as string, status: true };
     } catch (error) {
       throw error;
@@ -697,7 +740,7 @@ export class userRepositoryImpl implements IUserRepository {
       if (!membership) {
         return { status: false, sessionId: null };
       }
-      await this.incrementMembershipUsers(membershipId);
+      await this.incrementMembershipUsers(membershipId, 1);
       const totalCost = membership.cost;
       const now = new Date();
       let endDate: Date;
@@ -737,11 +780,7 @@ export class userRepositoryImpl implements IUserRepository {
       throw error;
     }
   }
-  public async incrementMembershipUsers(membershipId: string) {
-    await membershipModel.findByIdAndUpdate(membershipId, {
-      $inc: { users: 1 },
-    });
-  }
+
   public async getMembershipRepo(userId: string): Promise<{
     status: boolean;
     memberships: MemberShipType[] | null;
@@ -776,5 +815,74 @@ export class userRepositoryImpl implements IUserRepository {
     } catch (error) {
       throw error;
     }
+  }
+  public async cancelMembershipRepo(
+    userId: string,
+    membershipId: string
+  ): Promise<{
+    status: boolean;
+    message: string;
+  }> {
+    try {
+      const user = await userModel.findByIdAndUpdate(
+        userId,
+        {
+          isPrimeMember: false,
+          primeSubscription: {
+            membershipId: null,
+            startDate: null,
+            endDate: null,
+            type: null,
+            status: "inactive",
+          },
+        },
+        { new: true }
+      );
+      if (!user) {
+        return { message: MESSAGES.DATA_NOT_FOUND, status: false };
+      }
+      await this.incrementMembershipUsers(membershipId, -1);
+      return { message: "Membership canceled successfully..", status: true };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async applyCouponRepo(
+    couponCode: string,
+    minPurchase: string,
+    todayDate: Date
+  ): Promise<{
+    status: boolean;
+    message: string;
+    coupon: CouponType | null;
+  }> {
+    try {
+      const coupon = await couponModel.findOne({
+        couponCode: { $eq: couponCode },
+        expiryDate: { $gt: todayDate },
+        minPurchase: { $lte: minPurchase },
+        isActive: true,
+      });
+      if (!coupon) {
+        return {
+          message: "Invalid or expired coupon code.",
+          status: false,
+          coupon: null,
+        };
+      }
+      return {
+        message: "Applied successfully...",
+        status: true,
+        coupon: coupon.toObject()
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async incrementMembershipUsers(membershipId: string, number: number) {
+    await membershipModel.findByIdAndUpdate(membershipId, {
+      $inc: { users: number },
+    });
   }
 }

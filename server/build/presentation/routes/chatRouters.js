@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const chatController_1 = require("../services/controller/chatController");
+const controller = new chatController_1.chatController();
+const chatRouters = (0, express_1.Router)();
+chatRouters.get("/:userId", controller.getConversations.bind(controller));
+chatRouters.get("/get-user/:receiverId", controller.getUser.bind(controller));
+chatRouters.get("/get-restaurant/:receiverId", controller.getRestaurant.bind(controller));
+chatRouters.get("/get-messages/:selectedChatId", controller.getMessages.bind(controller));
+chatRouters.get("/notifications/:userId", controller.getNotifications.bind(controller));
+chatRouters.post("/", controller.createNewConversation.bind(controller));
+chatRouters.post("/sendMessage", controller.sendMessage.bind(controller));
+exports.default = chatRouters;

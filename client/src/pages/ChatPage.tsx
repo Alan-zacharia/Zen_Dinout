@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ChatIcon from "../assets/chat-chat-svgrepo-com.svg";
 import ChatSideBar from "../components/chat/ChatSideBar";
 import ChatNamesListing from "../components/chat/ChatNamesListing";
@@ -13,7 +13,6 @@ import { BsArrowLeft } from "react-icons/bs";
 import { useSearchParams } from "react-router-dom";
 import { ConversationType } from "../types/chatTypes";
 import useChat from "../hooks/useChats";
-
 
 const ChatPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -34,41 +33,53 @@ const ChatPage: React.FC = () => {
     receiverId,
     senderTyping,
     handleMessage,
-    notifications
+    notifications,
   } = useChat(id as string, selectedChat);
 
-  
   useEffect(() => {
     if (conversationId) {
       const selectedChat = conversations.find(
         (chat) => chat._id === conversationId
       );
-      if (selectedChat) { 
+      if (selectedChat) {
         setSelectedChat(selectedChat);
       }
     }
     window.history.replaceState({}, "", window.location.pathname);
   }, [conversationId, conversations]);
 
-
+  const sortedConversations = useMemo(() => {
+    return [...conversations].sort((a, b) => {
+      const aLastMessageDate = new Date(a.lastMessage.createdAt as string).getTime();
+      const bLastMessageDate = new Date(b.lastMessage.createdAt as string).getTime();
+      return bLastMessageDate - aLastMessageDate;
+    });
+  }, [conversations]);
+  
+ 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
   const onlineUserId = onlineUser.find((user) => user.userId == receiverId);
-  const renderConversation = useCallback((c: ConversationType) => (
-    <div
-      className={`flex items-center p-1 px-4 md:p-2 md:px-8 cursor-pointer relative hover:bg-slate-50`}
-      key={c._id}
-      onClick={() => setSelectedChat(c)}
-    >
-      <ChatNamesListing
-        conversation={c}
-        onlineUser={onlineUser}
-        senderTyping={senderTyping}
-        notifications={notifications}
-      />
-    </div>
-  ),[onlineUser, senderTyping, notifications]);
+  const renderConversation = useCallback(
+    (c: ConversationType) => (
+      <div
+        className={`flex items-center p-1 px-4 md:p-2 md:px-8 cursor-pointer relative hover:bg-slate-50`}
+        key={c._id}
+        onClick={() => setSelectedChat(c)}
+      >
+        <ChatNamesListing
+          conversation={c}
+          onlineUser={onlineUser}
+          senderTyping={senderTyping}
+          notifications={notifications}
+        />
+      </div>
+    ),
+    [onlineUser, senderTyping, notifications , conversations]
+  );
+
+
   return (
     <div className="flex h-screen">
       <ChatSideBar />
@@ -126,7 +137,7 @@ const ChatPage: React.FC = () => {
               <div className="flex items-center md:my-6 mx-5 mb-2 md:mx-10">
                 <h3 className="text-[15px] font-bold text-black">Messages</h3>
               </div>
-              {conversations.map(renderConversation)}
+              {sortedConversations.map(renderConversation)}
             </div>
           </>
         )}
@@ -204,3 +215,4 @@ const ChatPage: React.FC = () => {
 };
 
 export default ChatPage;
+

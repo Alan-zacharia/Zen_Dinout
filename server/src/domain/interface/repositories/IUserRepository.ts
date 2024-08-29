@@ -124,6 +124,11 @@ export interface IUserRepository {
     bookingComfirmationDatas: BookingConfirmationType,
     totalCost: string
   ): Promise<{ status: boolean; bookingId: string | null }>;
+  createBookingUsingWalletRepo(
+    userId: string,
+    bookingComfirmationDatas: BookingConfirmationType,
+    totalCost: string
+  ): Promise<{ status: boolean; bookingId: string | null }>;
   bookingStatusUpdationRepo(
     bookingId: string,
     paymentStatus: string
@@ -132,11 +137,25 @@ export interface IUserRepository {
     userId: string,
     membershipId: string
   ): Promise<{ status: boolean; sessionId: string | null }>;
-  getMembershipRepo(
-    userId: string
-  ): Promise<{
+  getMembershipRepo(userId: string): Promise<{
     status: boolean;
     memberships: MemberShipType[] | null;
     existingMembership: MemberShipType | null;
+  }>;
+  cancelMembershipRepo(
+    userId: string,
+    membershipId: string
+  ): Promise<{
+    status: boolean;
+    message: string;
+  }>;
+  applyCouponRepo(
+    couponCode: string,
+    minPurchase: string,
+    todayDate: Date
+  ): Promise<{
+    status: boolean;
+    message: string;
+    coupon: CouponType | null;
   }>;
 }

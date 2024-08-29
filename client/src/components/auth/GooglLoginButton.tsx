@@ -79,7 +79,7 @@ const GoogleLoginButton = ({ label }: { label: string }) => {
   });
 
   return (
-    <>
+    <> 
       <button
         className="w-full mt-5 bg-white border border-black rounded-md py-3 text-center font-semibold flex justify-center"
         onClick={() => login()}

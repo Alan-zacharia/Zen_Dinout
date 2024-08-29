@@ -1,48 +1,5 @@
-{"level":"error","message":"Restaurant logged in successfully"}
-{"level":"error","message":"Error in admin login adminData.toObject is not a function"}
-{"level":"error","message":"Error in get Approve Restaurant service Cast to ObjectId failed for value \":66c5d947426f5d7ab60e2bb1\" (type string) at path \"_id\" for model \"Restaurant\""}
-{"level":"error","message":"Error in get Approve Restaurant service Cast to ObjectId failed for value \":66c5d947426f5d7ab60e2bb1\" (type string) at path \"_id\" for model \"Restaurant\""}
-{"level":"error","message":"Error in get Approve Restaurant service Cast to ObjectId failed for value \":66c5d947426f5d7ab60e2bb1\" (type string) at path \"_id\" for model \"Restaurant\""}
-{"level":"error","message":"Error in get Approve Restaurant service Cast to ObjectId failed for value \":66c5d947426f5d7ab60e2bb1\" (type string) at path \"_id\" for model \"Restaurant\""}
-{"level":"error","message":"Error in get Approve Restaurant service Cast to ObjectId failed for value \":66c5d947426f5d7ab60e2bb1\" (type string) at path \"_id\" for model \"Restaurant\""}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in get reservation detail : Cannot populate path `tableId,` because it is not in your schema. Set the `strictPopulate` option to false to override."}
-{"level":"error","message":"Error in update profile: Cannot read properties of undefined (reading '0')"}
-{"level":"error","message":"Error in update profile: undefined"}
-{"level":"error","message":"Error in deleting image : Plan executor error during findAndModify :: caused by :: Cannot apply $pull to a non-array value"}
-{"level":"error","message":"Error in update profile: undefined"}
-{"level":"error","message":"Error in generate otp service: Method not implemented. "}
-{"code":11000,"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: Zen-Dinout.users index: email_1 dup key: { email: \"alanzacaharia@gmail.com\" }","index":0,"keyPattern":{"email":1},"keyValue":{"email":"alanzacaharia@gmail.com"}},"index":0,"keyPattern":{"email":1},"keyValue":{"email":"alanzacaharia@gmail.com"},"level":"error"}
-{"level":"error","message":"Error in google login service: E11000 duplicate key error collection: Zen-Dinout.users index: email_1 dup key: { email: \"alanzacaharia@gmail.com\" } "}
-{"level":"error","message":"Error in  save restaurant service: RestaurantBookmark validation failed: userId: Path `userId` is required. "}
-{"level":"error","message":"Error in  save restaurant service: bookings validation failed: totalAmount: Path `totalAmount` is required., bookingTime: Path `bookingTime` is required., table: Path `table` is required. "}
-{"level":"error","message":"Error in  get tables service: Cast to Number failed for value \"{ tableSize: 2 }\" (type Object) at path \"tableCapacity\" for model \"Table\" "}
-{"level":"error","message":"Error in  get tables service: Cast to Number failed for value \"{ tableSize: 2 }\" (type Object) at path \"tableCapacity\" for model \"Table\" "}
+{"level":"error","message":"Error in  get reviews service: Operation `reviews.find()` buffering timed out after 10000ms "}
+{"level":"error","message":"Error in get restaurant detailed service: Operation `restaurants.findOne()` buffering timed out after 10000ms "}
+{"level":"error","message":"Error in get time slot service: Operation `restauranttimeslots.find()` buffering timed out after 10000ms "}
+{"level":"error","message":"Error in  create booking service: status is not defined "}
+{"level":"error","message":"Error in  create booking service: status is not defined "}
