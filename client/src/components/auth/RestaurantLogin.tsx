@@ -24,7 +24,7 @@ const RestaurantLogin: React.FC = () => {
       email: "",
       password: "",
     },
-    validate: loginValidation,
+    validationSchema: loginValidation,
     onSubmit: async (values: SellerType) => {
       setLoading(true);
       console.log(values);
