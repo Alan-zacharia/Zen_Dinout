@@ -143,7 +143,8 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
                 <MdTableRestaurant />
                 {bookingDetails?.table?.tableNumber}
               </li>
-              {!isCancelButtonHidden() && bookingDetails.bookingStatus !== "CANCELLED" &&
+              {!isCancelButtonHidden() &&
+                bookingDetails.bookingStatus !== "CANCELLED" &&
                 bookingDetails.bookingStatus !== "CHECKED" && (
                   <li className="flex items-center gap-2 font-semibold pt-2">
                     <button
@@ -190,14 +191,14 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
                 <div className="w-72 rounded-lg p-2 bg-neutral-100 h-32 flex flex-col gap-3">
                   <p className="text-base text-black">
                     Subtotal: ₹{" "}
-                    {bookingDetails.subTotal *
-                      bookingDetails.guestCount}
+                    {bookingDetails.subTotal * bookingDetails.guestCount}
                   </p>
                   <p className="text-base text-black">
                     Discount: - ₹{" "}
-                    {bookingDetails.subTotal *
-                      bookingDetails.guestCount -
-                      bookingDetails.totalAmount}
+                    {(
+                      bookingDetails.subTotal * bookingDetails.guestCount -
+                      bookingDetails.totalAmount
+                    ).toFixed(2)}
                   </p>
                   <p className="text-base text-black font-bold">
                     Total : ₹{bookingDetails.totalAmount}{" "}

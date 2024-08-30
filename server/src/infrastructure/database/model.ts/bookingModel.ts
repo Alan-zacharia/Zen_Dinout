@@ -48,6 +48,10 @@ const bookingSchema = new Schema({
     enum: ["PAID", "PENDING", "FAILED", "REFUNDED"],
     default: "PENDING",
   },
+  guestCount :{
+    type: Number,
+    required: true,
+  },
   bookingStatus: {
     type: String,
     enum: ["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED", "CHECKED"],
