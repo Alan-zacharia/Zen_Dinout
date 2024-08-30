@@ -13,7 +13,7 @@ export const axiosGetUser = async(page : number)=>{
 };
 export const axiosActionsUser = async(id : string , block : boolean)=>{
     try{
-        const {data : {users , message}} = await axios.put(`/admin/user-actions/${id}/${block}`);
+        const {data : {users , message}} = await axios.put(`/admin/users/${id}/${block}`);
          console.log({users , message })
           return { users , message };
     }catch(error : any){
