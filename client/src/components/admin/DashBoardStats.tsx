@@ -20,8 +20,8 @@ const DashBoardStat: React.FC<DashBoardStatProps> = ({count}) => {
         <div className="pl-4">
           <span className="text-sm text-gray-500 font-bold">Revenue</span>
           <div className="flex items-center">
-            <strong className="text-lg text-gray-700 font-bold">$9999</strong>
-            <span className="text-sm text-red-400 pl-2 font-bold">- $200</span>
+            <strong className="text-lg text-gray-700 font-bold">₹1999</strong>
+            <span className="text-sm text-red-400 pl-2 font-bold">-₹190</span>
           </div>
         </div>
       </BoxWrapper>
@@ -35,7 +35,7 @@ const DashBoardStat: React.FC<DashBoardStatProps> = ({count}) => {
             Total Restaurants
           </span>
           <div className="flex items-center">
-            <strong className="text-xl text-gray-700 font-semibold">{count.totalRestaurants}</strong>
+            <strong className="text-xl text-gray-700 font-semibold">{count.totalRestaurants || 6}</strong>
           </div>
         </div>
       </BoxWrapper>
@@ -47,7 +47,7 @@ const DashBoardStat: React.FC<DashBoardStatProps> = ({count}) => {
         <div className="pl-4">
           <span className="text-sm text-gray-500 font-bold">Total Users</span>
           <div className="flex items-center">
-            <strong className="text-lg text-gray-700 font-bold">{count.totalUsers}</strong>
+            <strong className="text-lg text-gray-700 font-bold">{count.totalUsers || 16}</strong>
           </div>
         </div>
       </BoxWrapper>
