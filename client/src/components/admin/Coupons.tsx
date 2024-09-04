@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import CouponAddModal from "./shared/CouponAddModal";
+import CouponEditModal from "./shared/CouponEditModal";
 import axiosInstance from "../../api/axios";
 import { CouponDetailsType } from "../../types/admin";
 import { FaIndianRupeeSign } from "react-icons/fa6";
@@ -9,10 +10,10 @@ import ConfirmationModal from "./shared/ConfirmationModal";
 const Coupons: React.FC = () => {
   const [coupons, setCoupons] = useState<CouponDetailsType[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
-  const [selectedCoupon, setSelectedCoupon] = useState<{
-    couponCode: string;
-    couponId: string;
-  } | null>(null);
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [selectedCoupon, setSelectedCoupon] =
+    useState<CouponDetailsType | null>(null);
+
   useEffect(() => {
     fetchCoupons();
   }, []);
@@ -30,10 +31,12 @@ const Coupons: React.FC = () => {
 
   const handleOpenConfirmation = useCallback((coupon: CouponDetailsType) => {
     setOpenConfirmation(true);
-    setSelectedCoupon({
-      couponCode: coupon.couponCode,
-      couponId: coupon._id as string,
-    });
+    setSelectedCoupon(coupon);
+  }, []);
+
+  const handleOpenEdit = useCallback((coupon: CouponDetailsType) => {
+    setOpenEdit(true);
+    setSelectedCoupon(coupon);
   }, []);
 
   return (
@@ -47,10 +50,20 @@ const Coupons: React.FC = () => {
         }}
         coupon={selectedCoupon}
       />
+      <CouponEditModal
+        open={openEdit}
+        onClose={() => setOpenEdit(false)}
+        coupon={selectedCoupon}
+        onEdit={fetchCoupons}
+      />
       <div className="text-gray-900">
         <div className="p-4 flex justify-between lg:pb-16">
-          <h1 className="hidden lg:flex lg:text-3xl font-bold">Coupon Management</h1>
-          <h1 className="text-2xl flex lg:hidden lg:text-3xl font-bold ">Coupons</h1>
+          <h1 className="hidden lg:flex lg:text-3xl font-bold">
+            Coupon Management
+          </h1>
+          <h1 className="text-2xl flex lg:hidden lg:text-3xl font-bold ">
+            Coupons
+          </h1>
           <div className="flex justify-end">
             <CouponAddModal onCouponAdded={fetchCoupons} />
           </div>
@@ -84,6 +97,9 @@ const Coupons: React.FC = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Status
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Actions
                 </th>
               </tr>
             </thead>
@@ -146,11 +162,19 @@ const Coupons: React.FC = () => {
                         <p className="text-red-600">Expired</p>
                       )}
                     </td>
+                    <td className="px-6 py-4 ">
+                      <button
+                        className="text-blue-600 hover:text-blue-800"
+                        onClick={() => handleOpenEdit(coupon)}
+                      >
+                        Edit
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr className="bg-white border-b border-b-gray-400 text-black text-lg font-bold">
-                  <td colSpan={7} className="p-4 text-center">
+                  <td colSpan={10} className="p-4 text-center">
                     No coupons found
                   </td>
                 </tr>

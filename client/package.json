@@ -61,6 +61,7 @@
     "react-shimmer": "^3.2.0",
     "react-shimmer-effects": "^1.0.3",
     "react-slick": "^0.30.2",
+    "react-spinners": "^0.14.1",
     "react-toastify": "^10.0.5",
     "recoil": "^0.7.7",
     "redux-persist": "^6.0.0",

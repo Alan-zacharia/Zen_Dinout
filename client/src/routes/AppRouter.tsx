@@ -13,7 +13,7 @@ import NewRestaurants from "../components/admin/RestaurantRegistrationMan";
 import SellerDashBoard from "../components/seller/SellerDashBoard";
 import Reservation from "../components/seller/Reservation";
 import Table from "../components/seller/Table";
-import Menu from "../components/seller/Menu";
+const Menu = React.lazy(() => import("../components/seller/Menu"));
 import PageNotFound from "../pages/PageNotFound";
 const RestaurantViewDetails = React.lazy(
   () => import("../pages/user/RestaurantViewDetails")

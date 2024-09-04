@@ -4,7 +4,7 @@ import { FaUser } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
-import { loginValidation } from "../../utils/validations";
+import { loginValidation, validationSchema } from "../../utils/validations";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { localStorageSetItem } from "../../utils/localStorageImpl";
 import { setUser } from "../../redux/user/userSlice";
@@ -24,7 +24,7 @@ const RestaurantLogin: React.FC = () => {
       email: "",
       password: "",
     },
-    validate: loginValidation,
+    validationSchema: loginValidation,
     onSubmit: async (values: SellerType) => {
       setLoading(true);
       console.log(values);

@@ -1,16 +1,17 @@
 import React from "react";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaRupeeSign } from "react-icons/fa";
 import { BiRestaurant } from "react-icons/bi";
 
 interface totalCounts {
   totalUsers: number;
   totalRestaurants: number;
-};
+  Revenue: string;
+}
 
 type DashBoardStatProps = {
-  count : totalCounts
-}
-const DashBoardStat: React.FC<DashBoardStatProps> = ({count}) => {
+  count: totalCounts;
+};
+const DashBoardStat: React.FC<DashBoardStatProps> = ({ count }) => {
   return (
     <div className="md:flex md:flex-col lg:flex-row grid grid-cols-2  gap-4 w-auto">
       <BoxWrapper>
@@ -20,8 +21,11 @@ const DashBoardStat: React.FC<DashBoardStatProps> = ({count}) => {
         <div className="pl-4">
           <span className="text-sm text-gray-500 font-bold">Revenue</span>
           <div className="flex items-center">
-            <strong className="text-lg text-gray-700 font-bold">$9999</strong>
-            <span className="text-sm text-red-400 pl-2 font-bold">- $200</span>
+            <strong className="text-lg text-gray-700 font-bold flex items-center">
+              {" "}
+              <FaRupeeSign size={14} />
+              {(+count?.Revenue || 0).toFixed(2)}
+            </strong>
           </div>
         </div>
       </BoxWrapper>
@@ -35,7 +39,9 @@ const DashBoardStat: React.FC<DashBoardStatProps> = ({count}) => {
             Total Restaurants
           </span>
           <div className="flex items-center">
-            <strong className="text-xl text-gray-700 font-semibold">{count.totalRestaurants}</strong>
+            <strong className="text-xl text-gray-700 font-semibold">
+              {count.totalRestaurants || 6}
+            </strong>
           </div>
         </div>
       </BoxWrapper>
@@ -47,12 +53,12 @@ const DashBoardStat: React.FC<DashBoardStatProps> = ({count}) => {
         <div className="pl-4">
           <span className="text-sm text-gray-500 font-bold">Total Users</span>
           <div className="flex items-center">
-            <strong className="text-lg text-gray-700 font-bold">{count.totalUsers}</strong>
+            <strong className="text-lg text-gray-700 font-bold">
+              {count.totalUsers || 12}
+            </strong>
           </div>
         </div>
       </BoxWrapper>
-
-    
     </div>
   );
 };

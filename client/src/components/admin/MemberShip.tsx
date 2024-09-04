@@ -9,7 +9,7 @@ const MemberShip: React.FC = () => {
   };
   return (
     <div className="text-gray-900  ">
-      <div className="p-4 flex justify-between lg:pb-16">
+      <div className="p-4 flex justify-between ">
         <h1 className="hidden lg:flex  lg:text-3xl font-bold ">
           Membership Mangement.
         </h1>

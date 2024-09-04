@@ -1,12 +1,16 @@
 import axios from "../api/axios";
 import axiosApi from "axios";
 import { credentials, otpType } from "../types/userTypes";
+axiosApi.defaults.withCredentials = true;
 
 const register = async (credentials: credentials | {}) => {
   try {
     const {
       data: { message, user, token },
-    } = await axiosApi.post(`${import.meta.env.VITE_API_BASE_URL}/api/register`, credentials);
+    } = await axiosApi.post(
+      `${import.meta.env.VITE_API_BASE_URL}/api/register`,
+      credentials
+    );
     return { data: { message, user, token } };
   } catch (error) {
     throw error;
@@ -17,7 +21,10 @@ const login = async (data: Partial<credentials>) => {
   try {
     const {
       data: { message, user, token, refreshToken },
-    } = await axiosApi.post(`${import.meta.env.VITE_API_BASE_URL}/api/login`, data);
+    } = await axiosApi.post(
+      `${import.meta.env.VITE_API_BASE_URL}/api/login`,
+      data
+    );
     return { data: { message, user, token, refreshToken } };
   } catch (error) {
     throw error;
@@ -28,7 +35,10 @@ const restaurantLoginApi = async (data: Partial<credentials>) => {
   try {
     const {
       data: { message, restaurant, token, refreshToken },
-    } = await axiosApi.post(`${import.meta.env.VITE_API_BASE_URL}/restaurant/login`, data);
+    } = await axiosApi.post(
+      `${import.meta.env.VITE_API_BASE_URL}/restaurant/login`,
+      data
+    );
     return { data: { message, restaurant, token, refreshToken } };
   } catch (error) {
     throw error;
@@ -39,7 +49,10 @@ const adminLogin = async (data: Partial<credentials>) => {
   try {
     const {
       data: { message, user, token, refreshToken },
-    } = await axiosApi.post(`${import.meta.env.VITE_API_BASE_URL}/admin/login`, data);
+    } = await axiosApi.post(
+      `${import.meta.env.VITE_API_BASE_URL}/admin/login`,
+      data
+    );
     return { data: { message, user, token, refreshToken } };
   } catch (error) {
     throw error;
@@ -96,7 +109,6 @@ const getRestaurantTableSlot = async (
     throw error;
   }
 };
-
 
 export {
   login,

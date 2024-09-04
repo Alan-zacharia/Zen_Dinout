@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import classNames from "classnames";
 
 import {
-  DASHBOARD_SIDEBAR_BOTTOM_LINKS,
   DASHBOARD_SIDEBAR_LINKS,
 } from "../../../lib/constants/Navigation";
 import LogoutButton from "./LogoutButton";
@@ -43,16 +42,10 @@ const Sidebar: React.FC<SidebarProps> = ({ menu, onClose }) => {
         <div className="h-[0.3px] w-full  bg-neutral-300" />
         <div className=" flex flex-col gap-4 py-8">
           {DASHBOARD_SIDEBAR_LINKS.map((item: SidebarLink, index: number) => (
-            <SideBarLinks key={index} item={item} onClose={onClose}/>
+            <SideBarLinks key={index} item={item} onClose={onClose} />
           ))}
         </div>
-        <div className="pt-2 flex-1 flex flex-col  gap-0.5 border-t">
-          {DASHBOARD_SIDEBAR_BOTTOM_LINKS.map(
-            (item: SidebarLink, index: number) => (
-              <SideBarLinks key={index} item={item} onClose={onClose}/>
-            )
-          )}
-        </div>
+        <div className="pt-2 flex-1 flex flex-col  gap-0.5 border-t"></div>
 
         <LogoutButton />
       </div>
@@ -82,17 +75,10 @@ const Sidebar: React.FC<SidebarProps> = ({ menu, onClose }) => {
         <div className="h-[0.3px] w-full bg-neutral-300" />
         <div className="flex flex-col gap-4 py-8">
           {DASHBOARD_SIDEBAR_LINKS.map((item: SidebarLink, index: number) => (
-            <SideBarLinks key={index} item={item} onClose={onClose}/>
+            <SideBarLinks key={index} item={item} onClose={onClose} />
           ))}
         </div>
-        <div className="pt-2 flex-1 flex flex-col gap-0.5 border-t">
-          {DASHBOARD_SIDEBAR_BOTTOM_LINKS.map(
-            (item: SidebarLink, index: number) => (
-              
-              <SideBarLinks key={index} item={item} onClose={onClose}/>
-            )
-          )}
-        </div>
+
         <LogoutButton />
         <button
           className="fixed top-4 right-4 text-white z-50"
@@ -109,9 +95,9 @@ export default Sidebar;
 
 interface SideBarLinksProps {
   item: SidebarLink;
-  onClose : ()=>void;
+  onClose: () => void;
 }
-const SideBarLinks: React.FC<SideBarLinksProps> = ({ item , onClose}) => {
+const SideBarLinks: React.FC<SideBarLinksProps> = ({ item, onClose }) => {
   const { pathname } = useLocation();
   return (
     <Link
@@ -124,7 +110,7 @@ const SideBarLinks: React.FC<SideBarLinksProps> = ({ item , onClose}) => {
           "font-semibold hover:bg-gray-500": pathname !== item.path,
         }
       )}
-      onClick={()=>onClose()}
+      onClick={() => onClose()}
     >
       <span className="text-xl">{item.icon}</span>
       {item.label}

@@ -28,6 +28,7 @@ const RestaurantReview = ({
         const res = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/api/reviews/${restaurantId}`
         );
+        console.log(res.data.reviews)
         setReviews(res.data.reviews);
       } catch (error) {
         console.log(error);
@@ -85,7 +86,7 @@ const RestaurantReview = ({
                   <FaUserCircle size={25} className="text-gray-700" />
                   &nbsp;&nbsp;
                   <div className="font-medium dark:text-white">
-                    <p className="text-gray-500">{data.userId.username}</p>
+                    <p className="text-gray-500">{data.userId?.username}</p>
                   </div>
                 </div>
                 <div className="flex items-center mb-1 space-x-1 rtl:space-x-reverse">

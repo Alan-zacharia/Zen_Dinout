@@ -16,12 +16,14 @@ export interface CouponDetailsType {
 }
 
 export interface MembershipPlanType {
+  _id ?: string;
   planName: string;
   description?: string;
   type: string;
   cost: number;
   benefits: string[];
   users?: number;
-  _id ?: string;
   discount : number;
+  expiryDate : string;
+  isActive ?: boolean
 }

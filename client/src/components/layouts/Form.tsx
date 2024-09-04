@@ -1,50 +1,68 @@
 import React, { ChangeEvent, useState } from "react";
 import axiosInstance from "../../api/axios";
+import toast from "react-hot-toast";
 
 const Form: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
-  const [itemImage, setItemImage] = useState<File | null>(null);
+  const [itemImages, setItemImages] = useState<File[]>([]);
   const [error, setError] = useState<string>("");
 
   const toggleModal = () => {
     setShowModal(!showModal);
-    setItemImage(null);
+    setItemImages([]);
     setError("");
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const file = e.target.files[0];
-      if (file) {
-        if (!file.type.startsWith("image/")) {
-          setError("  ");
-          setItemImage(null);
+      const files = Array.from(e.target.files);
+      const validFiles: File[] = [];
+      const invalidFiles: string[] = [];
+
+      files.forEach((file) => {
+        if (file.size > 1024 * 1024) {
+          invalidFiles.push(file.name);
+        } else if (file.type.startsWith("image/")) {
+          validFiles.push(file);
         } else {
-          setItemImage(file);
-          setError("");
+          invalidFiles.push(file.name);
         }
+      });
+
+      if (invalidFiles.length > 0) {
+        setError(
+          `Invalid files: ${invalidFiles.join(
+            ", "
+          )} (must be images under 1 MB).`
+        );
+      } else {
+        setItemImages([...itemImages, ...validFiles]);
+        setError("");
       }
     }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setItemImages(itemImages.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!itemImage) {
-      setError("Please select an image.");
+    if (itemImages.length === 0) {
+      setError("Please select at least one image.");
       return;
     }
-
-    axiosInstance
-      .post("/restaurant/upload-menu")
-      .then((response) => {
-        console.log("Upload successful:", response.data);
-        toggleModal();
-      })
-      .catch((error) => {
-        console.error("Error uploading:", error);
-        setError("Failed to upload. Please try again.");
-      });
+    const formData = new FormData();
+    itemImages.forEach((file) => formData.append("images", file));
+    try {
+      const response = await axiosInstance.post("/restaurant/menu", formData);
+      toast.success(response.data?.message ?? "uploaded successffully....");
+      toggleModal();
+      window.location.reload(); 
+    } catch (error) {
+      setError("Failed to upload. Please try again.");
+    }
   };
 
   return (
@@ -91,18 +109,19 @@ const Form: React.FC = () => {
             </div>
 
             <form className="p-4 md:p-6" onSubmit={handleSubmit}>
-              <div className="grid gap-4 mb-4 grid-cols-2">
-                <div className="col-span-2">
+              <div className="grid gap-4 mb-4 grid-cols-1">
+                <div className="col-span-1">
                   <label
-                    htmlFor="itemImage"
+                    htmlFor="itemImages"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    Item image
+                    Item images
                   </label>
                   <input
-                    name="itemImage"
-                    id="itemImage"
+                    name="itemImages"
+                    id="itemImages"
                     type="file"
+                    multiple
                     onChange={handleFileChange}
                     className="input input-bordered input-warning w-full max-w-xs"
                   />
@@ -110,6 +129,46 @@ const Form: React.FC = () => {
                     <p className="text-red-500 text-sm mt-1">{error}</p>
                   )}
                 </div>
+
+                {itemImages.length > 0 && (
+                  <div className="col-span-1">
+                    <h4 className="text-md font-medium text-gray-900 mb-2">
+                      Selected Images:
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {itemImages.map((file, index) => (
+                        <div key={index} className="relative w-24 h-24">
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt={`Selected ${index}`}
+                            className="w-full h-full object-cover rounded"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
+                            aria-label="Remove image"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button

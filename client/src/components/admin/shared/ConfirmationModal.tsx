@@ -1,15 +1,13 @@
 import React from "react";
 import axiosInstance from "../../../api/axios";
 import toast from "react-hot-toast";
+import { CouponDetailsType } from "../../../types/admin";
 
 interface ConfirmationModalProps {
   openConfirmation: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  coupon: {
-    couponCode: string;
-    couponId: string;
-  } | null;
+  coupon: CouponDetailsType | null
 };
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -21,9 +19,10 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   if (!openConfirmation || !coupon) return null;
   const handleCouponRemove = () => {
     axiosInstance
-      .delete(`/admin/coupons/${coupon.couponId}`)
+      .delete(`/admin/coupons/${coupon._id}`)
       .then(() => {
         toast.success("Coupon deleted....");
+        onConfirm()
       })
       .catch(({ response }) => {
         console.log(response);

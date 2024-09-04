@@ -43,9 +43,8 @@ const CouponAddModal: React.FC<CouponAddModalProps> = ({ onCouponAdded }) => {
           }, 1000);
         })
         .catch(({ response }) => {
-          console.log(response.data.message);
           setIsLoading(false);
-          toast.error("Something went wrong..");
+          toast.error(response.data.message ?? "Something went wrong..");
         });
     },
   });
