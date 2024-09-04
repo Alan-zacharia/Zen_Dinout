@@ -2,19 +2,19 @@ import { Response, Request, NextFunction } from "express";
 import { IUserInteractor } from "../../../domain/interface/use-cases/IUserInteractor";
 import logger from "../../../infrastructure/lib/Wintson";
 import mongoose from "mongoose";
-import bookingModel from "../../../infrastructure/database/model.ts/bookingModel";
-import couponModel from "../../../infrastructure/database/model.ts/couponModel";
-import membershipModel from "../../../infrastructure/database/model.ts/membershipModel";
-import UserModel from "../../../infrastructure/database/model.ts/userModel";
-import Wallet from "../../../infrastructure/database/model.ts/wallet";
+import bookingModel from "../../../infrastructure/database/model/bookingModel";
+import couponModel from "../../../infrastructure/database/model/couponModel";
+import membershipModel from "../../../infrastructure/database/model/membershipModel";
+import UserModel from "../../../infrastructure/database/model/userModel";
+import Wallet from "../../../infrastructure/database/model/wallet";
 import { AppError } from "../../middlewares/appError";
 import {
   MESSAGES,
   STATUS_CODES,
   SUCCESS_MESSAGES,
 } from "../../../configs/constants";
-import TimeSlot from "../../../infrastructure/database/model.ts/restaurantTimeSlot";
-import restaurantTableModel from "../../../infrastructure/database/model.ts/restaurantTable";
+import TimeSlot from "../../../infrastructure/database/model/restaurantTimeSlot";
+import restaurantTableModel from "../../../infrastructure/database/model/restaurantTable";
 import {
   BookingConfirmationType,
   ReviewType,
@@ -628,6 +628,29 @@ export class userController {
       const { reviews, message, status } =
         await this.interactor.getReviewsInteractor(restaurantId);
       return res.status(STATUS_CODES.OK).json({ reviews, message, status });
+    } catch (error) {
+      logger.error(
+        `Error in  get reviews service: ${(error as Error).message} `
+      );
+      next(
+        new AppError(
+          MESSAGES.INTERNAL_SERVER_ERROR,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
+  public async getMenuController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("Get Menu service.....");
+    const { restaurantId } = req.params;
+    try {
+      const { menu, message, status } =
+        await this.interactor.getMenuInteractor(restaurantId);
+      return res.status(STATUS_CODES.OK).json({ menu, message, status });
     } catch (error) {
       logger.error(
         `Error in  get reviews service: ${(error as Error).message} `

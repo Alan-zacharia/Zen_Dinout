@@ -9,6 +9,7 @@ import {
   WalletType,
 } from "../../entities/UserType";
 import {
+  MenuType,
   RestaurantType,
   TableDataType,
   TimeSlotType,
@@ -93,6 +94,11 @@ export interface IUserInteractor {
     message: string;
     status: boolean;
     reviews: ReviewType[] | null;
+  }>;
+  getMenuInteractor(restaurantId: string): Promise<{
+    message: string;
+    status: boolean;
+    menu: MenuType | null;
   }>;
   getReviewInteractor(
     restaurantId: string,

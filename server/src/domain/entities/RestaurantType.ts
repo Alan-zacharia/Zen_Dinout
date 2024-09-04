@@ -50,3 +50,14 @@ export interface TimeSlotType {
   isBooked: boolean;
   maxTables: number;
 }
+
+export interface MenuType {
+  _id: string;
+  restaurantId: string;
+  items: [
+    {
+      public_id: string;
+      url: string;
+    }
+  ];
+}

@@ -76,7 +76,7 @@ const userSchema: Schema<UserDocument> = new Schema({
     type: Boolean,
     default: false,
   },
-});
+},{timestamps : true});
 
 userSchema.pre<UserDocument>("save", async function (next) {
   this.updatedAt = new Date();

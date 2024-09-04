@@ -8,7 +8,7 @@ export interface IAdminRepositories {
     refreshToken: string | null;
     token: string | null;
   }>;
-  getUsersListRepo(pageNumber : number): Promise<{
+  getUsersListRepo(pageNumber: number): Promise<{
     users: UserType[] | null;
     message: string;
     totalPages: number;
@@ -35,20 +35,42 @@ export interface IAdminRepositories {
     rejectReason: string
   ): Promise<{ success: boolean; message: string }>;
   getCouponsRepo(): Promise<{ message: string; Coupons: CouponType[] }>;
+  getDashboardDetailsRepo(): Promise<{
+    restaurantCount : number;
+    userCount : number;
+    totalAmount: string;
+    status: boolean;
+    salesData : number[],
+    revenueData : number[],
+    users: UserType[];
+    restaurants: object[];
+  }>;
   getMembershipRepo(): Promise<{
     message: string;
     Memberships: MemberShipType[];
   }>;
-  createCouponRepo(couponDetails : CouponType): Promise<{
+  createCouponRepo(couponDetails: CouponType): Promise<{
     message: string;
-    status : boolean;
+    status: boolean;
   }>;
-  createMembershipInteractor(memeberships : MemberShipType): Promise<{
+  createMembershipRepo(memeberships: MemberShipType): Promise<{
     message: string;
-    status : boolean;
+    status: boolean;
   }>;
-  removeCouponRepo(couponId : string): Promise<{
+  updateMembershipRepo(updatedMembership: MemberShipType): Promise<{
     message: string;
-    status : boolean;
-}>;
+    Membership: MemberShipType | null;
+  }>;
+  removeCouponRepo(couponId: string): Promise<{
+    message: string;
+    status: boolean;
+  }>;
+  updateCouponRepo(couponId: string , couponDatas : CouponType): Promise<{
+    message: string;
+    status: boolean;
+  }>;
+  removeMembershipRepo(membershipId: string): Promise<{
+    message: string;
+    status: boolean;
+  }>;
 }

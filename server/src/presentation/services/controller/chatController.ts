@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import logger from "../../../infrastructure/lib/Wintson";
-import conversationModel from "../../../infrastructure/database/model.ts/conversationModel";
-import messageModel from "../../../infrastructure/database/model.ts/messageModel";
-import UserModel from "../../../infrastructure/database/model.ts/userModel";
-import restaurantModel from "../../../infrastructure/database/model.ts/restaurantModel";
-import notificationModel from "../../../infrastructure/database/model.ts/messageNotificationModel";
+import conversationModel from "../../../infrastructure/database/model/conversationModel";
+import messageModel from "../../../infrastructure/database/model/messageModel";
+import UserModel from "../../../infrastructure/database/model/userModel";
+import restaurantModel from "../../../infrastructure/database/model/restaurantModel";
+import notificationModel from "../../../infrastructure/database/model/messageNotificationModel";
 
 export class chatController {
   constructor() {}

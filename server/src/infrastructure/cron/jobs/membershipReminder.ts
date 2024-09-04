@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import UserModel from "../../database/model.ts/userModel";
+import UserModel from "../../database/model/userModel";
 import { getFormattedDate } from "../../utils/dateUtils";
 import EmailService from "../../lib/EmailService";
 

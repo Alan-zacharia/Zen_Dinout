@@ -1,4 +1,5 @@
 import {
+  MenuType,
   RestaurantType,
   TableDataType,
   TimeSlotType,
@@ -6,9 +7,7 @@ import {
 import { BookingDataType } from "../../entities/UserType";
 
 export interface IRestaurantInteractor {
-  loginRestaurantInteractor(
-    data: Partial<RestaurantType>
-  ): Promise<{
+  loginRestaurantInteractor(data: Partial<RestaurantType>): Promise<{
     restaurant: Partial<RestaurantType> | null;
     message: string;
     token: string | null;
@@ -60,6 +59,10 @@ export interface IRestaurantInteractor {
     restauarntId: string,
     imageIds: string[]
   ): Promise<{ message: string; status: boolean }>;
+  deleteMenuInteractor(
+    restauarntId: string,
+    imageIds: string[]
+  ): Promise<{ message: string; status: boolean }>;
   updateRestaurantTableIsAvailableInteractor(
     tableId: string,
     isAvailable: boolean
@@ -68,4 +71,17 @@ export interface IRestaurantInteractor {
     timeSlotId: string,
     avaialable: boolean
   ): Promise<{ message: string; status: boolean }>;
+  createMenuInteractor(
+    restaurantId: string,
+    menuImages: { url: string; public_id: string }[]
+  ): Promise<{
+    message: string;
+    status: boolean;
+    menuImages: { url: string; public_id: string }[] | null;
+  }>;
+  getMenuInteractor(restaurantId: string): Promise<{
+    message: string;
+    status: boolean;
+    menu: MenuType[] | null;
+  }>;
 }

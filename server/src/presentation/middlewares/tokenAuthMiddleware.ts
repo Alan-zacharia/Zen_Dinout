@@ -15,7 +15,7 @@ export async function refreshAccessToken(req: Request, res: Response) {
     }
 
     try {
-        const accessToken = jwtGenerateToken(decoded.userId, "user");
+        const accessToken = jwtGenerateToken(decoded.userId, decoded.role);
         return res.status(200).json({ accessToken });
     } catch (error) {
         console.error('Error generating new access token:', error);

@@ -50,11 +50,6 @@ userRouter.post(
   controller.createMemberShipPaymentController.bind(controller)
 );
 userRouter.post(
-  "/review",
-  authenticateUser,
-  controller.addReviewController.bind(controller)
-);
-userRouter.post(
   "/apply-coupon",
   authenticateUser,
   controller.applyCouponController.bind(controller)
@@ -146,6 +141,10 @@ userRouter.get(
 userRouter.get(
   "/reviews/:restaurantId",
   controller.getReviewsController.bind(controller)
+);
+userRouter.get(
+  "/menu/:restaurantId",
+  controller.getMenuController.bind(controller)
 );
 userRouter.get(
   "/review/:restaurantId",

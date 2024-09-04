@@ -19,7 +19,7 @@ export class sellerController {
 
   public async loginRestaurantController(
     req: Request,
-    res: Response, 
+    res: Response,
     next: NextFunction
   ) {
     const { email, password } = req.body;
@@ -109,6 +109,48 @@ export class sellerController {
       );
     }
   }
+  public async createMenuController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("Create Menu ....");
+    const restaurantId = req.userId;
+    const data = req.body;
+    try {
+      const { fields, files } = await parseFormData(req);
+      console.log(files);
+      if (!files.images) {
+        return res
+          .status(STATUS_CODES.BAD_REQUEST)
+          .json({ message: MESSAGES.INVALID_FORMAT });
+      }
+      const filePaths = Array.isArray(files.images)
+        ? (files.images as formidable.File[]).map((file) => file.filepath)
+        : [(files.images as formidable.File).filepath];
+      const uploadedImages = await handleImageUploads(filePaths);
+      console.log(uploadedImages);
+      const result = await this.interactor.createMenuInteractor(
+        restaurantId,
+        uploadedImages
+      );
+      const { message, menuImages, status } = result;
+      if (!status) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ message });
+      }
+      return res
+        .status(STATUS_CODES.CREATED)
+        .json({ message, menuImages, status });
+    } catch (error) {
+      logger.error(`Error in create menu :${(error as Error).message}`);
+      next(
+        new AppError(
+          (error as Error).message,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
 
   public async getReservationListController(
     req: Request,
@@ -172,6 +214,33 @@ export class sellerController {
 
       console.log(timeSlots);
       res.json(timeSlots);
+    } catch (error) {
+      logger.error(`Error in get time slot : ${(error as Error).message}`);
+      next(
+        new AppError(
+          (error as Error).message,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
+  public async getMenuController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("Get Menu controller .....");
+    const restaurantId = req.userId;
+    try {
+      const { message, status, menu } = await this.interactor.getMenuInteractor(
+        restaurantId
+      );
+      if (!status) {
+        return res
+          .status(STATUS_CODES.BAD_REQUEST)
+          .json({ message, status, menu });
+      }
+      return res.status(STATUS_CODES.OK).json({ message, status, menu });
     } catch (error) {
       logger.error(`Error in get time slot : ${(error as Error).message}`);
       next(
@@ -426,6 +495,39 @@ export class sellerController {
           restaurantId,
           imageIds
         );
+      const { message, status } = result;
+      if (!status) {
+        return res
+          .status(STATUS_CODES.NOT_FOUND)
+          .json({ status, message: MESSAGES.SOMETHING_WENT_WRONG });
+      }
+      return res.status(STATUS_CODES.OK).json({ status, message });
+    } catch (error) {
+      logger.error(`Error in deleting images: ${(error as Error).message}`);
+      next(
+        new AppError(
+          (error as Error).message,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
+  public async deleteMenuController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("Deleting menu ...");
+    const imageIds: string[] = Array.isArray(req.query.ids)
+      ? (req.query.ids as string[])
+      : [req.query.ids as string];
+    const restaurantId = req.userId;
+    console.log(imageIds);
+    try {
+      const result = await this.interactor.deleteMenuInteractor(
+        restaurantId,
+        imageIds
+      );
       const { message, status } = result;
       if (!status) {
         return res

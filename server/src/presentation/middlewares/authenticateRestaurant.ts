@@ -3,7 +3,7 @@ import { jwtVerifyToken } from "../../infrastructure/utils/jwtUtils";
 import configuredKeys from "../../configs/envConfig";
 import { MESSAGES, STATUS_CODES } from "../../configs/constants";
 import { AppError } from "./appError";
-import restaurantModel from "../../infrastructure/database/model.ts/restaurantModel";
+import restaurantModel from "../../infrastructure/database/model/restaurantModel";
 
 const authenticateRestaurant = async (
   req: Request,

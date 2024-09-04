@@ -9,6 +9,7 @@ import {
   WalletType,
 } from "../../entities/UserType";
 import {
+  MenuType,
   RestaurantType,
   TableDataType,
   TimeSlotType,
@@ -97,6 +98,11 @@ export interface IUserRepository {
     message: string;
     status: boolean;
     reviews: ReviewType[] | null;
+  }>;
+  getMenuRepo(restaurantId: string): Promise<{
+    message: string;
+    status: boolean;
+    menu: MenuType | null;
   }>;
   getReviewRepo(
     restaurantId: string,

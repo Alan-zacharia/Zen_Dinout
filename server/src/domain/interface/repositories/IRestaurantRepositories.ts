@@ -1,4 +1,5 @@
 import {
+  MenuType,
   RestaurantType,
   TableDataType,
   TimeSlotType,
@@ -58,6 +59,10 @@ export interface IRestaurantRepository {
     restauarntId: string,
     imageIds: string[]
   ): Promise<{ message: string; status: boolean }>;
+  deleteMenuRepo(
+    restauarntId: string,
+    imageIds: string[]
+  ): Promise<{ message: string; status: boolean }>;
   updateRestaurantTableIsAvailableRepo(
     tableId: string,
     isAvailable: boolean
@@ -66,4 +71,17 @@ export interface IRestaurantRepository {
     tableId: string,
     isAvailable: boolean
   ): Promise<{ message: string; status: boolean }>;
+  createMenuRepo(
+    restaurantId: string,
+    menuImages: { url: string; public_id: string }[]
+  ): Promise<{
+    message: string;
+    status: boolean;
+    menuImages: { url: string; public_id: string }[] | null;
+  }>;
+  getMenuRepo(restaurantId: string): Promise<{
+    message: string;
+    status: boolean;
+    menu: MenuType[] | null;
+  }>;
 }

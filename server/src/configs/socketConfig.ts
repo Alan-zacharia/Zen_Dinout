@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import messageModel from "../infrastructure/database/model.ts/messageModel";
+import messageModel from "../infrastructure/database/model/messageModel";
 interface SocketUsersType {
   userId: string;
   socketId: string;
@@ -67,7 +67,6 @@ const socketConfig = (io: Server) => {
           { conversationId: conversationId, sender: userId, seen: false },
           { $set: { seen: true } }
         );
-        console.log(userId)
         const user = getUser(userId);
         if (user) {
           io.to(user?.socketId).emit("messageSeen", { conversationId });

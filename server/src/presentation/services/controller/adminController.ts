@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { IAdminInteractor } from "../../../domain/interface/use-cases/IAdminInteractor";
 import { validationResult } from "express-validator";
-import UserModel from "../../../infrastructure/database/model.ts/userModel";
-import restaurantModel from "../../../infrastructure/database/model.ts/restaurantModel";
+import UserModel from "../../../infrastructure/database/model/userModel";
+import restaurantModel from "../../../infrastructure/database/model/restaurantModel";
 import logger from "../../../infrastructure/lib/Wintson";
 import { AppError } from "../../middlewares/appError";
 import { STATES } from "mongoose";
@@ -30,10 +30,9 @@ export class adminController {
       if (!admin) {
         return res.status(STATUS_CODES.UNAUTHORIZED).json({ message });
       }
+      console.log(refreshToken);
       if (refreshToken) setAuthTokenCookie(res, "refreshToken", refreshToken);
-      return res
-        .status(STATUS_CODES.OK)
-        .json({ user: admin, message, token, refreshToken });
+      return res.status(STATUS_CODES.OK).json({ user: admin, message, token });
     } catch (error) {
       logger.error(`Error in admin login ${(error as Error).message}`);
       next(
@@ -240,6 +239,80 @@ export class adminController {
       );
     }
   }
+  public async getDashboardDetailsController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("Get dashboard controller.....");
+    try {
+      const result = await this.interactor.getDashboardDetailsInteractor();
+      const {
+        restaurantCount,
+        totalAmount,
+        userCount,
+        status,
+        revenueData,
+        salesData,
+        restaurants,
+        users,
+      } = result;
+      return res
+        .status(STATUS_CODES.OK)
+        .json({
+          status,
+          restaurantCount,
+          totalAmount,
+          userCount,
+          revenueData,
+          salesData,
+          restaurants,
+          users,
+        });
+    } catch (error) {
+      logger.error(
+        `Error in get membership service ${(error as Error).message}`
+      );
+      next(
+        new AppError(
+          (error as Error).message,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
+  public async updateMembershipController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { updatedMembership } = req.body;
+    console.log("Update memberships controller.....");
+    try {
+      const result = await this.interactor.updateMembershipInteractor(
+        updatedMembership
+      );
+      const { Membership, message } = result;
+      if (!Membership) {
+        return res
+          .status(STATUS_CODES.BAD_REQUEST)
+          .json({ message, Membership });
+      }
+      return res
+        .status(STATUS_CODES.CREATED)
+        .json({ message, membership: Membership });
+    } catch (error) {
+      logger.error(
+        `Error in update membership service ${(error as Error).message}`
+      );
+      next(
+        new AppError(
+          (error as Error).message,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
   public async createCouponController(
     req: Request,
     res: Response,
@@ -266,6 +339,31 @@ export class adminController {
       );
     }
   }
+  public async updateCouponController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("update coupon controller.....");
+    const { couponId } = req.params;
+    const {formData} = req.body;
+    try {
+      const result = await this.interactor.updateCouponInteractor(couponId , formData);
+      const { message, status } = result;
+      if (!status) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ message, status });
+      }
+      return res.status(STATUS_CODES.CREATED).json({ message, status });
+    } catch (error) {
+      logger.error(`Error in remove coupon ${(error as Error).message}`);
+      next(
+        new AppError(
+          (error as Error).message,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
   public async removeCouponController(
     req: Request,
     res: Response,
@@ -276,7 +374,33 @@ export class adminController {
     try {
       const result = await this.interactor.removeCouponInteractor(couponId);
       const { message, status } = result;
-      if(!status){
+      if (!status) {
+        return res.status(STATUS_CODES.BAD_REQUEST).json({ message, status });
+      }
+      return res.status(STATUS_CODES.NO_CONTENT).json({ message, status });
+    } catch (error) {
+      logger.error(`Error in remove coupon ${(error as Error).message}`);
+      next(
+        new AppError(
+          (error as Error).message,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
+  public async removeMembershipController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("Remove coupons controller.....");
+    const { membershipId } = req.params;
+    try {
+      const result = await this.interactor.removeMembershipInteractor(
+        membershipId
+      );
+      const { message, status } = result;
+      if (!status) {
         return res.status(STATUS_CODES.BAD_REQUEST).json({ message, status });
       }
       return res.status(STATUS_CODES.NO_CONTENT).json({ message, status });
@@ -302,6 +426,11 @@ export class adminController {
         membershipData
       );
       const { message, status } = result;
+      if (!status) {
+        return res
+          .status(STATUS_CODES.BAD_REQUEST)
+          .json({ message: message, status });
+      }
       return res.status(STATUS_CODES.CREATED).json({ message, status });
     } catch (error) {
       logger.error(

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import UserModel from "../../infrastructure/database/model.ts/userModel";
+import UserModel from "../../infrastructure/database/model/userModel";
 import { validationResult } from "express-validator";
 import { MESSAGES, STATUS_CODES } from "../../configs/constants";
 import { AppError } from "./appError";

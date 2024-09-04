@@ -23,7 +23,7 @@ adminRouter.post(
   controller.createCouponController.bind(controller)
 );
 adminRouter.post(
-  "/memeberships",
+  "/membership",
   loginValidation(),
   controller.createMembershipController.bind(controller)
 );
@@ -59,6 +59,24 @@ adminRouter.get(
   authenticateAdmin,
   controller.getMembershipController.bind(controller)
 );
+adminRouter.get(
+  "/dashboard",
+  authenticateAdmin,
+  controller.getDashboardDetailsController.bind(controller)
+);
+
+/** HTTP PUT METHODS */
+adminRouter.put(
+  "/memberships/:membershipId",
+  authenticateAdmin,
+  controller.updateMembershipController.bind(controller)
+);
+adminRouter.put(
+  "/coupons/:couponId",
+  authenticateAdmin,
+  controller.updateCouponController.bind(controller)
+);
+
 
 /** HTTP PATCH METHODS */
 adminRouter.patch(
@@ -78,5 +96,11 @@ adminRouter.delete(
   authenticateAdmin,
   controller.removeCouponController.bind(controller)
 );
+adminRouter.delete(
+  "/memberships/:membershipId",
+  authenticateAdmin,
+  controller.removeMembershipController.bind(controller)
+);
+
 
 export default adminRouter;

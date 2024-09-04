@@ -20,6 +20,11 @@ restaurantRouter.post(
   "/register",
   controller.registerRestaurantController.bind(controller)
 );
+restaurantRouter.post(
+  "/menu",
+  authenticateRestaurant,
+  controller.createMenuController.bind(controller)
+);
 
 /** HTTP GET METHODS  */
 restaurantRouter.get(
@@ -46,6 +51,11 @@ restaurantRouter.get(
   "/timeslots/:date",
   authenticateRestaurant,
   controller.getTimeSlotController.bind(controller)
+);
+restaurantRouter.get(
+  "/menu",
+  authenticateRestaurant,
+  controller.getMenuController.bind(controller)
 );
 
 /** HTTP PATCH METHODS  */
@@ -93,6 +103,11 @@ restaurantRouter.delete(
   "/secondary-images",
   authenticateRestaurant,
   controller.deleteRestaurantSecondaryImagesController.bind(controller)
+);
+restaurantRouter.delete(
+  "/menu",
+  authenticateRestaurant,
+  controller.deleteMenuController.bind(controller)
 );
 
 /** HTTP PUT METHODS  */

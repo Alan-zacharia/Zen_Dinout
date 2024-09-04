@@ -9,32 +9,34 @@ import {
   WalletType,
 } from "../../domain/entities/UserType";
 import { IUserRepository } from "../../domain/interface/repositories/IUserRepository";
-import userModel from "../database/model.ts/userModel";
+import userModel from "../database/model/userModel";
 import logger from "../lib/Wintson";
 import {
+  MenuType,
   RestaurantType,
   TableDataType,
   TimeSlotType,
 } from "../../domain/entities/RestaurantType";
-import restaurantModel from "../database/model.ts/restaurantModel";
+import restaurantModel from "../database/model/restaurantModel";
 import { MESSAGES, ROLES, SUCCESS_MESSAGES } from "../../configs/constants";
 import { generateTokens } from "../utils/jwtUtils";
 import EmailService from "../lib/EmailService";
-import bookingModel from "../database/model.ts/bookingModel";
-import Wallet from "../database/model.ts/wallet";
-import couponModel from "../database/model.ts/couponModel";
-import bookMarkModel from "../database/model.ts/bookMarkModel";
-import reviewModel from "../database/model.ts/reviewModel";
-import restaurantTableModel from "../database/model.ts/restaurantTable";
+import bookingModel from "../database/model/bookingModel";
+import Wallet from "../database/model/wallet";
+import couponModel from "../database/model/couponModel";
+import bookMarkModel from "../database/model/bookMarkModel";
+import reviewModel from "../database/model/reviewModel";
+import restaurantTableModel from "../database/model/restaurantTable";
 import { generateBookingId } from "../utils/generateBookingId";
 import { otpGenerator } from "../utils/otpGenerator";
 import {
   hashedPasswordCompare,
   hashedPasswordFunction,
 } from "../../domain/entities/auth";
-import TimeSlot from "../database/model.ts/restaurantTimeSlot";
-import membershipModel from "../database/model.ts/membershipModel";
+import TimeSlot from "../database/model/restaurantTimeSlot";
+import membershipModel from "../database/model/membershipModel";
 import createMembershipPaymentIntent from "../payment/stripeMembershipService";
+import menuModel from "../database/model/menuModel";
 
 export class userRepositoryImpl implements IUserRepository {
   public async findExistingUser(email: string): Promise<boolean> {
@@ -557,14 +559,41 @@ export class userRepositoryImpl implements IUserRepository {
     reviews: ReviewType[] | null;
   }> {
     try {
-      const reviewsList = await reviewModel.find({
-        restaurantId,
-      }).populate("userId","username");
+      const reviewsList = await reviewModel
+        .find({
+          restaurantId,
+        })
+        .populate("userId", "username");
       const reviews: ReviewType[] = reviewsList.map((data) => {
         return data.toObject();
       });
       return {
         reviews: reviews,
+        status: true,
+        message: SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async getMenuRepo(restaurantId: string): Promise<{
+    message: string;
+    status: boolean;
+    menu: MenuType | null;
+  }> {
+    try {
+      const menuList = await menuModel.findOne({
+        restaurantId,
+      });
+      if (!menuList) {
+        return {
+          menu: null,
+          status: true,
+          message: SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
+        };
+      }
+      return {
+        menu: menuList.toObject(),
         status: true,
         message: SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
       };
@@ -873,7 +902,7 @@ export class userRepositoryImpl implements IUserRepository {
       return {
         message: "Applied successfully...",
         status: true,
-        coupon: coupon.toObject()
+        coupon: coupon.toObject(),
       };
     } catch (error) {
       throw error;

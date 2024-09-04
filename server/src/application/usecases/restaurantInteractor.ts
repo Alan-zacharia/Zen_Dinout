@@ -1,6 +1,7 @@
 import { isGeneratorFunction } from "util/types";
 import { MESSAGES, SUCCESS_MESSAGES } from "../../configs/constants";
 import {
+  MenuType,
   RestaurantType,
   TableDataType,
   TimeSlotType,
@@ -8,12 +9,13 @@ import {
 import { BookingDataType } from "../../domain/entities/UserType";
 import { IRestaurantRepository } from "../../domain/interface/repositories/IRestaurantRepositories";
 import { IRestaurantInteractor } from "../../domain/interface/use-cases/IRestaurantInteractor";
-import restaurantModel from "../../infrastructure/database/model.ts/restaurantModel";
+import restaurantModel from "../../infrastructure/database/model/restaurantModel";
 import logger from "../../infrastructure/lib/Wintson";
 import { removeuploadedImage } from "../../presentation/services/shared/imageService";
 
 export class sellerInteractor implements IRestaurantInteractor {
   constructor(private readonly repository: IRestaurantRepository) {}
+
   public async loginRestaurantInteractor(
     data: Partial<RestaurantType>
   ): Promise<{
@@ -270,6 +272,30 @@ export class sellerInteractor implements IRestaurantInteractor {
       throw error;
     }
   }
+  public async deleteMenuInteractor(
+    restaurantId: string,
+    imageIds: string[]
+  ): Promise<{ message: string; status: boolean }> {
+    if (!restaurantId || !imageIds) {
+      return { message: MESSAGES.INVALID_FORMAT, status: false };
+    }
+    try {
+      for (let imageId of imageIds) {
+        const response = await removeuploadedImage(imageId);
+        if (!response.success) {
+          return { status: false, message: "Failed to remove image.." };
+        }
+      }
+      const result = await this.repository.deleteMenuRepo(
+        restaurantId,
+        imageIds
+      );
+      const { message, status } = result;
+      return { status, message };
+    } catch (error) {
+      throw error;
+    }
+  }
   public async updateRestaurantTableIsAvailableInteractor(
     tableId: string,
     isAvailable: boolean
@@ -303,6 +329,52 @@ export class sellerInteractor implements IRestaurantInteractor {
         );
       const { message, status } = result;
       return { status, message };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async createMenuInteractor(
+    restaurantId: string,
+    uploadedImages: { url: string; public_id: string }[]
+  ): Promise<{
+    message: string;
+    status: boolean;
+    menuImages: { url: string; public_id: string }[] | null;
+  }> {
+    if (!restaurantId || !uploadedImages) {
+      return {
+        message: MESSAGES.INVALID_DATA,
+        status: false,
+        menuImages: null,
+      };
+    }
+    try {
+      const result = await this.repository.createMenuRepo(
+        restaurantId,
+        uploadedImages
+      );
+      const { menuImages, message, status } = result;
+      return { menuImages, message, status };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async getMenuInteractor(restaurantId: string): Promise<{
+    message: string;
+    status: boolean;
+    menu: MenuType[] | null;
+  }> {
+    if (!restaurantId) {
+      return {
+        message: MESSAGES.INVALID_DATA,
+        status: false,
+        menu: null,
+      };
+    }
+    try {
+      const result = await this.repository.getMenuRepo(restaurantId);
+      const { menu, message, status } = result;
+      return { menu, message, status };
     } catch (error) {
       throw error;
     }

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import UserModel from "../../infrastructure/database/model.ts/userModel"; // User's database model
+import UserModel from "../../infrastructure/database/model/userModel"; // User's database model
 import { jwtVerifyToken } from "../../infrastructure/utils/jwtUtils";
 import configuredKeys from "../../configs/envConfig";
 import { MESSAGES, STATUS_CODES } from "../../configs/constants";

@@ -10,6 +10,7 @@ import {
   WalletType,
 } from "../../domain/entities/UserType";
 import {
+  MenuType,
   RestaurantType,
   TableDataType,
   TimeSlotType,
@@ -355,6 +356,22 @@ export class userInteractorImpl implements IUserInteractor {
       const result = await this.repository.getReviewsRepo(restaurantId);
       const { message, reviews, status } = result;
       return { message, reviews, status };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async getMenuInteractor(restaurantId: string): Promise<{
+    message: string;
+    status: boolean;
+    menu: MenuType | null;
+  }> {
+    if (!restaurantId) {
+      return { menu: null, status: false, message: MESSAGES.INVALID_FORMAT };
+    }
+    try {
+      const result = await this.repository.getMenuRepo(restaurantId);
+      const { message, menu, status } = result;
+      return { message, menu, status };
     } catch (error) {
       throw error;
     }

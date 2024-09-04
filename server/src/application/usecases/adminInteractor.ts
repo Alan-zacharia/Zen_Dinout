@@ -51,6 +51,42 @@ export class adminInteractorImpl implements IAdminInteractor {
       throw error;
     }
   }
+  public async getDashboardDetailsInteractor(): Promise<{
+    restaurantCount: number;
+    userCount: number;
+    totalAmount: string;
+    status: boolean;
+    salesData: number[];
+    revenueData: number[];
+    users: UserType[];
+    restaurants: object[];
+  }> {
+    try {
+      const result = await this.repository.getDashboardDetailsRepo();
+      const {
+        restaurantCount,
+        totalAmount,
+        userCount,
+        status,
+        revenueData,
+        salesData,
+        restaurants,
+        users,
+      } = result;
+      return {
+        restaurantCount,
+        totalAmount,
+        userCount,
+        status,
+        revenueData,
+        salesData,
+        restaurants,
+        users,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 
   public async getApproveRestaurantListInteractor(): Promise<{
     restaurants: RestaurantType[] | null;
@@ -168,7 +204,6 @@ export class adminInteractorImpl implements IAdminInteractor {
       startDate,
       expiryDate,
     } = couponDetails;
-    console.log(couponDetails)
     if (
       !couponCode ||
       !description ||
@@ -204,25 +239,81 @@ export class adminInteractorImpl implements IAdminInteractor {
       expiryDate,
     } = memebershipData;
     if (
-      planName ||
-      benefits ||
-      cost ||
-      type ||
-      description ||
-      discount ||
-      expiryDate
+      !planName ||
+      !benefits ||
+      !cost ||
+      !type ||
+      !description ||
+      !discount ||
+      !expiryDate
     ) {
       return { message: MESSAGES.INVALID_DATA, status: false };
     }
     try {
-      const result = await this.repository.createMembershipInteractor(memebershipData);
+      const result = await this.repository.createMembershipRepo(
+        memebershipData
+      );
       const { message, status } = result;
       return { message, status };
     } catch (error) {
       throw error;
     }
   }
-  
+  public async updateMembershipInteractor(
+    updatedMembership: MemberShipType
+  ): Promise<{
+    message: string;
+    Membership: MemberShipType | null;
+  }> {
+    if (
+      !updatedMembership ||
+      !updatedMembership.cost ||
+      !updatedMembership.planName
+    ) {
+      return { message: MESSAGES.INVALID_DATA, Membership: null };
+    }
+    try {
+      const result = await this.repository.updateMembershipRepo(
+        updatedMembership
+      );
+      const { message, Membership } = result;
+      return { message, Membership };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async removeMembershipInteractor(membershipId: string): Promise<{
+    message: string;
+    status: boolean;
+  }> {
+    if (!membershipId) {
+      return { message: MESSAGES.INVALID_FORMAT, status: false };
+    }
+    try {
+      const result = await this.repository.removeMembershipRepo(membershipId);
+      const { message, status } = result;
+      return { message, status };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async updateCouponInteractor(couponId: string , couponDatas : CouponType): Promise<{
+    message: string;
+    status: boolean;
+  }> {
+    
+    if (!couponId || !couponDatas || !couponDatas.couponCode) {
+      return { message: MESSAGES.INVALID_FORMAT, status: false };
+    }
+    try {
+      const result = await this.repository.updateCouponRepo(couponId , couponDatas);
+      const { message, status } = result;
+      return { message, status };
+    } catch (error) {
+      throw error;
+    }
+  }
   public async removeCouponInteractor(couponId: string): Promise<{
     message: string;
     status: boolean;

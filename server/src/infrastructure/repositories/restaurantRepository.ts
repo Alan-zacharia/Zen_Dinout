@@ -1,21 +1,23 @@
 import {
+  MenuType,
   RestaurantType,
   TableDataType,
   TimeSlotType,
 } from "../../domain/entities/RestaurantType";
 import { IRestaurantRepository } from "../../domain/interface/repositories/IRestaurantRepositories";
-import restaurantModel from "../database/model.ts/restaurantModel";
+import restaurantModel from "../database/model/restaurantModel";
 import logger from "../lib/Wintson";
-import restaurantTableModel from "../database/model.ts/restaurantTable";
+import restaurantTableModel from "../database/model/restaurantTable";
 import { MESSAGES, ROLES, SUCCESS_MESSAGES } from "../../configs/constants";
 import { hashedPasswordCompare } from "../../domain/entities/auth";
 import { generateTokens } from "../utils/jwtUtils";
 import EmailService from "../lib/EmailService";
 import { BookingDataType } from "../../domain/entities/UserType";
-import bookingModel from "../database/model.ts/bookingModel";
-import TimeSlot from "../database/model.ts/restaurantTimeSlot";
+import bookingModel from "../database/model/bookingModel";
+import TimeSlot from "../database/model/restaurantTimeSlot";
 import { removeuploadedImage } from "../../presentation/services/shared/imageService";
 import { convertToUTCWithOffset } from "../../application/helpers/timeConvertionHelper";
+import menuModel from "../database/model/menuModel";
 
 export class sellerRepository implements IRestaurantRepository {
   public async findExistingUser(email: string): Promise<boolean> {
@@ -398,6 +400,33 @@ export class sellerRepository implements IRestaurantRepository {
       throw error;
     }
   }
+  public async deleteMenuRepo(
+    restaurantId: string,
+    imageIds: string[]
+  ): Promise<{ message: string; status: boolean }> {
+    try {
+      const result = await menuModel.updateOne(
+        { restaurantId },
+        { $pull: { items: { public_id: { $in: imageIds } } } }
+      );
+
+      if (result.modifiedCount === 0) {
+        return {
+          message: MESSAGES.DATA_NOT_FOUND,
+          status: false,
+        };
+      }
+
+      return {
+        status: true,
+        message: SUCCESS_MESSAGES.REMOVED_SUCCESS,
+      };
+    } catch (error) {
+      console.error("Error deleting images:", error);
+      throw new Error("Error deleting images");
+    }
+  }
+
   public async updateRestaurantTableIsAvailableRepo(
     tableId: string,
     isAvailable: boolean
@@ -433,6 +462,72 @@ export class sellerRepository implements IRestaurantRepository {
       timeSlot.isAvailable = available;
       await timeSlot.save();
       return { status: true, message: SUCCESS_MESSAGES.UPDATED_SUCCESSFULLY };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async createMenuRepo(
+    restaurantId: string,
+    uploadedImages: { url: string; public_id: string }[]
+  ): Promise<{
+    message: string;
+    status: boolean;
+    menuImages: { url: string; public_id: string }[] | null;
+  }> {
+    try {
+      const existingMenu = await menuModel.findOne({ restaurantId });
+      if (existingMenu) {
+        existingMenu.items.push(...uploadedImages);
+        const updatedMenu = await existingMenu.save();
+        const updatedMenuImages = updatedMenu.items.map((item: any) => ({
+          url: item.url,
+          public_id: item.public_id,
+        }));
+
+        return {
+          status: true,
+          message: SUCCESS_MESSAGES.RESOURCE_CREATED,
+          menuImages: updatedMenuImages,
+        };
+      } else {
+        const newMenu = new menuModel({
+          restaurantId,
+          items: uploadedImages,
+        });
+        const savedMenu = await newMenu.save();
+        const savedMenuImages = savedMenu.items.map((item: any) => ({
+          url: item.url,
+          public_id: item.public_id,
+        }));
+        return {
+          status: true,
+          message: SUCCESS_MESSAGES.RESOURCE_CREATED,
+          menuImages: savedMenuImages,
+        };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async getMenuRepo(restaurantId: string): Promise<{
+    message: string;
+    status: boolean;
+    menu: MenuType[] | null;
+  }> {
+    try {
+      const menu = await menuModel.findOne({ restaurantId });
+      if (!menu) {
+        return {
+          status: true,
+          message: SUCCESS_MESSAGES.RESOURCE_CREATED,
+          menu: [],
+        };
+      }
+      return {
+        status: true,
+        message: SUCCESS_MESSAGES.RESOURCE_CREATED,
+        menu: menu?.toObject(),
+      };
     } catch (error) {
       throw error;
     }
