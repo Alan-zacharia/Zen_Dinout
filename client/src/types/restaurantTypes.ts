@@ -134,8 +134,6 @@ export interface TimeSlotType {
   availableTables: string;
   maxTables: string;
 }
-
-
 export interface MenuType {
   _id: string;
   restaurantId: string;

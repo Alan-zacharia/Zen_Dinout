@@ -107,7 +107,7 @@ const RestaurantMenu = () => {
   const sliderSettings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 600,
     slidesToShow: 1,
     slidesToScroll: 1,
     initialSlide: selectedImageIndex,

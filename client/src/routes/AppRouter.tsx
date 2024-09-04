@@ -25,7 +25,8 @@ const RestaurantProfile = React.lazy(
   () => import("../pages/restaurant/RestaurantProfile")
 );
 const UserProfile = React.lazy(() => import("../pages/user/UserProfile"));
-import HomeLayout from "../components/user/layouts/HomeLayout";
+const HomeLayout =   React.lazy(
+  () => import("../components/user/layouts/HomeLayout"));
 import ForgotPassword from "../pages/user/ForgotPassword";
 import RestaurantApprovalForm from "../components/admin/RestaurantApprovalForm";
 import ForgotPasswordPageRecieveEmail from "../pages/user/ForgotPasswordPageRecieveEmail";

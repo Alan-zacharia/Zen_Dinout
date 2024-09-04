@@ -41,7 +41,7 @@ const Menu: React.FC = () => {
         ),
       }));
       setSelectedImages(new Set());
-      toast.success("Selected images deleted successfully.");
+      toast.success("Deleted successfully.");
     } catch (err) {
       toast.error("Failed to delete images.");
     }

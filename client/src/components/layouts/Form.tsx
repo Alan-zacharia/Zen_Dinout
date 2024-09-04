@@ -33,7 +33,7 @@ const Form: React.FC = () => {
         setError(
           `Invalid files: ${invalidFiles.join(
             ", "
-          )} (must be images under 1 MB).`
+          )} (must be image under 1 MB).`
         );
       } else {
         setItemImages([...itemImages, ...validFiles]);
