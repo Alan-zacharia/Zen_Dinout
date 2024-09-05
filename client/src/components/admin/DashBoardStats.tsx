@@ -26,9 +26,6 @@ const DashBoardStat: React.FC<DashBoardStatProps> = ({ count }) => {
               <FaRupeeSign size={14} />
               {(+count?.Revenue || 0).toFixed(2)}
             </strong>
-
-            <strong className="text-lg text-gray-700 font-bold">₹1999</strong>
-            <span className="text-sm text-red-400 pl-2 font-bold">-₹190</span>
           </div>
         </div>
       </BoxWrapper>
@@ -45,10 +42,6 @@ const DashBoardStat: React.FC<DashBoardStatProps> = ({ count }) => {
             <strong className="text-xl text-gray-700 font-semibold">
               {count.totalRestaurants || 6}
             </strong>
-
-            <strong className="text-xl text-gray-700 font-semibold">
-              {count.totalRestaurants || 6}
-            </strong>
           </div>
         </div>
       </BoxWrapper>
@@ -62,10 +55,6 @@ const DashBoardStat: React.FC<DashBoardStatProps> = ({ count }) => {
           <div className="flex items-center">
             <strong className="text-lg text-gray-700 font-bold">
               {count.totalUsers || 12}
-            </strong>
-
-            <strong className="text-lg text-gray-700 font-bold">
-              {count.totalUsers || 16}
             </strong>
           </div>
         </div>

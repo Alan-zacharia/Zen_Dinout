@@ -25,6 +25,10 @@ interface ChartTwoProps {
 }
 
 const SellerChartOne: React.FC<ChartTwoProps> = ({ chartData, isLoading }) => {
+  console.log(chartData)
+  if(!chartData){
+    return
+  }
   if (isLoading) {
     return (
       <div className="w-[90%] flex m-auto justify-center items-center" style={{ height: 440 }}>

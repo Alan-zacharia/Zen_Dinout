@@ -1,6 +1,6 @@
-import { ApexOptions } from 'apexcharts';
-import React, { useEffect, useState } from 'react';
-import ReactApexChart from 'react-apexcharts';
+import { ApexOptions } from "apexcharts";
+import React, { useEffect, useState } from "react";
+import ReactApexChart from "react-apexcharts";
 
 interface ChartDataType {
   salesData: number[];
@@ -12,17 +12,20 @@ interface ChartTwoProps {
 }
 
 const ChartTwo: React.FC<ChartTwoProps> = ({ chartData }) => {
+  if (!chartData) {
+    return;
+  }
   const [state, setState] = useState<ChartDataType | null>(chartData);
-
+   
   useEffect(() => {
     setState(chartData);
   }, [chartData]);
 
   const options: ApexOptions = {
-    colors: ['#00BFFF', '#FF6347'],
+    colors: ["#00BFFF", "#FF6347"],
     chart: {
-      fontFamily: 'Satoshi, sans-serif',
-      type: 'bar',
+      fontFamily: "Satoshi, sans-serif",
+      type: "bar",
       stacked: true,
       toolbar: {
         show: false,
@@ -35,23 +38,25 @@ const ChartTwo: React.FC<ChartTwoProps> = ({ chartData }) => {
       bar: {
         horizontal: false,
         borderRadius: 0,
-        borderRadiusApplication: 'end',
-        borderRadiusWhenStacked: 'last',
-        columnWidth : "18%"
+        borderRadiusApplication: "end",
+        borderRadiusWhenStacked: "last",
+        columnWidth: "18%",
       },
     },
     dataLabels: {
       enabled: false,
     },
     xaxis: {
-      categories: chartData ? chartData.salesData.map((_, index) => `Day ${index + 1}`) : [],
+      categories: chartData
+        ? chartData.salesData.map((_, index) => `Day ${index + 1}`)
+        : [],
     },
     legend: {
-      position: 'top',
-      horizontalAlign: 'left',
-      fontFamily: 'Satoshi',
+      position: "top",
+      horizontalAlign: "left",
+      fontFamily: "Satoshi",
       fontWeight: 500,
-      fontSize: '14px',
+      fontSize: "14px",
     },
     fill: {
       opacity: 1,
@@ -66,9 +71,7 @@ const ChartTwo: React.FC<ChartTwoProps> = ({ chartData }) => {
             Bookings & Revenue This Week
           </h4>
         </div>
-        <div>
-          
-        </div>
+        <div></div>
       </div>
 
       <div>
@@ -78,13 +81,13 @@ const ChartTwo: React.FC<ChartTwoProps> = ({ chartData }) => {
               options={options}
               series={[
                 {
-                  name: 'Bookings',
+                  name: "Bookings",
                   data: state.salesData,
                 },
                 {
-                  name: 'Revenue',
+                  name: "Revenue",
                   data: state.revenueData,
-                }
+                },
               ]}
               type="bar"
               height={455}
