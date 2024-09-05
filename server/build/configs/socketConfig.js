@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const messageModel_1 = __importDefault(require("../infrastructure/database/model.ts/messageModel"));
+const messageModel_1 = __importDefault(require("../infrastructure/database/model/messageModel"));
 const socketConfig = (io) => {
     let users = [];
     const addUser = (userId, socketId) => {
@@ -68,7 +68,6 @@ const socketConfig = (io) => {
         socket.on("markMessageAsSeen", (_a) => __awaiter(void 0, [_a], void 0, function* ({ conversationId, userId }) {
             try {
                 yield messageModel_1.default.updateMany({ conversationId: conversationId, sender: userId, seen: false }, { $set: { seen: true } });
-                console.log(userId);
                 const user = getUser(userId);
                 if (user) {
                     io.to(user === null || user === void 0 ? void 0 : user.socketId).emit("messageSeen", { conversationId });

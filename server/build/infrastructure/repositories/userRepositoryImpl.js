@@ -24,24 +24,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRepositoryImpl = void 0;
-const userModel_1 = __importDefault(require("../database/model.ts/userModel"));
+const userModel_1 = __importDefault(require("../database/model/userModel"));
 const Wintson_1 = __importDefault(require("../lib/Wintson"));
-const restaurantModel_1 = __importDefault(require("../database/model.ts/restaurantModel"));
+const restaurantModel_1 = __importDefault(require("../database/model/restaurantModel"));
 const constants_1 = require("../../configs/constants");
 const jwtUtils_1 = require("../utils/jwtUtils");
 const EmailService_1 = __importDefault(require("../lib/EmailService"));
-const bookingModel_1 = __importDefault(require("../database/model.ts/bookingModel"));
-const wallet_1 = __importDefault(require("../database/model.ts/wallet"));
-const couponModel_1 = __importDefault(require("../database/model.ts/couponModel"));
-const bookMarkModel_1 = __importDefault(require("../database/model.ts/bookMarkModel"));
-const reviewModel_1 = __importDefault(require("../database/model.ts/reviewModel"));
-const restaurantTable_1 = __importDefault(require("../database/model.ts/restaurantTable"));
+const bookingModel_1 = __importDefault(require("../database/model/bookingModel"));
+const wallet_1 = __importDefault(require("../database/model/wallet"));
+const couponModel_1 = __importDefault(require("../database/model/couponModel"));
+const bookMarkModel_1 = __importDefault(require("../database/model/bookMarkModel"));
+const reviewModel_1 = __importDefault(require("../database/model/reviewModel"));
+const restaurantTable_1 = __importDefault(require("../database/model/restaurantTable"));
 const generateBookingId_1 = require("../utils/generateBookingId");
 const otpGenerator_1 = require("../utils/otpGenerator");
 const auth_1 = require("../../domain/entities/auth");
-const restaurantTimeSlot_1 = __importDefault(require("../database/model.ts/restaurantTimeSlot"));
-const membershipModel_1 = __importDefault(require("../database/model.ts/membershipModel"));
+const restaurantTimeSlot_1 = __importDefault(require("../database/model/restaurantTimeSlot"));
+const membershipModel_1 = __importDefault(require("../database/model/membershipModel"));
 const stripeMembershipService_1 = __importDefault(require("../payment/stripeMembershipService"));
+const menuModel_1 = __importDefault(require("../database/model/menuModel"));
 class userRepositoryImpl {
     findExistingUser(email) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -529,14 +530,40 @@ class userRepositoryImpl {
     getReviewsRepo(restaurantId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const reviewsList = yield reviewModel_1.default.find({
+                const reviewsList = yield reviewModel_1.default
+                    .find({
                     restaurantId,
-                });
+                })
+                    .populate("userId", "username");
                 const reviews = reviewsList.map((data) => {
                     return data.toObject();
                 });
                 return {
                     reviews: reviews,
+                    status: true,
+                    message: constants_1.SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
+                };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    getMenuRepo(restaurantId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const menuList = yield menuModel_1.default.findOne({
+                    restaurantId,
+                });
+                if (!menuList) {
+                    return {
+                        menu: null,
+                        status: true,
+                        message: constants_1.SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
+                    };
+                }
+                return {
+                    menu: menuList.toObject(),
                     status: true,
                     message: constants_1.SUCCESS_MESSAGES.FETCHED_SUCCESSFULLY,
                 };
@@ -580,6 +607,7 @@ class userRepositoryImpl {
                     restaurantId,
                     timeSlot: slot,
                     bookingDate: new Date(selectedDate),
+                    bookingStatus: { $ne: "CANCELLED" },
                 })
                     .select("table");
                 const bookedTableIds = bookedTables.map((booking) => booking.table);
@@ -625,6 +653,8 @@ class userRepositoryImpl {
     getTimeSlotRepo(restaurantId, date) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const now = new Date();
+                const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000);
                 const allTimeSlots = yield restaurantTimeSlot_1.default.find({ restaurantId, date });
                 const bookedTimeSlots = yield bookingModel_1.default
                     .find({
@@ -641,16 +671,18 @@ class userRepositoryImpl {
                     bookingCountMap[timeSlotId] = (bookingCountMap[timeSlotId] || 0) + 1;
                 });
                 const availableTimeSlots = allTimeSlots.filter((timeSlot) => {
+                    const timeSlotDateTime = new Date(timeSlot.date + "T" + timeSlot.time.toISOString().split("T")[1]);
                     const isBooked = (bookingCountMap[timeSlot._id.toString()] || 0) >= totalTables;
-                    return timeSlot.isAvailable && !isBooked;
+                    const isAvailable = timeSlot.isAvailable && !isBooked;
+                    const isAfterOneHour = timeSlotDateTime >= oneHourFromNow;
+                    return isAvailable && isAfterOneHour;
                 });
-                const TimeSlots = availableTimeSlots.map((data) => {
-                    return data.toObject();
-                });
+                const TimeSlots = availableTimeSlots.map((data) => data.toObject());
                 return { TimeSlots, status: true };
             }
             catch (error) {
-                throw error;
+                console.error("Error in getTimeSlotRepo:", error);
+                return { TimeSlots: null, status: false };
             }
         });
     }
@@ -800,7 +832,7 @@ class userRepositoryImpl {
                 return {
                     message: "Applied successfully...",
                     status: true,
-                    coupon: coupon.toObject()
+                    coupon: coupon.toObject(),
                 };
             }
             catch (error) {

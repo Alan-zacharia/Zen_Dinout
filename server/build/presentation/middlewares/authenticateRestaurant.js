@@ -16,7 +16,7 @@ const jwtUtils_1 = require("../../infrastructure/utils/jwtUtils");
 const envConfig_1 = __importDefault(require("../../configs/envConfig"));
 const constants_1 = require("../../configs/constants");
 const appError_1 = require("./appError");
-const restaurantModel_1 = __importDefault(require("../../infrastructure/database/model.ts/restaurantModel"));
+const restaurantModel_1 = __importDefault(require("../../infrastructure/database/model/restaurantModel"));
 const authenticateRestaurant = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const authHeader = req.headers.authorization;
     if (authHeader) {

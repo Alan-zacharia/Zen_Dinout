@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../api/axios";
 import toast from "react-hot-toast";
+import { getTodayDate } from "../../utils/dateValidateFunctions";
 
 interface TimeSlot {
   _id?: string;
   date: string;
   time: string;
   isBooked?: boolean;
-  maxTables: number;
   isAvailable?: boolean;
 }
 
@@ -15,7 +15,6 @@ const TimeSlots: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [time, setTime] = useState("");
   const [availableTables, setAvailableTables] = useState<number | string>("");
-  const [maxTables, setMaxTables] = useState<number | string>("");
   const [selectedDate, setSelectedDate] = useState("");
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,23 +62,57 @@ const TimeSlots: React.FC = () => {
     setIsModalOpen(false);
     setTime("");
     setAvailableTables("");
-    setMaxTables("");
+  };
+
+  const normalizeTime = (time: string): string => {
+    const [hours, minutes] = time.split(":").map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date.toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      timeZone: "Asia/Kolkata",
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const availableTablesNumber = Number(availableTables);
-    const maxTablesNumber = Number(maxTables);
-    if (isNaN(availableTablesNumber) || isNaN(maxTablesNumber)) {
-      toast.error(
-        "Please enter valid numbers for available tables and max tables."
-      );
+    const todayDate = getTodayDate();
+    if (selectedDate < todayDate) {
+      toast.error("Date cannot be in the past.");
       return;
     }
+
+    const now = new Date();
+    const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000);
+    const inputTime = normalizeTime(time);
+    const [inputHours, inputMinutes] = time.split(":").map(Number);
+    const inputDateTime = new Date(selectedDate);
+    inputDateTime.setHours(inputHours, inputMinutes, 0, 0);
+
+    if (inputDateTime < oneHourFromNow) {
+      toast.error("The time slot must be at least one hour from now.");
+      return;
+    }
+
+    const availableTablesNumber = Number(availableTables);
+    if (isNaN(availableTablesNumber)) {
+      toast.error("Please enter valid numbers for available tables.");
+      return;
+    }
+
+    const timeSlotExists = timeSlots.some(
+      (slot) => slot.date === selectedDate && slot.time === inputTime
+    );
+    if (timeSlotExists) {
+      toast.error("A time slot with this date and time already exists.");
+      return;
+    }
+
     const newSlotData: TimeSlot = {
       date: selectedDate,
-      time,  
-      maxTables: maxTablesNumber,
+      time,
     };
     try {
       const response = await axiosInstance.post("/restaurant/times", {
@@ -108,17 +141,21 @@ const TimeSlots: React.FC = () => {
     }
   };
 
-  const filteredSlots = timeSlots ? timeSlots.filter((slot) => {
-    const matchesSearchQuery = slot.time.includes(searchQuery);
-    const matchesAvailability =
-      availabilityFilter === "all" ||
-      (availabilityFilter === "available" && slot.isAvailable) ||
-      (availabilityFilter === "notAvailable" && !slot.isAvailable);
+  const filteredSlots = timeSlots
+    ? timeSlots.filter((slot) => {
+        const matchesSearchQuery = slot.time.includes(searchQuery);
+        const matchesAvailability =
+          availabilityFilter === "all" ||
+          (availabilityFilter === "available" && slot.isAvailable) ||
+          (availabilityFilter === "notAvailable" && !slot.isAvailable);
 
-    return matchesSearchQuery && matchesAvailability;
-  }) : [];
+        return matchesSearchQuery && matchesAvailability;
+      })
+    : [];
 
-  const totalPages = Math.ceil(filteredSlots ? filteredSlots.length : 0 / itemsPerPage);
+  const totalPages = Math.ceil(
+    filteredSlots ? filteredSlots.length : 0 / itemsPerPage
+  );
   const paginatedSlots = filteredSlots.slice(
     slotPage * itemsPerPage,
     slotPage * itemsPerPage + itemsPerPage
@@ -207,12 +244,11 @@ const TimeSlots: React.FC = () => {
         <div></div>
       </div>
 
-      <div className="overflow-x-auto w-[95%] border border-neutral-400">
+      <div className="overflow-x-auto lg:w-[75%] flex m-auto border border-neutral-400">
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-200 text-left text-gray-600 text-lg">
               <th className="px-4 py-2">Time</th>
-              <th className="px-4 py-2">Max Tables</th>
               <th className="px-4 py-2">slot</th>
               <th className="px-4 py-2">Availability</th>
             </tr>
@@ -228,7 +264,6 @@ const TimeSlots: React.FC = () => {
                     {slot.time}
                   </div>
                 </td>
-                <td className="px-4 py-4 font-bold">{slot.maxTables}</td>
                 <td className="px-4 py-5 font-bold">
                   {slot.isBooked ? (
                     <p className="text-red-500">booked</p>
@@ -256,11 +291,6 @@ const TimeSlots: React.FC = () => {
                       Not Available
                     </span>
                   )}
-                </td>
-                <td className="px-4 py-2">
-                  <label>
-                    <input type="checkbox" className="checkbox" />
-                  </label>
                 </td>
               </tr>
             ))}
@@ -303,6 +333,7 @@ const TimeSlots: React.FC = () => {
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
                   className="input input-bordered"
+                  min={getTodayDate()}
                   required
                 />
               </div>
@@ -318,18 +349,7 @@ const TimeSlots: React.FC = () => {
                   required
                 />
               </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Max Tables</span>
-                </label>
-                <input
-                  type="number"
-                  value={maxTables}
-                  onChange={(e) => setMaxTables(e.target.value)}
-                  className="input input-bordered"
-                  required
-                />
-              </div>
+
               <div className="modal-action">
                 <button type="submit" className="btn">
                   Add

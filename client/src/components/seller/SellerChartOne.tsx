@@ -1,32 +1,61 @@
-import { BarChart } from '@mui/x-charts/BarChart';
 
-const uData = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
-const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
-const amtData = [2400, 2210, 2290, 2000, 2181, 2500, 2100];
+import React from 'react';
+import { BarChart } from "@mui/x-charts/BarChart";
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 
 const xLabels = [
-  'Page A',
-  'Page B',
-  'Page C',
-  'Page D',
-  'Page E',
-  'Page F',
-  'Page G',
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
 ];
 
-export default function SellerChartOne() {
+interface ChartDataType {
+  salesData: number[];
+  revenueData: number[];
+}
+
+interface ChartTwoProps {
+  chartData: ChartDataType | null;
+  isLoading: boolean;
+}
+
+const SellerChartOne: React.FC<ChartTwoProps> = ({ chartData, isLoading }) => {
+  if (isLoading) {
+    return (
+      <div className="w-[90%] flex m-auto justify-center items-center" style={{ height: 440 }}>
+        <CircularProgress />
+        <Typography variant="body1" style={{ marginLeft: 16 }}>Loading...</Typography>
+      </div>
+    );
+  }
+
+
+  if (!chartData || !chartData.revenueData || !chartData.salesData) {
+    return (
+      <div className="w-[90%] flex m-auto justify-center items-center" style={{ height: 440 }}>
+        <Typography variant="body1">No data available</Typography>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-[90%] flex m-auto">
       <BarChart
         className="w-full"
-        height={350}
+        height={440}
         series={[
-          { data: pData, label: 'pv', stack: 'stack1' },
-          { data: amtData, label: 'amt' },
-          { data: uData, label: 'uv', stack: 'stack1' },
+          { data: chartData.revenueData, label: "Revenue", stack: "stack1" },
+          { data: chartData.salesData, label: "Sales" },
         ]}
-        xAxis={[{ data: xLabels, scaleType: 'band' }]}
+        xAxis={[{ data: xLabels, scaleType: "band" }]}
       />
     </div>
   );
-}
+};
+
+export default SellerChartOne;

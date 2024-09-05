@@ -62,7 +62,9 @@ const NavBar: React.FC = () => {
               </Link>
             </li>
             <li className="m-3">
-              <p className=" font-bold">Blog</p>
+            <Link to={"/About"}>
+                <p className={location.pathname =="/About" ? "text-green-500 font-bold" : "font-bold"}>About</p>
+              </Link>
             </li>
 
             <li className="m-3">
@@ -114,8 +116,19 @@ const NavBar: React.FC = () => {
               } transition-all duration-500`}
             />
           </li>
-          <li className="hover:text-red-500">
-            <Link to={"/"}>Blog</Link>
+          <li
+            className={`${
+              location.pathname === "/About"
+                ? "text-red-500"
+                : "hover:text-red-500"
+            } transition-colors duration-300`}
+          >
+            <Link to="/About">About</Link>
+            <hr
+              className={`${
+                location.pathname === "/About" ? "border-red-500" : ""
+              } transition-all duration-500`}
+            />
           </li>
         </ul>
       </div>

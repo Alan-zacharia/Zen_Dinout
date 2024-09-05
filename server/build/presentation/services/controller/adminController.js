@@ -39,11 +39,10 @@ class adminController {
                 if (!admin) {
                     return res.status(constants_1.STATUS_CODES.UNAUTHORIZED).json({ message });
                 }
+                console.log(refreshToken);
                 if (refreshToken)
                     (0, cookieUtils_1.setAuthTokenCookie)(res, "refreshToken", refreshToken);
-                return res
-                    .status(constants_1.STATUS_CODES.OK)
-                    .json({ user: admin, message, token, refreshToken });
+                return res.status(constants_1.STATUS_CODES.OK).json({ user: admin, message, token });
             }
             catch (error) {
                 Wintson_1.default.error(`Error in admin login ${error.message}`);
@@ -175,6 +174,53 @@ class adminController {
             }
         });
     }
+    getDashboardDetailsController(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("Get dashboard controller.....");
+            try {
+                const result = yield this.interactor.getDashboardDetailsInteractor();
+                const { restaurantCount, totalAmount, userCount, status, revenueData, salesData, restaurants, users, } = result;
+                return res
+                    .status(constants_1.STATUS_CODES.OK)
+                    .json({
+                    status,
+                    restaurantCount,
+                    totalAmount,
+                    userCount,
+                    revenueData,
+                    salesData,
+                    restaurants,
+                    users,
+                });
+            }
+            catch (error) {
+                Wintson_1.default.error(`Error in get membership service ${error.message}`);
+                next(new appError_1.AppError(error.message, constants_1.STATUS_CODES.INTERNAL_SERVER_ERROR));
+            }
+        });
+    }
+    updateMembershipController(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { updatedMembership } = req.body;
+            console.log("Update memberships controller.....");
+            try {
+                const result = yield this.interactor.updateMembershipInteractor(updatedMembership);
+                const { Membership, message } = result;
+                if (!Membership) {
+                    return res
+                        .status(constants_1.STATUS_CODES.BAD_REQUEST)
+                        .json({ message, Membership });
+                }
+                return res
+                    .status(constants_1.STATUS_CODES.CREATED)
+                    .json({ message, membership: Membership });
+            }
+            catch (error) {
+                Wintson_1.default.error(`Error in update membership service ${error.message}`);
+                next(new appError_1.AppError(error.message, constants_1.STATUS_CODES.INTERNAL_SERVER_ERROR));
+            }
+        });
+    }
     createCouponController(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("Create coupon controller.....");
@@ -189,6 +235,25 @@ class adminController {
             }
             catch (error) {
                 Wintson_1.default.error(`Error in create coupon ${error.message}`);
+                next(new appError_1.AppError(error.message, constants_1.STATUS_CODES.INTERNAL_SERVER_ERROR));
+            }
+        });
+    }
+    updateCouponController(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("update coupon controller.....");
+            const { couponId } = req.params;
+            const { formData } = req.body;
+            try {
+                const result = yield this.interactor.updateCouponInteractor(couponId, formData);
+                const { message, status } = result;
+                if (!status) {
+                    return res.status(constants_1.STATUS_CODES.BAD_REQUEST).json({ message, status });
+                }
+                return res.status(constants_1.STATUS_CODES.CREATED).json({ message, status });
+            }
+            catch (error) {
+                Wintson_1.default.error(`Error in remove coupon ${error.message}`);
                 next(new appError_1.AppError(error.message, constants_1.STATUS_CODES.INTERNAL_SERVER_ERROR));
             }
         });
@@ -211,6 +276,24 @@ class adminController {
             }
         });
     }
+    removeMembershipController(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("Remove coupons controller.....");
+            const { membershipId } = req.params;
+            try {
+                const result = yield this.interactor.removeMembershipInteractor(membershipId);
+                const { message, status } = result;
+                if (!status) {
+                    return res.status(constants_1.STATUS_CODES.BAD_REQUEST).json({ message, status });
+                }
+                return res.status(constants_1.STATUS_CODES.NO_CONTENT).json({ message, status });
+            }
+            catch (error) {
+                Wintson_1.default.error(`Error in remove coupon ${error.message}`);
+                next(new appError_1.AppError(error.message, constants_1.STATUS_CODES.INTERNAL_SERVER_ERROR));
+            }
+        });
+    }
     createMembershipController(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("Add Membership controller.....");
@@ -218,6 +301,11 @@ class adminController {
             try {
                 const result = yield this.interactor.createMembershipInteractor(membershipData);
                 const { message, status } = result;
+                if (!status) {
+                    return res
+                        .status(constants_1.STATUS_CODES.BAD_REQUEST)
+                        .json({ message: message, status });
+                }
                 return res.status(constants_1.STATUS_CODES.CREATED).json({ message, status });
             }
             catch (error) {

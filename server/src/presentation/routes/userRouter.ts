@@ -90,7 +90,7 @@ userRouter.patch(
 
 /** HTTP PUT METHODS  */
 userRouter.put(
-  "/reset-password/:useId",
+  "/reset-password/:userId",
   controller.resetPasswordUpdateController.bind(controller)
 );
 

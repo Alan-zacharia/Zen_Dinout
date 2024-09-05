@@ -10,4 +10,3 @@ function setAuthTokenCookie(res, token_name, token) {
     });
 }
 exports.setAuthTokenCookie = setAuthTokenCookie;
-;

@@ -106,7 +106,7 @@ class EmailService {
             const htmlContent = `
           <p>Dear user,</p>
   <p>Please click this link for your reset-password</p>
-  <button style="background-color : red; width:150px; height : 50px; border-radius: 12px; cursor: pointer; border:none;"><a href='${envConfig_1.default.CLIENT_URL}/reset-password/fps/:${passwordResetToken}' style="text-decoration: none; color: #ffffff; font-size: 16px; font-family: sans-serif; font-weight: 600;">Reset password</a></button>
+  <button style="background-color : red; width:150px; height : 50px; border-radius: 12px; cursor: pointer; border:none;"><a href='${envConfig_1.default.CLIENT_URL}/reset-password/fps/${passwordResetToken}' style="text-decoration: none; color: #ffffff; font-size: 16px; font-family: sans-serif; font-weight: 600;">Reset password</a></button>
   <p>If you did not request have any concerns, please contact our support team immediately.</p>
   <p>Thank you,</p>
   <p>Zen Dinout</p>

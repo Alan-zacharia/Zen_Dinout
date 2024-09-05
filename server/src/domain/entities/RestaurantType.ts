@@ -48,7 +48,6 @@ export interface TimeSlotType {
   date: string;
   isAvailable: boolean;
   isBooked: boolean;
-  maxTables: number;
 }
 
 export interface MenuType {

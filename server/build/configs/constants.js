@@ -32,7 +32,8 @@ exports.MESSAGES = {
     INVALID_DATA: "Please provide all required fields.",
     INVALID_FORMAT: "Invalid format....",
     NO_TABLES_AVAILABLE: "No tables available",
-    USER_BLOCKED: "Sorry this user blocked by admin..."
+    USER_BLOCKED: "Sorry this user blocked by admin...",
+    COUPON_ALREADY_EXIST: "Coupon code already exists"
 };
 exports.SUCCESS_MESSAGES = {
     FETCHED_SUCCESSFULLY: "Successfully fetched ......",

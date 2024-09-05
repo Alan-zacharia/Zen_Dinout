@@ -154,7 +154,7 @@ class sellerInteractor {
     }
     createTimeSlotInteractor(restaurantId, newSlotData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { time, date, maxTables } = newSlotData;
+            const { time, date } = newSlotData;
             if (!restaurantId || !date || !time) {
                 return { newSlot: null, message: constants_1.MESSAGES.INVALID_DATA };
             }
@@ -237,6 +237,27 @@ class sellerInteractor {
             }
         });
     }
+    deleteMenuInteractor(restaurantId, imageIds) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!restaurantId || !imageIds) {
+                return { message: constants_1.MESSAGES.INVALID_FORMAT, status: false };
+            }
+            try {
+                for (let imageId of imageIds) {
+                    const response = yield (0, imageService_1.removeuploadedImage)(imageId);
+                    if (!response.success) {
+                        return { status: false, message: "Failed to remove image.." };
+                    }
+                }
+                const result = yield this.repository.deleteMenuRepo(restaurantId, imageIds);
+                const { message, status } = result;
+                return { status, message };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     updateRestaurantTableIsAvailableInteractor(tableId, isAvailable) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!tableId) {
@@ -261,6 +282,59 @@ class sellerInteractor {
                 const result = yield this.repository.updateRestaurantTimeSlotAvailableRepo(timeSlotId, avaialable);
                 const { message, status } = result;
                 return { status, message };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    createMenuInteractor(restaurantId, uploadedImages) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!restaurantId || !uploadedImages) {
+                return {
+                    message: constants_1.MESSAGES.INVALID_DATA,
+                    status: false,
+                    menuImages: null,
+                };
+            }
+            try {
+                const result = yield this.repository.createMenuRepo(restaurantId, uploadedImages);
+                const { menuImages, message, status } = result;
+                return { menuImages, message, status };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    getDashBoardInteractor(restaurantId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!restaurantId) {
+                return { revenueData: [], salesData: [] };
+            }
+            try {
+                const result = yield this.repository.getDashBoardRepo(restaurantId);
+                const { revenueData, salesData } = result;
+                return { revenueData, salesData };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    getMenuInteractor(restaurantId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!restaurantId) {
+                return {
+                    message: constants_1.MESSAGES.INVALID_DATA,
+                    status: false,
+                    menu: null,
+                };
+            }
+            try {
+                const result = yield this.repository.getMenuRepo(restaurantId);
+                const { menu, message, status } = result;
+                return { menu, message, status };
             }
             catch (error) {
                 throw error;

@@ -334,6 +334,21 @@ class userInteractorImpl {
             }
         });
     }
+    getMenuInteractor(restaurantId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!restaurantId) {
+                return { menu: null, status: false, message: constants_1.MESSAGES.INVALID_FORMAT };
+            }
+            try {
+                const result = yield this.repository.getMenuRepo(restaurantId);
+                const { message, menu, status } = result;
+                return { message, menu, status };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     getReviewInteractor(restaurantId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!restaurantId || !userId) {

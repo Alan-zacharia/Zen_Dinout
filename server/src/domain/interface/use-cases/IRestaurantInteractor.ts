@@ -25,6 +25,10 @@ export interface IRestaurantInteractor {
   getReservationInteractor(
     reservationId: string
   ): Promise<{ reservation: BookingDataType | null; message: string }>;
+  getDashBoardInteractor(restaurantId: string): Promise<{
+    salesData: number[];
+    revenueData: number[];
+  }>;
   updateReservationInteractor(
     reservationId: string,
     bookingStatus: string

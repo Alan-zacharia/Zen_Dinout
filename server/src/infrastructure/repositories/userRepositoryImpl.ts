@@ -650,6 +650,7 @@ export class userRepositoryImpl implements IUserRepository {
           restaurantId,
           timeSlot: slot,
           bookingDate: new Date(selectedDate),
+          bookingStatus: { $ne: "CANCELLED" },
         })
         .select("table");
 
@@ -691,6 +692,7 @@ export class userRepositoryImpl implements IUserRepository {
       throw error;
     }
   }
+
   public async getTimeSlotRepo(
     restaurantId: string,
     date: string
@@ -699,6 +701,8 @@ export class userRepositoryImpl implements IUserRepository {
     status: boolean;
   }> {
     try {
+      const now = new Date();
+      const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000);
       const allTimeSlots = await TimeSlot.find({ restaurantId, date });
       const bookedTimeSlots = await bookingModel
         .find({
@@ -715,16 +719,22 @@ export class userRepositoryImpl implements IUserRepository {
         bookingCountMap[timeSlotId] = (bookingCountMap[timeSlotId] || 0) + 1;
       });
       const availableTimeSlots = allTimeSlots.filter((timeSlot) => {
+        const timeSlotDateTime = new Date(
+          timeSlot.date + "T" + timeSlot.time.toISOString().split("T")[1]
+        );
         const isBooked =
           (bookingCountMap[timeSlot._id.toString()] || 0) >= totalTables;
-        return timeSlot.isAvailable && !isBooked;
+        const isAvailable = timeSlot.isAvailable && !isBooked;
+        const isAfterOneHour = timeSlotDateTime >= oneHourFromNow;
+        return isAvailable && isAfterOneHour;
       });
-      const TimeSlots: TimeSlotType[] = availableTimeSlots.map((data) => {
-        return data.toObject();
-      });
+      const TimeSlots: TimeSlotType[] = availableTimeSlots.map((data) =>
+        data.toObject()
+      );
       return { TimeSlots, status: true };
     } catch (error) {
-      throw error;
+      console.error("Error in getTimeSlotRepo:", error);
+      return { TimeSlots: null, status: false };
     }
   }
 

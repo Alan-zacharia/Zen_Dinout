@@ -5,7 +5,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { SiGooglecalendar } from "react-icons/si";
 import { getRestaurantTableSlot } from "../../../services/api";
-import { TimeSlots } from "../../../types/restaurantTypes";
+import { TimeSlotType } from "../../../types/restaurantTypes";
 import { getTodayDate } from "../../../utils/dateValidateFunctions";
 import { RootState } from "../../../redux/store";
 import toast from "react-hot-toast";
@@ -18,11 +18,13 @@ const TableSearching = () => {
   const { isAuthenticated, role } = useSelector(
     (state: RootState) => state.user
   );
-  const [timeSlot, setTimeSlots] = useState<TimeSlots[]>([]);
+  const [timeSlot, setTimeSlots] = useState<TimeSlotType[]>([]);
   const [guestCount, setGuestCount] = useState<number>(0);
   const [timeSlotSelect, setTimeSlotSelect] = useState<string>("");
   const [date, setDate] = useState(() => {
     const today = new Date();
+    today.setHours(today.getHours() + 5);
+    today.setMinutes(today.getMinutes() + 30);
     return today.toISOString().split("T")[0];
   });
   const { restaurantId } = useParams();
@@ -100,10 +102,10 @@ const TableSearching = () => {
                       key={index}
                       className="bg-blue-500 p-1 h-8 w-20 text-center font-bold cursor-pointer text-white rounded-md"
                       onClick={() => {
-                        handleTimeSlot(value.startTime);
+                        handleTimeSlot(value.time);
                       }}
                     >
-                      {formatTime(value.startTime)}
+                      {formatTime(value.time)}
                     </p>
                   ))
                 ) : (
@@ -121,7 +123,7 @@ const TableSearching = () => {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col gap-3 pb-5 ">
+            <div className="flex flex-col pb-5 ">
               <p className=" text-gray-700 text-base font-bold ">
                 Selected Time &nbsp;&nbsp;:&nbsp; &nbsp;
                 <span className="text-white bg-blue-500 p-1 text-sm rounded-md">
@@ -131,10 +133,10 @@ const TableSearching = () => {
                   className="py-0.5 px-2 bg-red-500 rounded-lg text-white mx-8"
                   onClick={() => setTimeSlotSelect("")}
                 >
-                  clear
+                  X
                 </button>
               </p>
-              <div className="flex flex-wrap gap-5 w-80 h-[220px] overflow-auto ">
+              <div className="flex flex-wrap  w-80 h-[220px] overflow-auto ">
                 {timeSlotSelect && (
                   <div className="flex flex-col gap-2 w-80">
                     <p className="text-sm font-semibold text-gray-600">
@@ -162,17 +164,6 @@ const TableSearching = () => {
                         </span>
                       </button>
                     </div>
-                    <label
-                      htmlFor="GuestName"
-                      className="text-gray-700 font-bold"
-                    >
-                      Guest name
-                    </label>
-                    <input
-                      type="text"
-                      className="shadow-lg p-2 border border-gray-300 rounded-md outline-none"
-                      placeholder="Enter guest name..."
-                    />
                   </div>
                 )}
                 {guestCount > 0 && (

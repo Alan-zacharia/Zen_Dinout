@@ -1,13 +1,15 @@
-import React  from "react";
-import { FaSearch } from "react-icons/fa";
+import React from "react";
 import { Link } from "react-router-dom";
 import { IoHome, IoLogOut } from "react-icons/io5";
-import { SiImessage } from "react-icons/si";
 import { RiFolderUserFill } from "react-icons/ri";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import  logout  from "../../utils/Logout";
 
 const ChatSideBar: React.FC = () => {
- 
-  return ( 
+  const { role } = useSelector((state: RootState) => state.user);
+
+  return (
     <div className="hidden md:flex flex-col items-center p-3 mt-6 w-20 bg-white">
       <div className="hover:bg-slate-200 rounded-lg w-14 h-14 tooltip flex items-center justify-center">
         <span className="text-black font-extrabold text-2xl cursor-pointer">
@@ -18,7 +20,7 @@ const ChatSideBar: React.FC = () => {
         </span>
       </div>
       <ul className="pt-10 text-2xl cursor-pointer flex flex-col gap-5 items-center">
-        <Link to="/">
+        <Link to={role == "seller" ? "/restaurant" : "/"}>
           <li
             className="hover:bg-slate-200 rounded-lg w-14 h-14 p-4 tooltip"
             data-tip="Home"
@@ -26,23 +28,8 @@ const ChatSideBar: React.FC = () => {
             <IoHome />
           </li>
         </Link>
-        <Link to="#">
-          <li
-            className="hover:bg-slate-200 rounded-lg w-14 h-14 p-4 tooltip"
-            data-tip="Search"
-          >
-            <FaSearch />
-          </li>
-        </Link>
-        <Link to="#">
-          <li
-            className="hover:bg-slate-200 rounded-lg w-14 h-14 p-4 tooltip"
-            data-tip="Chat"
-          >
-            <SiImessage />
-          </li>
-        </Link>
-        <Link to="/restaurant/restaurant-details">
+
+        <Link to={role == "seller" ? "/restaurant/profile" : "/"}>
           <li
             className="hover:bg-slate-200 rounded-lg w-14 h-14 p-4 tooltip"
             data-tip="Profile"
@@ -54,6 +41,7 @@ const ChatSideBar: React.FC = () => {
       <div
         className="mt-auto p-4 hover:bg-slate-200 rounded-lg w-14 h-14 tooltip cursor-pointer"
         data-tip="Logout"
+        onClick={() => logout("Logout successfully...")}
       >
         <IoLogOut size={25} className="text-red-500" />
       </div>

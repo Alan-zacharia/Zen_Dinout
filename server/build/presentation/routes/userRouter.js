@@ -22,7 +22,6 @@ userRouter.post("/otp", (0, expressValidatorValidation_1.signupValidation)(), us
 userRouter.post("/google-login", (0, expressValidatorValidation_1.signupValidation)(), userBlocked_1.blockedUserCheck, controller.googleLoginController.bind(controller));
 userRouter.post("/review", authenticateUser_1.default, controller.addReviewController.bind(controller));
 userRouter.post("/membership", authenticateUser_1.default, controller.createMemberShipPaymentController.bind(controller));
-userRouter.post("/review", authenticateUser_1.default, controller.addReviewController.bind(controller));
 userRouter.post("/apply-coupon", authenticateUser_1.default, controller.applyCouponController.bind(controller));
 userRouter.post("/create-payment", authenticateUser_1.default, controller.createBookingController.bind(controller));
 userRouter.post("/reset-password-request", controller.resetPasswordController.bind(controller));
@@ -34,7 +33,7 @@ userRouter.patch("/account/:userId", authenticateUser_1.default, controller.upda
 userRouter.patch("/booking-details/:bookingId", authenticateUser_1.default, controller.cancelBookingController.bind(controller));
 userRouter.patch("/payment/status/:bookingId", authenticateUser_1.default, controller.bookingStatusUpdationController.bind(controller));
 /** HTTP PUT METHODS  */
-userRouter.put("/reset-password/:useId", controller.resetPasswordUpdateController.bind(controller));
+userRouter.put("/reset-password/:userId", controller.resetPasswordUpdateController.bind(controller));
 /** HTTP GET METHODS  */
 userRouter.get("/account/:userId", authenticateUser_1.default, controller.getProfileController.bind(controller));
 userRouter.get("/restaurants", controller.getListedRestuarantsController.bind(controller));
@@ -46,6 +45,7 @@ userRouter.get("/wallet", authenticateUser_1.default, controller.getUserWalletCo
 userRouter.get("/coupons", authenticateUser_1.default, controller.getCouponsController.bind(controller));
 userRouter.get("/chek-bookmark/:restaurantId", authenticateUser_1.default, controller.getCheckSavedRestaurantController.bind(controller));
 userRouter.get("/reviews/:restaurantId", controller.getReviewsController.bind(controller));
+userRouter.get("/menu/:restaurantId", controller.getMenuController.bind(controller));
 userRouter.get("/review/:restaurantId", authenticateUser_1.default, controller.getReviewController.bind(controller));
 userRouter.get("/membership/:userId", authenticateUser_1.default, controller.getMembershipController.bind(controller));
 userRouter.get("/restaurant/:restaurantId/tables", controller.getRestaurantTablesController.bind(controller));

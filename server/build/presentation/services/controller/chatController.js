@@ -14,11 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.chatController = void 0;
 const Wintson_1 = __importDefault(require("../../../infrastructure/lib/Wintson"));
-const conversationModel_1 = __importDefault(require("../../../infrastructure/database/model.ts/conversationModel"));
-const messageModel_1 = __importDefault(require("../../../infrastructure/database/model.ts/messageModel"));
-const userModel_1 = __importDefault(require("../../../infrastructure/database/model.ts/userModel"));
-const restaurantModel_1 = __importDefault(require("../../../infrastructure/database/model.ts/restaurantModel"));
-const messageNotificationModel_1 = __importDefault(require("../../../infrastructure/database/model.ts/messageNotificationModel"));
+const conversationModel_1 = __importDefault(require("../../../infrastructure/database/model/conversationModel"));
+const messageModel_1 = __importDefault(require("../../../infrastructure/database/model/messageModel"));
+const userModel_1 = __importDefault(require("../../../infrastructure/database/model/userModel"));
+const restaurantModel_1 = __importDefault(require("../../../infrastructure/database/model/restaurantModel"));
+const messageNotificationModel_1 = __importDefault(require("../../../infrastructure/database/model/messageNotificationModel"));
 class chatController {
     constructor() { }
     createNewConversation(req, res) {

@@ -438,6 +438,20 @@ class userController {
             }
         });
     }
+    getMenuController(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("Get Menu service.....");
+            const { restaurantId } = req.params;
+            try {
+                const { menu, message, status } = yield this.interactor.getMenuInteractor(restaurantId);
+                return res.status(constants_1.STATUS_CODES.OK).json({ menu, message, status });
+            }
+            catch (error) {
+                Wintson_1.default.error(`Error in  get reviews service: ${error.message} `);
+                next(new appError_1.AppError(constants_1.MESSAGES.INTERNAL_SERVER_ERROR, constants_1.STATUS_CODES.INTERNAL_SERVER_ERROR));
+            }
+        });
+    }
     getReviewController(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("Get Review service.....");
@@ -499,7 +513,6 @@ class userController {
             const totalCost = restaurantDatas.price;
             try {
                 const { status, bookingId, bookingUsingWallet } = yield this.interactor.createBookingInteractor(userId, bookingComfirmationDatas, totalCost);
-                console.log(bookingUsingWallet);
                 if (!status) {
                     return res
                         .status(constants_1.STATUS_CODES.BAD_REQUEST)

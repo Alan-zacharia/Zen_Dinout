@@ -18,6 +18,7 @@ import TimeSlot from "../database/model/restaurantTimeSlot";
 import { removeuploadedImage } from "../../presentation/services/shared/imageService";
 import { convertToUTCWithOffset } from "../../application/helpers/timeConvertionHelper";
 import menuModel from "../database/model/menuModel";
+import mongoose from "mongoose";
 
 export class sellerRepository implements IRestaurantRepository {
   public async findExistingUser(email: string): Promise<boolean> {
@@ -257,14 +258,13 @@ export class sellerRepository implements IRestaurantRepository {
     restaurantId: string,
     newSlotData: TimeSlotType
   ): Promise<{ message: string; newSlot: TimeSlotType | null }> {
-    const { date, time, maxTables } = newSlotData;
+    const { date, time } = newSlotData;
     try {
       const slotTime = convertToUTCWithOffset(time, 5, 30);
       const newSlot = new TimeSlot({
         restaurantId,
         date,
         time: slotTime,
-        maxTables,
       });
       await newSlot.save();
       console.log(newSlot);
@@ -527,6 +527,52 @@ export class sellerRepository implements IRestaurantRepository {
         status: true,
         message: SUCCESS_MESSAGES.RESOURCE_CREATED,
         menu: menu?.toObject(),
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async getDashBoardRepo(restaurantId: string): Promise<{
+    salesData: number[];
+    revenueData: number[];
+  }> {
+    try {
+      const restaurantIdObjectId = new  mongoose.Types.ObjectId(restaurantId);
+      const bookingsData = await bookingModel.aggregate([
+        {
+          $match: {
+            restaurantId: restaurantIdObjectId, 
+            paymentStatus: "PAID",
+            bookingStatus: "COMPLETED",
+            createdAt: {
+              $gte: new Date(new Date().setDate(new Date().getDate() - 7)), 
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+            },
+            count: { $sum: 1 }, 
+            revenue: {
+              $sum: {
+                $multiply: ["$totalAmount", 0.85], 
+              },
+            },
+          },
+        },
+        {
+          $sort: { _id: 1 }, 
+        },
+      ]);
+      console.log(bookingsData)
+      const salesData = bookingsData.map((data) => data.count);
+      const revenueData = bookingsData.map((data) => data.revenue);
+      console.log(salesData , revenueData)
+      return {
+        salesData,
+        revenueData,
       };
     } catch (error) {
       throw error;

@@ -94,6 +94,7 @@ const Menu: React.FC = () => {
                 src={menu.url}
                 alt="menuImg"
                 className="h-56 w-44 object-cover"
+                onLoad={()=>setLoading(false)}
               />
               <input
                 type="checkbox"

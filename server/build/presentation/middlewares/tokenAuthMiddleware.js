@@ -28,7 +28,7 @@ function refreshAccessToken(req, res) {
             return res.status(401).json({ message: 'Invalid refresh token' });
         }
         try {
-            const accessToken = (0, jwtUtils_1.jwtGenerateToken)(decoded.userId, "user");
+            const accessToken = (0, jwtUtils_1.jwtGenerateToken)(decoded.userId, decoded.role);
             return res.status(200).json({ accessToken });
         }
         catch (error) {

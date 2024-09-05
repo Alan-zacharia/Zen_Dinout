@@ -91,6 +91,39 @@ class sellerController {
             }
         });
     }
+    createMenuController(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("Create Menu ....");
+            const restaurantId = req.userId;
+            const data = req.body;
+            try {
+                const { fields, files } = yield (0, formParsingHelper_1.parseFormData)(req);
+                console.log(files);
+                if (!files.images) {
+                    return res
+                        .status(constants_1.STATUS_CODES.BAD_REQUEST)
+                        .json({ message: constants_1.MESSAGES.INVALID_FORMAT });
+                }
+                const filePaths = Array.isArray(files.images)
+                    ? files.images.map((file) => file.filepath)
+                    : [files.images.filepath];
+                const uploadedImages = yield (0, ImageUploadHelper_1.handleImageUploads)(filePaths);
+                console.log(uploadedImages);
+                const result = yield this.interactor.createMenuInteractor(restaurantId, uploadedImages);
+                const { message, menuImages, status } = result;
+                if (!status) {
+                    return res.status(constants_1.STATUS_CODES.BAD_REQUEST).json({ message });
+                }
+                return res
+                    .status(constants_1.STATUS_CODES.CREATED)
+                    .json({ message, menuImages, status });
+            }
+            catch (error) {
+                Wintson_1.default.error(`Error in create menu :${error.message}`);
+                next(new appError_1.AppError(error.message, constants_1.STATUS_CODES.INTERNAL_SERVER_ERROR));
+            }
+        });
+    }
     getReservationListController(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("Reservation details .......");
@@ -131,6 +164,39 @@ class sellerController {
                 const { message, timeSlots } = yield this.interactor.getTimeSlotInteractor(restaurantId, date);
                 console.log(timeSlots);
                 res.json(timeSlots);
+            }
+            catch (error) {
+                Wintson_1.default.error(`Error in get time slot : ${error.message}`);
+                next(new appError_1.AppError(error.message, constants_1.STATUS_CODES.INTERNAL_SERVER_ERROR));
+            }
+        });
+    }
+    getMenuController(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("Get Menu controller .....");
+            const restaurantId = req.userId;
+            try {
+                const { message, status, menu } = yield this.interactor.getMenuInteractor(restaurantId);
+                if (!status) {
+                    return res
+                        .status(constants_1.STATUS_CODES.BAD_REQUEST)
+                        .json({ message, status, menu });
+                }
+                return res.status(constants_1.STATUS_CODES.OK).json({ message, status, menu });
+            }
+            catch (error) {
+                Wintson_1.default.error(`Error in get time slot : ${error.message}`);
+                next(new appError_1.AppError(error.message, constants_1.STATUS_CODES.INTERNAL_SERVER_ERROR));
+            }
+        });
+    }
+    getDashBoardController(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("Get Dashboard controller .....");
+            const restaurantId = req.userId;
+            try {
+                const { revenueData, salesData } = yield this.interactor.getDashBoardInteractor(restaurantId);
+                return res.status(constants_1.STATUS_CODES.OK).json({ salesData, revenueData });
             }
             catch (error) {
                 Wintson_1.default.error(`Error in get time slot : ${error.message}`);
@@ -228,7 +294,7 @@ class sellerController {
             const restaurantId = req.userId;
             const { newSlotData } = req.body;
             console.log(req.body);
-            const { date, time, maxTables } = newSlotData;
+            const { date, time } = newSlotData;
             try {
                 const slotTime = (0, timeConvertionHelper_1.convertToUTCWithOffset)(time, 5, 30);
                 const { message, newSlot } = yield this.interactor.createTimeSlotInteractor(restaurantId, newSlotData);
@@ -303,6 +369,30 @@ class sellerController {
             const restaurantId = req.userId;
             try {
                 const result = yield this.interactor.deleteRestaurantSecondaryImagesInteractor(restaurantId, imageIds);
+                const { message, status } = result;
+                if (!status) {
+                    return res
+                        .status(constants_1.STATUS_CODES.NOT_FOUND)
+                        .json({ status, message: constants_1.MESSAGES.SOMETHING_WENT_WRONG });
+                }
+                return res.status(constants_1.STATUS_CODES.OK).json({ status, message });
+            }
+            catch (error) {
+                Wintson_1.default.error(`Error in deleting images: ${error.message}`);
+                next(new appError_1.AppError(error.message, constants_1.STATUS_CODES.INTERNAL_SERVER_ERROR));
+            }
+        });
+    }
+    deleteMenuController(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("Deleting menu ...");
+            const imageIds = Array.isArray(req.query.ids)
+                ? req.query.ids
+                : [req.query.ids];
+            const restaurantId = req.userId;
+            console.log(imageIds);
+            try {
+                const result = yield this.interactor.deleteMenuInteractor(restaurantId, imageIds);
                 const { message, status } = result;
                 if (!status) {
                     return res

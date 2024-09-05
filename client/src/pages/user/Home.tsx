@@ -6,12 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { BsChatRightFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { localStorageRemoveItem } from "../../utils/localStorageImpl";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated, role } = useSelector(
     (state: RootState) => state.user
   );
+ localStorageRemoveItem("&reset%pas%%");
   return (
     <div className="h-screen relative overflow-auto">
       <div className="sticky z-50 top-0 left-0 w-full">

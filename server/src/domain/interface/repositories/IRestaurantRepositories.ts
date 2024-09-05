@@ -32,6 +32,10 @@ export interface IRestaurantRepository {
     restauarntId: string,
     date: string
   ): Promise<{ timeSlots: TimeSlotType[] | null; message: string }>;
+  getDashBoardRepo(restaurantId: string): Promise<{
+    salesData: number[];
+    revenueData: number[];
+  }>;
   updateReservationRepo(
     reservationId: string,
     bookingStatus: string

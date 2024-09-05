@@ -16,12 +16,15 @@ const restaurantRouter = (0, express_1.Router)();
 /** HTTP POST METHODS  */
 restaurantRouter.post("/login", (0, expressValidatorValidation_1.loginValidation)(), controller.loginRestaurantController.bind(controller));
 restaurantRouter.post("/register", controller.registerRestaurantController.bind(controller));
+restaurantRouter.post("/menu", authenticateRestaurant_1.default, controller.createMenuController.bind(controller));
 /** HTTP GET METHODS  */
 restaurantRouter.get("/restaurant-details/:restaurantId", authenticateRestaurant_1.default, controller.getRestaurantDetailController.bind(controller));
 restaurantRouter.get("/reservations", authenticateRestaurant_1.default, controller.getReservationListController.bind(controller));
 restaurantRouter.get("/reservations/:reservationId", authenticateRestaurant_1.default, controller.getReservationController.bind(controller));
 restaurantRouter.get("/tables", authenticateRestaurant_1.default, controller.getRestaurantTableController.bind(controller));
 restaurantRouter.get("/timeslots/:date", authenticateRestaurant_1.default, controller.getTimeSlotController.bind(controller));
+restaurantRouter.get("/menu", authenticateRestaurant_1.default, controller.getMenuController.bind(controller));
+restaurantRouter.get("/dashboard", authenticateRestaurant_1.default, controller.getDashBoardController.bind(controller));
 /** HTTP PATCH METHODS  */
 restaurantRouter.patch("/reservations/:reservationId", authenticateRestaurant_1.default, controller.updateReservationStatusController.bind(controller));
 restaurantRouter.patch("/tables/:tableId", authenticateRestaurant_1.default, controller.updateRestaurantTableIsAvailableController.bind(controller));
@@ -33,6 +36,7 @@ restaurantRouter.post("/times", authenticateRestaurant_1.default, controller.cre
 restaurantRouter.delete("/tables/:tableId", authenticateRestaurant_1.default, controller.deleteRestaurantTableController.bind(controller));
 restaurantRouter.delete("/featuredImage", authenticateRestaurant_1.default, controller.deleteRestaurantFeaturedImageController.bind(controller));
 restaurantRouter.delete("/secondary-images", authenticateRestaurant_1.default, controller.deleteRestaurantSecondaryImagesController.bind(controller));
+restaurantRouter.delete("/menu", authenticateRestaurant_1.default, controller.deleteMenuController.bind(controller));
 /** HTTP PUT METHODS  */
 restaurantRouter.put("/restaurant-details/:restaurantId", authenticateRestaurant_1.default, controller.restaurantProfileUpdateController.bind(controller));
 exports.default = restaurantRouter;

@@ -24,16 +24,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sellerRepository = void 0;
-const restaurantModel_1 = __importDefault(require("../database/model.ts/restaurantModel"));
-const restaurantTable_1 = __importDefault(require("../database/model.ts/restaurantTable"));
+const restaurantModel_1 = __importDefault(require("../database/model/restaurantModel"));
+const restaurantTable_1 = __importDefault(require("../database/model/restaurantTable"));
 const constants_1 = require("../../configs/constants");
 const auth_1 = require("../../domain/entities/auth");
 const jwtUtils_1 = require("../utils/jwtUtils");
 const EmailService_1 = __importDefault(require("../lib/EmailService"));
-const bookingModel_1 = __importDefault(require("../database/model.ts/bookingModel"));
-const restaurantTimeSlot_1 = __importDefault(require("../database/model.ts/restaurantTimeSlot"));
+const bookingModel_1 = __importDefault(require("../database/model/bookingModel"));
+const restaurantTimeSlot_1 = __importDefault(require("../database/model/restaurantTimeSlot"));
 const imageService_1 = require("../../presentation/services/shared/imageService");
 const timeConvertionHelper_1 = require("../../application/helpers/timeConvertionHelper");
+const menuModel_1 = __importDefault(require("../database/model/menuModel"));
+const mongoose_1 = __importDefault(require("mongoose"));
 class sellerRepository {
     findExistingUser(email) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -256,14 +258,13 @@ class sellerRepository {
     }
     createTimeSlotRepo(restaurantId, newSlotData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { date, time, maxTables } = newSlotData;
+            const { date, time } = newSlotData;
             try {
                 const slotTime = (0, timeConvertionHelper_1.convertToUTCWithOffset)(time, 5, 30);
                 const newSlot = new restaurantTimeSlot_1.default({
                     restaurantId,
                     date,
                     time: slotTime,
-                    maxTables,
                 });
                 yield newSlot.save();
                 console.log(newSlot);
@@ -382,6 +383,27 @@ class sellerRepository {
             }
         });
     }
+    deleteMenuRepo(restaurantId, imageIds) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield menuModel_1.default.updateOne({ restaurantId }, { $pull: { items: { public_id: { $in: imageIds } } } });
+                if (result.modifiedCount === 0) {
+                    return {
+                        message: constants_1.MESSAGES.DATA_NOT_FOUND,
+                        status: false,
+                    };
+                }
+                return {
+                    status: true,
+                    message: constants_1.SUCCESS_MESSAGES.REMOVED_SUCCESS,
+                };
+            }
+            catch (error) {
+                console.error("Error deleting images:", error);
+                throw new Error("Error deleting images");
+            }
+        });
+    }
     updateRestaurantTableIsAvailableRepo(tableId, isAvailable) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -415,6 +437,113 @@ class sellerRepository {
                 timeSlot.isAvailable = available;
                 yield timeSlot.save();
                 return { status: true, message: constants_1.SUCCESS_MESSAGES.UPDATED_SUCCESSFULLY };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    createMenuRepo(restaurantId, uploadedImages) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const existingMenu = yield menuModel_1.default.findOne({ restaurantId });
+                if (existingMenu) {
+                    existingMenu.items.push(...uploadedImages);
+                    const updatedMenu = yield existingMenu.save();
+                    const updatedMenuImages = updatedMenu.items.map((item) => ({
+                        url: item.url,
+                        public_id: item.public_id,
+                    }));
+                    return {
+                        status: true,
+                        message: constants_1.SUCCESS_MESSAGES.RESOURCE_CREATED,
+                        menuImages: updatedMenuImages,
+                    };
+                }
+                else {
+                    const newMenu = new menuModel_1.default({
+                        restaurantId,
+                        items: uploadedImages,
+                    });
+                    const savedMenu = yield newMenu.save();
+                    const savedMenuImages = savedMenu.items.map((item) => ({
+                        url: item.url,
+                        public_id: item.public_id,
+                    }));
+                    return {
+                        status: true,
+                        message: constants_1.SUCCESS_MESSAGES.RESOURCE_CREATED,
+                        menuImages: savedMenuImages,
+                    };
+                }
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    getMenuRepo(restaurantId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const menu = yield menuModel_1.default.findOne({ restaurantId });
+                if (!menu) {
+                    return {
+                        status: true,
+                        message: constants_1.SUCCESS_MESSAGES.RESOURCE_CREATED,
+                        menu: [],
+                    };
+                }
+                return {
+                    status: true,
+                    message: constants_1.SUCCESS_MESSAGES.RESOURCE_CREATED,
+                    menu: menu === null || menu === void 0 ? void 0 : menu.toObject(),
+                };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    getDashBoardRepo(restaurantId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const restaurantIdObjectId = new mongoose_1.default.Types.ObjectId(restaurantId);
+                const bookingsData = yield bookingModel_1.default.aggregate([
+                    {
+                        $match: {
+                            restaurantId: restaurantIdObjectId,
+                            paymentStatus: "PAID",
+                            bookingStatus: "COMPLETED",
+                            createdAt: {
+                                $gte: new Date(new Date().setDate(new Date().getDate() - 7)),
+                            },
+                        },
+                    },
+                    {
+                        $group: {
+                            _id: {
+                                $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+                            },
+                            count: { $sum: 1 },
+                            revenue: {
+                                $sum: {
+                                    $multiply: ["$totalAmount", 0.85],
+                                },
+                            },
+                        },
+                    },
+                    {
+                        $sort: { _id: 1 },
+                    },
+                ]);
+                console.log(bookingsData);
+                const salesData = bookingsData.map((data) => data.count);
+                const revenueData = bookingsData.map((data) => data.revenue);
+                console.log(salesData, revenueData);
+                return {
+                    salesData,
+                    revenueData,
+                };
             }
             catch (error) {
                 throw error;

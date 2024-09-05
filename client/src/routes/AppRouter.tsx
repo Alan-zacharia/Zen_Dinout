@@ -25,8 +25,9 @@ const RestaurantProfile = React.lazy(
   () => import("../pages/restaurant/RestaurantProfile")
 );
 const UserProfile = React.lazy(() => import("../pages/user/UserProfile"));
-const HomeLayout =   React.lazy(
-  () => import("../components/user/layouts/HomeLayout"));
+const HomeLayout = React.lazy(
+  () => import("../components/user/layouts/HomeLayout")
+);
 import ForgotPassword from "../pages/user/ForgotPassword";
 import RestaurantApprovalForm from "../components/admin/RestaurantApprovalForm";
 import ForgotPasswordPageRecieveEmail from "../pages/user/ForgotPasswordPageRecieveEmail";
@@ -47,6 +48,7 @@ import Loading from "../components/layouts/Loading";
 import ChatPage from "../pages/ChatPage";
 import TimeSlots from "../components/seller/TimeAdd";
 import BookingWalletStatus from "../components/layouts/BookingWalletStatus";
+import About from "../components/user/layouts/About";
 const HomePage = React.lazy(() => import("../pages/user/Home"));
 const DashBoard = React.lazy(() => import("../components/admin/DashBoard"));
 const RestaurantsListingPage = React.lazy(
@@ -64,7 +66,6 @@ const Customers = React.lazy(
 
 const AppRouter: React.FC = () => {
   const resetPassword = localStorageGetItem("&reset%pas%%");
-
   return (
     <Router>
       <Suspense fallback={<Loading />}>
@@ -86,6 +87,7 @@ const AppRouter: React.FC = () => {
               path="/all-restaurants"
               element={<RestaurantsListingPage />}
             />
+            <Route path="/About" element={<About />} />
 
             {/* !------> PRIVATE ROUTE <------! */}
 

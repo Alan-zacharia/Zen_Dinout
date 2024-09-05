@@ -178,7 +178,7 @@ export class sellerInteractor implements IRestaurantInteractor {
     restaurantId: string,
     newSlotData: TimeSlotType
   ): Promise<{ message: string; newSlot: TimeSlotType | null }> {
-    const { time, date, maxTables } = newSlotData;
+    const { time, date } = newSlotData;
     if (!restaurantId || !date || !time) {
       return { newSlot: null, message: MESSAGES.INVALID_DATA };
     }
@@ -359,6 +359,21 @@ export class sellerInteractor implements IRestaurantInteractor {
       throw error;
     }
   }
+  public async getDashBoardInteractor(
+    restaurantId: string
+  ): Promise<{ salesData: number[]; revenueData: number[] }> {
+    if (!restaurantId) {
+      return { revenueData: [], salesData: [] };
+    }
+    try {
+      const result = await this.repository.getDashBoardRepo(restaurantId);
+      const { revenueData, salesData } = result;
+      return { revenueData, salesData };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async getMenuInteractor(restaurantId: string): Promise<{
     message: string;
     status: boolean;

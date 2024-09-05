@@ -48,6 +48,27 @@ class adminInteractorImpl {
             }
         });
     }
+    getDashboardDetailsInteractor() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.repository.getDashboardDetailsRepo();
+                const { restaurantCount, totalAmount, userCount, status, revenueData, salesData, restaurants, users, } = result;
+                return {
+                    restaurantCount,
+                    totalAmount,
+                    userCount,
+                    status,
+                    revenueData,
+                    salesData,
+                    restaurants,
+                    users,
+                };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     getApproveRestaurantListInteractor() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -144,7 +165,6 @@ class adminInteractorImpl {
     createCouponInteractor(couponDetails) {
         return __awaiter(this, void 0, void 0, function* () {
             const { couponCode, description, discount, discountPrice, minPurchase, startDate, expiryDate, } = couponDetails;
-            console.log(couponDetails);
             if (!couponCode ||
                 !description ||
                 !discount ||
@@ -167,17 +187,64 @@ class adminInteractorImpl {
     createMembershipInteractor(memebershipData) {
         return __awaiter(this, void 0, void 0, function* () {
             const { planName, benefits, cost, type, description, discount, expiryDate, } = memebershipData;
-            if (planName ||
-                benefits ||
-                cost ||
-                type ||
-                description ||
-                discount ||
-                expiryDate) {
+            if (!planName ||
+                !benefits ||
+                !cost ||
+                !type ||
+                !description ||
+                !discount ||
+                !expiryDate) {
                 return { message: constants_1.MESSAGES.INVALID_DATA, status: false };
             }
             try {
-                const result = yield this.repository.createMembershipInteractor(memebershipData);
+                const result = yield this.repository.createMembershipRepo(memebershipData);
+                const { message, status } = result;
+                return { message, status };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    updateMembershipInteractor(updatedMembership) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!updatedMembership ||
+                !updatedMembership.cost ||
+                !updatedMembership.planName) {
+                return { message: constants_1.MESSAGES.INVALID_DATA, Membership: null };
+            }
+            try {
+                const result = yield this.repository.updateMembershipRepo(updatedMembership);
+                const { message, Membership } = result;
+                return { message, Membership };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    removeMembershipInteractor(membershipId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!membershipId) {
+                return { message: constants_1.MESSAGES.INVALID_FORMAT, status: false };
+            }
+            try {
+                const result = yield this.repository.removeMembershipRepo(membershipId);
+                const { message, status } = result;
+                return { message, status };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    updateCouponInteractor(couponId, couponDatas) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!couponId || !couponDatas || !couponDatas.couponCode) {
+                return { message: constants_1.MESSAGES.INVALID_FORMAT, status: false };
+            }
+            try {
+                const result = yield this.repository.updateCouponRepo(couponId, couponDatas);
                 const { message, status } = result;
                 return { message, status };
             }

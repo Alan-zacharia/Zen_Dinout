@@ -242,7 +242,7 @@ const RestaurantViewComponent = ({
                   </p>
                   {isAuthenticated && role == "user" && (
                     <div
-                      className="tooltip absolute right-[37%] bottom-[28%]  border border-gray-200 shadow-lg bg-blue-400 rounded-full p-2.5 font-bold  flex items-center gap-2 cursor-pointer"
+                      className="tooltip absolute right-[37%] md:bottom-[28%]  border border-gray-200 shadow-lg bg-blue-400 rounded-full p-2.5 font-bold  flex items-center gap-2 cursor-pointer"
                       data-tip="Chat with restaurant"
                       onClick={() =>
                         handleChatSetup(restaurantDetails?._id as string)

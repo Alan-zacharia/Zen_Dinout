@@ -33,7 +33,7 @@ const UserProfile: React.FC = () => {
           }
         }
       } catch (error) {
-        console.log(error); 
+        console.log(error);
       }
     };
     fetchData();
@@ -52,7 +52,6 @@ const UserProfile: React.FC = () => {
       </div>
       <header className="p-1 bg-neutral-100 font-semibold cursor-pointer">
         <ul className="flex gap-5 container justify-end ">
-          <li className="text-sm">Gift Cards</li>
           <Link to={"/memberships"}>
             <li className="text-sm">Memberships</li>
           </Link>
@@ -64,7 +63,9 @@ const UserProfile: React.FC = () => {
           <ProfileNavigations userDetails={userDetails} />
           <div className="lg:w-2/3 overflow-y-auto ">
             <div className="bg-white shadow-xl shadow-neutral-300 p-5 rounded-lg">
-              {navigationChange === "profile" && <UserProfileDetails userDetails={userDetails} />}
+              {navigationChange === "profile" && (
+                <UserProfileDetails userDetails={userDetails} />
+              )}
               {navigationChange === "bookings" && (
                 <>
                   <h1 className="text-2xl font-bold text-black mb-4">

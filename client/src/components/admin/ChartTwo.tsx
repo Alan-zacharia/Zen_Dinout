@@ -12,7 +12,6 @@ interface ChartTwoProps {
 }
 
 const ChartTwo: React.FC<ChartTwoProps> = ({ chartData }) => {
-  console.log(chartData)
   const [state, setState] = useState<ChartDataType | null>(chartData);
 
   useEffect(() => {

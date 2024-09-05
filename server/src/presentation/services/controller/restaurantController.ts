@@ -251,6 +251,28 @@ export class sellerController {
       );
     }
   }
+  public async getDashBoardController(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log("Get Dashboard controller .....");
+    const restaurantId = req.userId;
+    try {
+      const { revenueData, salesData } =
+        await this.interactor.getDashBoardInteractor(restaurantId);
+
+      return res.status(STATUS_CODES.OK).json({ salesData, revenueData });
+    } catch (error) {
+      logger.error(`Error in get time slot : ${(error as Error).message}`);
+      next(
+        new AppError(
+          (error as Error).message,
+          STATUS_CODES.INTERNAL_SERVER_ERROR
+        )
+      );
+    }
+  }
   public async getReservationController(
     req: Request,
     res: Response,
@@ -383,7 +405,7 @@ export class sellerController {
     const restaurantId = req.userId;
     const { newSlotData } = req.body;
     console.log(req.body);
-    const { date, time, maxTables } = newSlotData;
+    const { date, time } = newSlotData;
     try {
       const slotTime = convertToUTCWithOffset(time, 5, 30);
       const { message, newSlot } =

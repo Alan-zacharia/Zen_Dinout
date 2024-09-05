@@ -38,8 +38,8 @@ const createMembershipPaymentIntent = (userData, membershipCost) => __awaiter(vo
                 },
             ],
             mode: "payment",
-            success_url: `${envConfig_1.default.CLIENT_URL}/membership-success?status=true`,
-            cancel_url: `${envConfig_1.default.CLIENT_URL}/membership-cancel?status=false`,
+            success_url: `${envConfig_1.default.CLIENT_URL}/memberships?status=true`,
+            cancel_url: `${envConfig_1.default.CLIENT_URL}/memberships?status=false`,
         });
         return session;
     }

@@ -93,12 +93,28 @@ const BookingDetailedView: React.FC<BookingDetailedViewProps> = ({
 
   const isCancelButtonHidden = () => {
     if (bookingDetails?.bookingDate && bookingDetails?.bookingTime) {
-      const bookingDateTime = new Date(
-        `${bookingDetails.bookingDate} ${bookingDetails.bookingTime}`
+      const convertTo24HourFormat = (time12h: any) => {
+        const [time, modifier] = time12h.split(" ");
+        let [hours, minutes] = time.split(":");
+
+        if (modifier === "pm" && hours !== "12") {
+          hours = parseInt(hours, 10) + 12;
+        }
+        if (modifier === "am" && hours === "12") {
+          hours = 0;
+        }
+        return `${hours.toString().padStart(2, "0")}:${minutes}`;
+      };
+      const bookingTime24Hour = convertTo24HourFormat(
+        bookingDetails.bookingTime
       );
+      const bookingDateTimeString = `${
+        bookingDetails.bookingDate.split("T")[0]
+      }T${bookingTime24Hour}`;
+      const bookingDateTime = new Date(bookingDateTimeString);
       const currentTime = new Date();
-      const oneHourLater = new Date(bookingDateTime.getTime() - 60 * 60 * 1000);
-      return currentTime >= oneHourLater;
+      const cutoffTime = new Date(bookingDateTime.getTime() - 60 * 60 * 1000);
+      return currentTime >= cutoffTime;
     }
     return false;
   };

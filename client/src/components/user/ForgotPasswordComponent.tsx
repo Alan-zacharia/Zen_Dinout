@@ -20,8 +20,9 @@ const ForgotPasswordComponent: React.FC = () => {
     },
     validationSchema: valdateResetPassword,
     onSubmit: async (credentials: credentials) => {
+      const userId = id?.split(":")[1]
       await axios
-        .put(`${import.meta.env.VITE_API_BASE_URL}/api/reset-password/${id}`, {
+        .put(`${import.meta.env.VITE_API_BASE_URL}/api/reset-password/${userId}`, {
           credentials,
         })
         .then(() => {

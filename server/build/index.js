@@ -23,6 +23,7 @@ const io = new socket_io_1.Server(httpServer, {
         methods: ["GET", "POST"]
     }
 });
+console.log(envConfig_1.default.CLIENT_URL);
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cors_1.default)({ credentials: true, origin: envConfig_1.default.CLIENT_URL }));

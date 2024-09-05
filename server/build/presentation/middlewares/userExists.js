@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userExists = void 0;
-const userModel_1 = __importDefault(require("../../infrastructure/database/model.ts/userModel"));
+const userModel_1 = __importDefault(require("../../infrastructure/database/model/userModel"));
 const express_validator_1 = require("express-validator");
 const constants_1 = require("../../configs/constants");
 const appError_1 = require("./appError");

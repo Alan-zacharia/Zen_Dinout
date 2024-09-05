@@ -38,11 +38,7 @@ export interface tableTimeSlots {
   slotDate: string;
   IsAvailable: boolean;
 }
-export interface TimeSlots {
-  _id: string;
-  startTime: string;
-  endTime: string;
-}
+
 
 export interface BookingDetailsType {
   bookingId: string;

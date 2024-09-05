@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const userModel_1 = __importDefault(require("../../infrastructure/database/model.ts/userModel"));
+const userModel_1 = __importDefault(require("../../infrastructure/database/model/userModel"));
 const jwtUtils_1 = require("../../infrastructure/utils/jwtUtils");
 const envConfig_1 = __importDefault(require("../../configs/envConfig"));
 const constants_1 = require("../../configs/constants");

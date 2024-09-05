@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import SellerChartOne from "./SellerChartOne";
-import ChartTwo from "./ChartTwo";
 import axiosInstance from "../../api/axios";
 import { Link } from "react-router-dom";
 import { textColours } from "../../utils/dateValidateFunctions";
@@ -29,18 +28,41 @@ interface Booking {
   updatedAt: string;
   __v: number;
 }
+interface ChartDataType {
+  salesData: number[];
+  revenueData: number[];
+}
+
 const SellerDashBoard = () => {
   const [bookingDetails, setBookingDetails] = useState<Booking[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [chartData, setChartData] = useState<ChartDataType | null>(null);
   useEffect(() => {
     axiosInstance
       .get("/restaurant/reservations/")
       .then((res) => {
-        if(res.data.Reservations){
+        if (res.data.Reservations) {
           setBookingDetails(res.data.Reservations.slice(0, 4));
         }
       })
       .catch(({ response }) => {
-        console.log(response);
+        console.log(response.data?.messages);
+      });
+  }, []);
+  useEffect(() => {
+    setIsLoading(true);
+    axiosInstance
+      .get("/restaurant/dashboard")
+      .then((res) => {
+        setChartData({
+          salesData: res.data.salesData,
+          revenueData: res.data.revenueData,
+        });
+        setIsLoading(false);
+      })
+      .catch(({ response }) => {
+        setIsLoading(false);
+        console.log(response.data?.messages);
       });
   }, []);
 
@@ -50,16 +72,10 @@ const SellerDashBoard = () => {
         <div className="pt-10 text-center">
           <h1 className="text-xl font-bold flex justify-start">Dashboard</h1>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-10">
-          <div className="bg-white shadow-lg shadow-gray-400 rounded-lg">
-            <SellerChartOne />
+        <div className="gap-5 mt-10 flex mx-80">
+          <div className="bg-white w-full  shadow-lg  shadow-gray-400 rounded-lg">
+            <SellerChartOne chartData={chartData} isLoading={isLoading} />
             <h5 className="text-center font-bold text-blue-500">Revenue</h5>
-          </div>
-          <div className="bg-white shadow-lg shadow-gray-400">
-            <ChartTwo />
-            <h5 className="text-center font-bold text-blue-500 pt-10">
-              Booking statistics
-            </h5>
           </div>
         </div>
         <div className="pt-5">

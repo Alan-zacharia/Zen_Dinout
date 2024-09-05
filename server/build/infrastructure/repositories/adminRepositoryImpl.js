@@ -24,14 +24,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.adminRepositoryImpl = void 0;
-const userModel_1 = __importDefault(require("../database/model.ts/userModel"));
-const restaurantModel_1 = __importDefault(require("../database/model.ts/restaurantModel"));
+const userModel_1 = __importDefault(require("../database/model/userModel"));
+const restaurantModel_1 = __importDefault(require("../database/model/restaurantModel"));
 const jwtUtils_1 = require("../utils/jwtUtils");
 const auth_1 = require("../../domain/entities/auth");
 const constants_1 = require("../../configs/constants");
-const couponModel_1 = __importDefault(require("../database/model.ts/couponModel"));
-const membershipModel_1 = __importDefault(require("../database/model.ts/membershipModel"));
+const couponModel_1 = __importDefault(require("../database/model/couponModel"));
+const membershipModel_1 = __importDefault(require("../database/model/membershipModel"));
 const EmailService_1 = __importDefault(require("../lib/EmailService"));
+const bookingModel_1 = __importDefault(require("../database/model/bookingModel"));
 class adminRepositoryImpl {
     adminLoginRepo(credentials) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -78,7 +79,8 @@ class adminRepositoryImpl {
                 const users = yield userModel_1.default.find()
                     .select("-password")
                     .skip((pageNumber - 1) * itemsPerPage)
-                    .limit(itemsPerPage);
+                    .limit(itemsPerPage)
+                    .sort({ createdAt: -1 });
                 const totalUsers = yield userModel_1.default.countDocuments();
                 const totalPages = Math.ceil(totalUsers / itemsPerPage);
                 const sanitizedUsers = users.map((user) => {
@@ -124,7 +126,8 @@ class adminRepositoryImpl {
                     .find({ isApproved: true })
                     .skip(skip)
                     .limit(pageSize)
-                    .select("-password");
+                    .select("-password")
+                    .sort({ createdAt: -1 });
                 const restauarntList = restaurants.map((restaurant) => {
                     return restaurant.toObject();
                 });
@@ -205,7 +208,7 @@ class adminRepositoryImpl {
     getCouponsRepo() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const coupons = yield couponModel_1.default.find({});
+                const coupons = yield couponModel_1.default.find({}).sort({ createdAt: -1 });
                 const allCoupons = coupons.map((coupon) => {
                     return coupon.toObject();
                 });
@@ -222,7 +225,9 @@ class adminRepositoryImpl {
     getMembershipRepo() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const memberships = yield membershipModel_1.default.find({});
+                const memberships = yield membershipModel_1.default
+                    .find({})
+                    .sort({ createdAt: -1 });
                 const Memberships = memberships.map((membership) => {
                     return membership.toObject();
                 });
@@ -236,10 +241,103 @@ class adminRepositoryImpl {
             }
         });
     }
+    getDashboardDetailsRepo() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userCount = yield userModel_1.default.countDocuments();
+                const restaurantCount = yield restaurantModel_1.default.countDocuments();
+                const completedBookingsRevenue = yield bookingModel_1.default.aggregate([
+                    {
+                        $match: {
+                            paymentStatus: "PAID",
+                            bookingStatus: "COMPLETED",
+                        },
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            totalRevenue: { $sum: "$totalAmount" },
+                            totalProfits: { $sum: { $multiply: ["$totalAmount", 0.15] } },
+                        },
+                    },
+                ]);
+                const membershipRevenue = yield membershipModel_1.default.aggregate([
+                    {
+                        $group: {
+                            _id: null,
+                            totalMembershipAmount: { $sum: "$cost" },
+                        },
+                    },
+                ]);
+                const bookingAmount = completedBookingsRevenue.length > 0
+                    ? completedBookingsRevenue[0].totalProfits
+                    : 0;
+                const totalMembershipAmount = membershipRevenue.length > 0
+                    ? membershipRevenue[0].totalMembershipAmount
+                    : 0;
+                const totalAmount = parseFloat(bookingAmount) + parseFloat(totalMembershipAmount);
+                const bookingsData = yield bookingModel_1.default.aggregate([
+                    {
+                        $match: {
+                            paymentStatus: "PAID",
+                            bookingStatus: "COMPLETED",
+                            createdAt: {
+                                $gte: new Date(new Date().setDate(new Date().getDate() - 7)),
+                            },
+                        },
+                    },
+                    {
+                        $group: {
+                            _id: {
+                                $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+                            },
+                            count: { $sum: 1 },
+                            revenue: { $sum: { $multiply: ["$totalAmount", 0.15] } },
+                        },
+                    },
+                    {
+                        $sort: { _id: 1 },
+                    },
+                ]);
+                const salesData = bookingsData.map((data) => data.count);
+                const revenueData = bookingsData.map((data) => data.revenue);
+                const users = yield userModel_1.default.find({})
+                    .sort({ createdAt: -1 })
+                    .limit(5)
+                    .select("-password");
+                const restauarnts = yield restaurantModel_1.default
+                    .find({})
+                    .sort({ createdAt: -1 })
+                    .limit(5)
+                    .select("-password");
+                return {
+                    restaurantCount,
+                    userCount,
+                    totalAmount: totalAmount.toFixed(2),
+                    status: true,
+                    salesData,
+                    revenueData,
+                    users: users,
+                    restaurants: restauarnts,
+                };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     createCouponRepo(couponDetails) {
         return __awaiter(this, void 0, void 0, function* () {
             const { couponCode, description, discount, discountPrice, expiryDate, minPurchase, startDate, } = couponDetails;
             try {
+                const existingCoupon = yield couponModel_1.default.findOne({ couponCode });
+                console.log(existingCoupon);
+                if (existingCoupon) {
+                    return {
+                        message: constants_1.MESSAGES.COUPON_ALREADY_EXIST,
+                        status: false,
+                    };
+                }
                 const coupon = new couponModel_1.default({
                     couponCode,
                     description,
@@ -260,7 +358,7 @@ class adminRepositoryImpl {
             }
         });
     }
-    createMembershipInteractor(membershipData) {
+    createMembershipRepo(membershipData) {
         return __awaiter(this, void 0, void 0, function* () {
             const { planName, benefits, cost, description, discount, expiryDate, type, } = membershipData;
             try {
@@ -271,6 +369,7 @@ class adminRepositoryImpl {
                     benefits,
                     expiryDate,
                     type,
+                    cost,
                 });
                 yield membership.save();
                 return {
@@ -283,12 +382,107 @@ class adminRepositoryImpl {
             }
         });
     }
+    updateMembershipRepo(updatedMembership) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { planName, benefits, cost, description, discount, expiryDate, type, _id, } = updatedMembership;
+            try {
+                const membership = yield membershipModel_1.default.findByIdAndUpdate(_id, {
+                    planName,
+                    description,
+                    discount,
+                    benefits,
+                    expiryDate,
+                    type,
+                    cost,
+                });
+                if (!membership) {
+                    return {
+                        message: constants_1.MESSAGES.DATA_NOT_FOUND,
+                        Membership: null,
+                    };
+                }
+                yield membership.save();
+                return {
+                    message: constants_1.SUCCESS_MESSAGES.UPDATED_SUCCESSFULLY,
+                    Membership: membership.toObject(),
+                };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    removeMembershipRepo(membershipId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const membership = yield membershipModel_1.default.findByIdAndUpdate(membershipId, {
+                    isActive: false,
+                });
+                if (!membership) {
+                    return { status: false, message: constants_1.MESSAGES.DATA_NOT_FOUND };
+                }
+                return {
+                    status: true,
+                    message: constants_1.SUCCESS_MESSAGES.REMOVED_SUCCESS,
+                };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    updateCouponRepo(couponId, couponDatas) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { couponCode, description, discount, discountPrice, expiryDate, minPurchase, startDate, } = couponDatas;
+            try {
+                const existingCoupon = yield couponModel_1.default.findOne({
+                    couponCode,
+                    _id: { $ne: couponId },
+                });
+                if (existingCoupon) {
+                    return { status: false, message: constants_1.MESSAGES.COUPON_ALREADY_EXIST };
+                }
+                const coupon = yield couponModel_1.default.findById(couponId);
+                if (!coupon) {
+                    return { status: false, message: constants_1.MESSAGES.DATA_NOT_FOUND };
+                }
+                const isExpired = coupon.expiryDate < new Date();
+                const newExpiryDate = new Date(expiryDate);
+                const updateData = {
+                    couponCode,
+                    description,
+                    discount,
+                    discountPrice,
+                    expiryDate,
+                    minPurchase,
+                    startDate,
+                };
+                if (isExpired) {
+                    if (newExpiryDate <= new Date()) {
+                        return {
+                            status: false,
+                            message: "Invalid expiry date. Must be in the future.",
+                        };
+                    }
+                    updateData.isActive = true;
+                }
+                yield couponModel_1.default.findByIdAndUpdate(couponId, updateData);
+                return {
+                    status: true,
+                    message: constants_1.SUCCESS_MESSAGES.UPDATED_SUCCESSFULLY,
+                };
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
     removeCouponRepo(couponId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const coupon = yield couponModel_1.default.findByIdAndDelete(couponId);
                 if (!coupon) {
-                    return { status: false, message: constants_1.MESSAGES.RESOURCE_NOT_FOUND };
+                    return { status: false, message: constants_1.MESSAGES.DATA_NOT_FOUND };
                 }
                 return {
                     status: true,

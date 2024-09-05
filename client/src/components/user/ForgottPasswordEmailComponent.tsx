@@ -16,7 +16,7 @@ const ForgottPasswordEmailComponent : React.FC = () => {
     },
     onSubmit : async(values)=>{
         setLoading(true)
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/reset-password`, {email : values.email}).then((res)=>{
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/reset-password-request`, {email : values.email}).then((res)=>{
         localStorageSetItem("&reset%pas%%","true");
          console.log(res.data.message);  
          setEmailMessage(res.data.message)

@@ -57,6 +57,11 @@ restaurantRouter.get(
   authenticateRestaurant,
   controller.getMenuController.bind(controller)
 );
+restaurantRouter.get(
+  "/dashboard",
+  authenticateRestaurant,
+  controller.getDashBoardController.bind(controller)
+);
 
 /** HTTP PATCH METHODS  */
 restaurantRouter.patch(
