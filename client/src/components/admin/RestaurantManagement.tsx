@@ -50,7 +50,9 @@ const RestaurantMangement: React.FC = () => {
         <h1 className="hidden lg:flex text-base  lg:text-3xl font-bold ">
           Restaurant Mangement
         </h1>
-        <h1 className="text-2xl lg:text-xl lg:hidden font-bold ">Restaurants</h1>
+        <h1 className="text-2xl lg:text-xl lg:hidden font-bold ">
+          Restaurants
+        </h1>
         <div className="relative flex-shrink-0 w-auto ">
           <HiOutlineSearch
             fontSize={24}
@@ -81,88 +83,57 @@ const RestaurantMangement: React.FC = () => {
               <th scope="col" className="px-6 py-3">
                 Phone
               </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
             </tr>
           </thead>
           <tbody>
-            {restaurants == null ? (  
-               <tr>
-               <td colSpan={4} className="pt-5">
-                 <div className="w-full p-4 space-y-4 -y flex flex-col gap-5  rounded shadow animate-pulse">
-                   {[1, 2, 3, 4 , 5].map((index) => (
-                     <div key={index} className="flex items-center  w-full">
-                       <div className="h-8 bg-gray-300 rounded-full w-1/6 me-8"></div>
-                       <div className="h-8 bg-gray-300 rounded-full w-[37%] ml-2 me-2"></div>
-                       <div className="h-8 bg-gray-300 rounded-full w-1/5 ml-2 me-5"></div>
-                       <div className="h-8 bg-gray-300 rounded-full w-24 ml-2" ></div>
-                     </div>
-                   ))}
-                 </div>
-               </td>
-             </tr>
-            ) : 
-            filteredItems && filteredItems.length > 0 ? (
-                filteredItems.map(
-                  (restaurant: RestaurantType, index: number) => {
-                    return (
-                      <tr
-                        className="text-black border-t border-t-neutral-400 font-bold text-base"
-                        key={index}
-                      >
-                        <th
-                          scope="row"
-                          className="px-6 py-4 font-medium whitespace-nowrap "
-                        >
-                          {index + 1}.
-                        </th>
-                        <td className="px-6 py-4">{restaurant.restaurantName}</td>
-                        <td className="px-6 py-4">{restaurant.email}</td>
-                        {restaurant.contact ? (
-                          <td className="px-6 py-4">
-                            +91 {restaurant.contact}
-                          </td>
-                        ) : (
-                          <td className="px-6 py-4">Nill</td>
-                        )}
-                        <td className="px-6 py-4">
-                          <a
-                            href="#"
-                            className="font-medium text-blue-600  hover:underline"
-                          >
-                            {restaurant.isBlocked ? (
-                              <button
-                                // onClick={() => blockUser(user._id, user.isBlocked)}
-                                className="bg-red-500 p-2 rounded-xl hover:bg-red-600 text-white font-bold w-20"
-                              >
-                                Unblock
-                              </button>
-                            ) : (
-                              <button
-                                // onClick={() => blockUser(user._id, user.isBlocked)}
-                                className="bg-green-500 p-2 rounded-xl hover:bg-green-600 text-white font-bold w-20"
-                              >
-                                Block
-                              </button>
-                            )}
-                          </a>
-                        </td>
-                      </tr>
-                    );
-                  }
-                )
-              ) : (
-                <tr className="border-b  bg-gray-100">
-                  <td
-                    colSpan={5}
-                    className="p-3 text-center text-black font-bold text-2xl"
+            {restaurants == null ? (
+              <tr>
+                <td colSpan={4} className="pt-5">
+                  <div className="w-full p-4 space-y-4 -y flex flex-col gap-5  rounded shadow animate-pulse">
+                    {[1, 2, 3, 4, 5].map((index) => (
+                      <div key={index} className="flex items-center  w-full">
+                        <div className="h-8 bg-gray-300 rounded-full w-1/6 me-8"></div>
+                        <div className="h-8 bg-gray-300 rounded-full w-[37%] ml-2 me-2"></div>
+                        <div className="h-8 bg-gray-300 rounded-full w-1/5 ml-2 me-5"></div>
+                        <div className="h-8 bg-gray-300 rounded-full w-24 ml-2"></div>
+                      </div>
+                    ))}
+                  </div>
+                </td>
+              </tr>
+            ) : filteredItems && filteredItems.length > 0 ? (
+              filteredItems.map((restaurant: RestaurantType, index: number) => {
+                return (
+                  <tr
+                    className="text-black border-t border-t-neutral-400 font-bold text-base"
+                    key={index}
                   >
-                    Restaurants not found.....
-                  </td>
-                </tr>
-              )
-            }
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium whitespace-nowrap "
+                    >
+                      {index + 1}.
+                    </th>
+                    <td className="px-6 py-4">{restaurant.restaurantName}</td>
+                    <td className="px-6 py-4">{restaurant.email}</td>
+                    {restaurant.contact ? (
+                      <td className="px-6 py-4">+91 {restaurant.contact}</td>
+                    ) : (
+                      <td className="px-6 py-4">Nill</td>
+                    )}
+                  </tr>
+                );
+              })
+            ) : (
+              <tr className="border-b  bg-gray-100">
+                <td
+                  colSpan={5}
+                  className="p-3 text-center text-black font-bold text-2xl"
+                >
+                  Restaurants not found.....
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
