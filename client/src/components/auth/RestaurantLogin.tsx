@@ -4,7 +4,7 @@ import { FaUser } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
-import { loginValidation, validationSchema } from "../../utils/validations";
+import { loginValidation } from "../../utils/validations";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { localStorageSetItem } from "../../utils/localStorageImpl";
 import { setUser } from "../../redux/user/userSlice";
