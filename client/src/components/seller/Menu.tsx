@@ -73,7 +73,7 @@ const Menu: React.FC = () => {
           <Form />
         </div>
       </div>
-      {menuImages && menuImages.items.length > 0 && (
+      {menuImages && menuImages.items?.length > 0 && (
         <div className="flex mb-4">
           <button
             onClick={handleDeleteMultiple}
@@ -84,7 +84,7 @@ const Menu: React.FC = () => {
           </button>
         </div>
       )}
-      {!menuImages || !menuImages.items.length ? (
+      {!menuImages || !menuImages.items?.length ? (
         <h1 className="text-2xl font-bold p-20">No menu found</h1>
       ) : (
         <div className="flex flex-wrap gap-5">
