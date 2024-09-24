@@ -141,7 +141,9 @@ const ChatPage: React.FC = () => {
           </>
         )}
       </section>
+      <div className="md:hidden">
       {!selectedChat && sortedConversations.map(renderConversation)}
+      </div>
       <section className="hidden flex-1 md:flex flex-col bg-neutral-50 relative w-0">
         {!selectedChat && (
           <div className=" absolute md:flex md:flex-col items-center top-[30%] right-[45%] text-center text-gray-400 p-6">
