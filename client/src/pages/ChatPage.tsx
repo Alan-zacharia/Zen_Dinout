@@ -27,7 +27,6 @@ const ChatPage: React.FC = () => {
     newMessage,
     scrollRef,
     sendMessage,
-    setNewMessage,
     onlineUser,
     receiverId,
     senderTyping,
