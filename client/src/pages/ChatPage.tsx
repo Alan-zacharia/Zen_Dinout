@@ -4,7 +4,6 @@ import ChatSideBar from "../components/chat/ChatSideBar";
 import ChatNamesListing from "../components/chat/ChatNamesListing";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-// import ChatMobileViewSlide from "../components/chat/ChatMobileViewSlider";
 import ChatMessages from "../components/chat/ChatMessages";
 import ChatHeader from "../components/chat/ChatHeader";
 import { IoHome } from "react-icons/io5";
@@ -61,6 +60,7 @@ const ChatPage: React.FC = () => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
   const onlineUserId = onlineUser.find((user) => user.userId == receiverId);
+  
   const renderConversation = useCallback(
     (c: ConversationType) => (
       <div
@@ -142,7 +142,6 @@ const ChatPage: React.FC = () => {
           </>
         )}
       </section>
-      {/* {!selectedChat && <ChatMobileViewSlide />} */}
       {!selectedChat && sortedConversations.map(renderConversation)}
       <section className="hidden flex-1 md:flex flex-col bg-neutral-50 relative w-0">
         {!selectedChat && (
@@ -191,6 +190,52 @@ const ChatPage: React.FC = () => {
           </>
         )}
       </section>
+    
+      <section className="flex-1 flex-col bg-neutral-50 relative w-0">
+        {selectedChat && (
+          <>
+            <ChatHeader
+              onlineUserId={onlineUserId?.userId}
+              selectedChat={selectedChat}
+              setSelectedChat={setSelectedChat}
+              senderTyping={senderTyping}
+            />
+
+            <div className="flex-1 overflow-y-auto p-5  no-scrollbar">
+              {messages.map((m, index: number) => (
+                <div className="flex flex-col gap-4 mt-2" ref={scrollRef}>
+                  <ChatMessages messages={m} key={index} />
+                </div>
+              ))}
+            </div>
+            <form onSubmit={sendMessage}>
+              <div className="flex items-center p-3 bg-white border-t border-gray-200">
+                <input
+                  placeholder="Message..."
+                  className="flex-1 p-3 border border-gray-400 shadow-lg rounded-full bg-light outline-none pr-16"
+                  value={newMessage}
+                  onChange={handleMessage}
+                />
+                <button
+                  className="absolute right-8 text-orange-500"
+                  type="submit"
+                >
+                  Send
+                </button>
+              </div>
+            </form>
+          </>
+        )}
+      </section>
+
+
+
+
+
+
+
+
+
       {selectedChat && (
         <section className="flex flex-1 md:hidden flex-col bg-neutral-50 relative">
           <form onSubmit={sendMessage}>

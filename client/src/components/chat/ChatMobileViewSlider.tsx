@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { IoHome } from "react-icons/io5";
 
 import { PiUserCircleDuotone } from "react-icons/pi";
@@ -8,9 +8,12 @@ import { useAppDispatch } from "../../redux/store";
 import { setCurrentChat } from "../../redux/chat/currentChatSLice";
 
 
+interface ChatMobileViewSlideProps {
+  conversations: ReactElement[];
+}
 
-const ChatMobileViewSlide: React.FC = () => {
-  const name = "Ammu";
+const ChatMobileViewSlide: React.FC<ChatMobileViewSlideProps> = ({conversations}) => {
+  const name = "ALAN";
   const dispatch = useAppDispatch();
   return (
     <section className=" w-full md:w-[300px] shadow-sm border-r border-gray-200 flex flex-col relative md:hidden">
@@ -23,7 +26,7 @@ const ChatMobileViewSlide: React.FC = () => {
           <div className="flex gap-2">
             <PiUserCircleDuotone className="size-10 md:size-12" />
             <p className="px-1 pt-2">
-              {name && name.length > 13 ? name.substring(0, 13) : name}
+              {conversations && conversations.length > 13 ? name.substring(0, 13) : name}
               <span>{name && name.length > 13 && <span>...</span>}</span>
             </p>
           </div>
@@ -38,8 +41,7 @@ const ChatMobileViewSlide: React.FC = () => {
       <hr className="hidden md:flex" />
       <div className="overflow-y-scroll overflow-x-hidden no-scrollbar pb-3">
         {[
-          1, 2, 3, 4, 5, 6, 7, 3, 34, 234, 234, 324, 324, 324, 212, 43, 234,
-          234, 223, 23,
+          1, 2, 3, 4, 5,
         ].map((_, index) => (
           <div
             key={index}
