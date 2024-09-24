@@ -7,6 +7,8 @@ import { BsArrowLeft } from "react-icons/bs";
 import { useAppDispatch } from "../../redux/store";
 import { setCurrentChat } from "../../redux/chat/currentChatSLice";
 
+
+
 const ChatMobileViewSlide: React.FC = () => {
   const name = "Ammu";
   const dispatch = useAppDispatch();

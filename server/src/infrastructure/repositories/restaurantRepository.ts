@@ -82,7 +82,7 @@ export class sellerRepository implements IRestaurantRepository {
     try {
       const { restaurantName, email, password, contact } = restaurant;
       const existingRestaurant = await this.findExistingUser(email);
-      if (!existingRestaurant) {
+      if (existingRestaurant) {
         return {
           restaurant: null,
           message: MESSAGES.USER_ALREADY_EXISTS,
