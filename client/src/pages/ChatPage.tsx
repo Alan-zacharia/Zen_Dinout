@@ -4,7 +4,7 @@ import ChatSideBar from "../components/chat/ChatSideBar";
 import ChatNamesListing from "../components/chat/ChatNamesListing";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-// import ChatMobileViewSlide from "../components/chat/ChatMobileViewSlider";
+import ChatMobileViewSlide from "../components/chat/ChatMobileViewSlider";
 import ChatMessages from "../components/chat/ChatMessages";
 import ChatHeader from "../components/chat/ChatHeader";
 import { IoHome } from "react-icons/io5";
