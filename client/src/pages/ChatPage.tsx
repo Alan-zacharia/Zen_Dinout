@@ -192,7 +192,7 @@ const ChatPage: React.FC = () => {
         )}
       </section>
     
-      <section className="flex-1 flex-col bg-neutral-50 relative w-0">
+      <section className="md:hidden flex-1 flex-col bg-neutral-50 relative w-0">
         {selectedChat && (
           <>
             <ChatHeader
