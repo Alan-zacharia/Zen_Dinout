@@ -236,7 +236,7 @@ const ChatPage: React.FC = () => {
 
 
 
-      {selectedChat && (
+      {/* {selectedChat && (
         <section className="flex flex-1 md:hidden flex-col bg-neutral-50 relative">
           <form onSubmit={sendMessage}>
             <div className="flex items-center p-3 bg-white border-t border-gray-200">
@@ -255,7 +255,7 @@ const ChatPage: React.FC = () => {
             </div>
           </form>
         </section>
-      )}
+      )} */}
     </div>
   );
 };
