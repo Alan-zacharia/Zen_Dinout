@@ -260,7 +260,7 @@ const RestaurantViewComponent = ({
                 </div>
 
                 <form>
-                  <div className="hidden xl:flex px-5 pt-5 flex-col gap-5 border w-[280px] 2xl:w-[380px] max-h-auto  rounded-xl bg-white shadow-2xl">
+                  <div className="hidden xl:flex px-5 pt-5 flex-col gap-5 border w-[280px] 2xl:w-[370px] max-h-auto  rounded-xl bg-white shadow-2xl">
                     <div>
                       <h4 className="text-xl font-bold pb-2">Select a Deal</h4>
                       <div className="flex flex-col gap-2 w-60 2xl:w-80">
