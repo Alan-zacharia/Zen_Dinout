@@ -91,10 +91,10 @@ const NavLeftSide = () => {
 
   return (
     <>
-      <div className="lg:flex items-center text-[14px] px-5 2xl:px-10 flex flex-col relative ">
+      <div className="lg:flex items-center text-[14px] px-5  flex flex-col relative ">
         <input
           type="text"
-          className="px-2 w-[150px] 2xl:w-[200px] outline-none border border-black"
+          className="px-2 w-[150px] outline-none border border-black"
           onChange={handleLocationSearch}
           value={searchItem}
           placeholder="Location......."
