@@ -14,9 +14,48 @@ const RestaurantViewDetails: React.FC = () => {
   const { restaurantId } = useParams();
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState<string>("Overview");
+  // const [restaurantDetails, setRestaurantDetails] = useState<
+  //   RestaurantDetailType | undefined
+  // >(undefined);
   const [restaurantDetails, setRestaurantDetails] = useState<
     RestaurantDetailType | undefined
-  >(undefined);
+  >({
+    "_id": "66b9f014f56c37a90f43a6d3",
+    "restaurantName": "Green land",
+    "email": "greenlandrestaurant@gmail.com",
+    "contact": "9876543210",
+    "password": "$2a$10$kxwB4Dz8No5Ztl68wE6nzusD8kTZR/mNwDvmT29yl80P0Jhk26Xiy",
+    "tableRate": 299,
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        76.318072,
+        9.4933925
+      ]
+    },
+    "isListed": true,
+    "cuisines": [
+      "Italian",
+      "Arabian"
+    ],
+    "isApproved": true,
+    "isRejected": false,
+    "address": "Edapalli Town pillar opposite, Ernakulam",
+    "closingTime":  "2024-09-05T16:30:00.000Z",
+    "description": "Whether you're looking for a quick lunch, a romantic dinner, or a place to unwind with a drink,Green Land promises an unforgettable dining experience that will leave you coming back for more.",
+    "openingTime":  "2024-09-05T05:30:00.000Z",
+    "place_name": "Alappuzha Beach, Beach Road, Alappuzha, Kerala 688012, India",
+    "vegOrNonVegType": "veg",
+    "featuredImage": {
+      "public_id": "restaurants/lbr3bdkfl8n7pp7ij7wl",
+      "url": "https://res.cloudinary.com/dneezqmgu/image/upload/v1725545807/restaurants/lbr3bdkfl8n7pp7ij7wl.jpg"
+    },
+    "secondaryImages": [  {
+      "url": "https://images.nightcafe.studio/jobs/D9QccqCUSZTQkryHXbNq/D9QccqCUSZTQkryHXbNq--4--9zdcg.jpg?tr=w-1600,c-at_max",
+     "public_id": "restaurants/lbr3bdkfl8n7pp7ij7wl",
+      "_id": "restaurants/lbr3bdkfl8n7pp7ij7wl"
+    }]
+  });
   const [restuarantImages, setRestaurantImages] = useState<string[]>([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +82,7 @@ const RestaurantViewDetails: React.FC = () => {
   const handleTabSelect = (tabName: string) => {
     setSelectedTab(tabName);
   };
-  console.log(restaurantDetails) 
+
   return (
     <>
       {restaurantDetails ? ( 
