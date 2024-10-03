@@ -236,10 +236,10 @@ const RestaurantViewComponent = ({
                     Description{" "}
                   </p>
 
-                  <p className=" font-medium text-neutral-700 max-w-lg lg:max-w-full p-3 lg:pl-10">
+                  <p className=" font-medium text-neutral-700 max-w-lg lg:max-w-full lg:pl-10">
                     {restaurantDetails.description &&
                       restaurantDetails.description.substring(0, 320) }<span>....</span>
-                  
+        
                   </p>
                   {isAuthenticated && role == "user" && (
                     <div
