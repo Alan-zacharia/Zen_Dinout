@@ -24,11 +24,11 @@ console.log(configuredKeys.CLIENT_URL)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: configuredKeys.CLIENT_URL }));
-app.use(cookieParser());
+app.use(cookieParser()); 
 
 databaseConnection(); 
 routes(app);
-socketConfig(io) 
+socketConfig(io)  
 membershipCronJob()   
 
 httpServer.listen(configuredKeys.PORT, () => {

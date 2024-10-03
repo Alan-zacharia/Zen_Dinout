@@ -83,7 +83,7 @@ const NavBar: React.FC = () => {
               Zen<span className="text-orange-600">Dinout</span>
             </div>
           </Link>
-          <div className="hidden md:flex">
+          <div className="hidden md:flex ">
             <NavLeftSide />
           </div>
         </div>
