@@ -43,9 +43,10 @@ const RestaurantViewDetails: React.FC = () => {
   const handleTabSelect = (tabName: string) => {
     setSelectedTab(tabName);
   };
+
   return (
     <>
-      {restaurantDetails ? (
+      {restaurantDetails ? ( 
         <>
           <div className="flex  ">
             <RestaurantViewComponent restaurantDetails={restaurantDetails} />

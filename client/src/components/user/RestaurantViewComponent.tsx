@@ -161,7 +161,7 @@ const RestaurantViewComponent = ({
           <>
             <div className="w-[100%] xl:w-[70%] bg-white shadow-lg  rounded-xl relative">
               <div className="w-full h-[400px] flex  gap-7">
-                <div className="bg-white w-full md:w-[650px] 2xl:w-[800px] h-[400px] border border-gray-200 ">
+                <div className="bg-white w-full md:w-[550px] 2xl:w-[800px] h-[400px] border border-gray-200 ">
                   <Slider {...settings}>
                     <img
                       src={restaurantDetails.featuredImage?.url}
@@ -259,10 +259,10 @@ const RestaurantViewComponent = ({
                 </div>
 
                 <form>
-                  <div className="hidden xl:flex px-5 pt-5 flex-col gap-5 border w-[380px] max-h-auto  rounded-xl bg-white shadow-2xl">
+                  <div className="hidden xl:flex px-5 pt-5 flex-col gap-5 border w-[280px] 2xl:w-[380px] max-h-auto  rounded-xl bg-white shadow-2xl">
                     <div>
                       <h4 className="text-xl font-bold pb-2">Select a Deal</h4>
-                      <div className="flex flex-col gap-2 w-80">
+                      <div className="flex flex-col gap-2 w-60 2xl:w-80">
                         <p className="text-sm font-semibold text-gray-600">
                           Select Date
                         </p>
@@ -306,7 +306,7 @@ const RestaurantViewComponent = ({
                             ))
                           ) : (
                             <div className="flex flex-col">
-                              <div className="mx-16 m-6">
+                              <div className="mx-6 2xl:mx-16 m-6">
                                 <p className="text-center text-xl font-bold">
                                   No slots available
                                 </p>
