@@ -99,7 +99,7 @@ const NavLeftSide = () => {
           value={searchItem}
           placeholder="Location......."
         />
-        <FaLocationDot size={23} className="absolute right-12 top-2" />
+        <FaLocationDot size={23} className="absolute right-6 top-2" />
         {suggestion && suggestion.length > 0 && (
           <ul className="bg-white absolute w-[200px] top-12 overflow-x-auto h-52">
             {suggestion.map((suggestion: any, index: number) => (
