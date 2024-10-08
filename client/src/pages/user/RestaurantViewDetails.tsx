@@ -16,7 +16,46 @@ const RestaurantViewDetails: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<string>("Overview");
   const [restaurantDetails, setRestaurantDetails] = useState<
     RestaurantDetailType | undefined
-  >(undefined);
+  >({
+    "_id": "66b9f014f56c37a90f43a6d3",
+    "restaurantName": "Green land",
+    "email": "greenlandrestaurant@gmail.com",
+    "contact": "9876543210",
+    "password": "$2a$10$kxwB4Dz8No5Ztl68wE6nzusD8kTZR/mNwDvmT29yl80P0Jhk26Xiy",
+    "tableRate": 299,
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        76.318072,
+        9.4933925
+      ]
+    },
+    "isListed": true,
+    "cuisines": [
+      "Italian",
+      "Arabian"
+    ],
+    "isApproved": true,
+    "isRejected": false,
+    "secondaryImages": [
+      {
+        "url": "https://res.cloudinary.com/dneezqmgu/image/upload/v1724387979/restaurants/z3kkmo4bll2grqkflhd1.jpg",
+        "public_id": "restaurants/z3kkmo4bll2grqkflhd1",
+        "_id": "66c8128c20fbcbfef7ef8500"
+      },
+ 
+  ],
+    "address": "Edapalli Town pillar opposite, Ernakulam",
+    "closingTime": "2024-09-05T16:30:00.000Z",
+    "description": "Whether you're looking for a quick lunch, a romantic dinner, or a place to unwind with a drink,Green Land promises an unforgettable dining experience that will leave you coming back for more.",
+    "openingTime": "2024-09-05T05:30:00.000Z",
+    "place_name": "Alappuzha Beach, Beach Road, Alappuzha, Kerala 688012, India",
+    "vegOrNonVegType": "veg",
+    "featuredImage": {
+      "public_id": "restaurants/lbr3bdkfl8n7pp7ij7wl",
+      "url": "https://res.cloudinary.com/dneezqmgu/image/upload/v1725545807/restaurants/lbr3bdkfl8n7pp7ij7wl.jpg"
+    }
+  });
   const [restuarantImages, setRestaurantImages] = useState<string[]>([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +65,8 @@ const RestaurantViewDetails: React.FC = () => {
             import.meta.env.VITE_API_BASE_URL
           }/api/restaurant-view/${restaurantId}`
         );
-        setRestaurantDetails(response.data.restaurant);
+        // setRestaurantDetails(response.data.restaurant);
+      
         setRestaurantImages(response.data.restaurantImages);
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -43,7 +83,6 @@ const RestaurantViewDetails: React.FC = () => {
   const handleTabSelect = (tabName: string) => {
     setSelectedTab(tabName);
   };
-  console.log(restaurantDetails) 
   return (
     <>
       {restaurantDetails ? ( 

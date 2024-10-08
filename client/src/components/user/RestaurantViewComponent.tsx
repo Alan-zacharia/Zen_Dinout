@@ -161,7 +161,7 @@ const RestaurantViewComponent = ({
           <>
             <div className="w-[100%] xl:w-[70%] bg-white shadow-lg  rounded-xl relative">
               <div className="w-full  h-[400px] flex  gap-7">
-                <div className="bg-white xl:w-[680px] h-[400px] border border-gray-200 ">
+                <div className="bg-white w-full xl:w-[673px] h-[400px] border border-gray-200 ">
                   <Slider {...settings}>
                     <img
                       src={restaurantDetails.featuredImage?.url}
