@@ -1,0 +1,3 @@
+;/*FB_PKG_DELIM*/
+
+__d("useCounter",["react"],(function(a,b,c,d,e,f,g){"use strict";var h;b=h||d("react");var i=b.useMemo,j=b.useState;function a(a){a===void 0&&(a=0);a=j(a);var b=a[0],c=a[1];a=i(function(){return{changeBy:function(a){return c(function(b){return b+a})},decrement:function(){return c(function(a){return a-1})},increment:function(){return c(function(a){return a+1})},set:c}},[c]);return[b,a]}g["default"]=a}),98);

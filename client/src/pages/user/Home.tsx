@@ -13,16 +13,14 @@ const HomePage: React.FC = () => {
   const { isAuthenticated, role } = useSelector(
     (state: RootState) => state.user
   );
- localStorageRemoveItem("&reset%pas%%");
+  localStorageRemoveItem("&reset%pas%%");
   return (
     <div className="h-screen relative overflow-auto">
       <div className="sticky z-50 top-0 left-0 w-full">
         <NavBar />
       </div>
-
       <div>
         <Outlet />
-
         {isAuthenticated && role == "user" && (
           <section className="sticky bottom-10 flex justify-end pr-4">
             <div

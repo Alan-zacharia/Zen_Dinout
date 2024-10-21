@@ -12,7 +12,7 @@ const NavBar: React.FC = () => {
   );
   const location = useLocation();
   return (
-    <div className="navbar bg-base-100 shadow-sm shadow-neutral-300 h-20">
+    <div className="navbar bg-base-100 shadow-sm shadow-neutral-300 h-20 ">
       <div className="navbar-start ">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -77,7 +77,7 @@ const NavBar: React.FC = () => {
             )}
           </ul>
         </div>
-        <div className=" xl:px-80 text-3xl font-bold flex items-center">
+        <div className="xl:px-60 2xl:px-80 text-2xl 2xl:text-3xl font-bold flex items-center">
           <Link to={"/"}>
             <div className="">
               Zen<span className="text-orange-600">Dinout</span>
@@ -132,7 +132,7 @@ const NavBar: React.FC = () => {
           </li>
         </ul>
       </div>
-      <div className="navbar-end xl:mr-72">
+      <div className="navbar-end xl:mr-20 2xl:mr-72">
         {isAuthenticated && role == "user" ? (
           <>
             <Link to="/account">

@@ -58,11 +58,11 @@ const RestaurantViewComponent = ({
     if (restaurantId && id && role == "user") {
       axiosInstance
         .get(`/api/chek-bookmark/${restaurantId}`)
-        .then((res) => { 
+        .then((res) => {
           setIsSave(res.data.isBookmark);
         })
         .catch((error) => {
-          console.log(error);  
+          console.log(error);
         });
     }
   }, [restaurantId]);
@@ -75,7 +75,7 @@ const RestaurantViewComponent = ({
         setIsSave(!isSaved);
       })
       .catch(({ response }) => {
-        console.log(response);  
+        console.log(response);
       });
   };
 
@@ -156,17 +156,17 @@ const RestaurantViewComponent = ({
   };
   return (
     <section className="flex flex-col w-full overflow-hidden">
-      <div className="xl:mx-16 mb-4 pt-10 h-[1300px] lg:h-[800px]  w-full flex flex-row gap-3 ">
+      <div className="xl:mx-8 2xl:mx-16 mb-4 pt-10 h-[1300px] lg:h-[800px]  w-full flex flex-row gap-3 ">
         {restaurantDetails && (
           <>
-            <div className="w-[100%] xl:w-[70%] bg-white shadow-lg  rounded-xl relative">
+            <div className="w-[100%] xl:w-[70%]  bg-white shadow-lg  rounded-xl relative">
               <div className="w-full  h-[400px] flex  gap-7">
-                <div className="bg-white w-full xl:w-[673px] h-[400px] border border-gray-200 ">
+                <div className="bg-white w-full xl:w-[580px] h-[400px] 2xl:w-[670px] border border-gray-200 ">
                   <Slider {...settings}>
                     <img
                       src={restaurantDetails.featuredImage?.url}
                       alt="restaurantImage"
-                      className="w-[100%]  xl:w-[800px] h-[400px]  transition duration-500 ease-in-out hover:scale-105  cursor-pointer"
+                      className="w-[100%]  xl:w-[580px] 2xl:w-[670px] h-[400px]  transition duration-500 ease-in-out hover:scale-105  cursor-pointer"
                     />
 
                     {restaurantDetails.secondaryImages &&
@@ -175,7 +175,7 @@ const RestaurantViewComponent = ({
                           <img
                             src={img.url}
                             alt=""
-                            className="w-[100%]  xl:w-[800px] h-[400px] transition duration-500 ease-in-out hover:scale-105  cursor-pointer"
+                            className="w-[100%]  xl:w-[580px] h-[400px] 2xl:w-[670px] transition duration-500 ease-in-out hover:scale-105  cursor-pointer"
                           />
                         </div>
                       ))}
@@ -238,8 +238,8 @@ const RestaurantViewComponent = ({
 
                   <p className=" font-medium text-neutral-700 max-w-lg lg:max-w-full lg:pl-10">
                     {restaurantDetails.description &&
-                      restaurantDetails.description.substring(0, 320) }<span>....</span>
-        
+                      restaurantDetails.description.substring(0, 320)}
+                    <span>....</span>
                   </p>
                   {isAuthenticated && role == "user" && (
                     <div
@@ -328,7 +328,11 @@ const RestaurantViewComponent = ({
                           </span>
                           <button
                             className="py-0.5 px-2 bg-red-500 rounded-lg text-white mx-8"
-                            onClick={() =>{ setTimeSlotSelect("") ,  setSelectTable(false) , setGuestCount(0)}}
+                            onClick={() => {
+                              setTimeSlotSelect(""),
+                                setSelectTable(false),
+                                setGuestCount(0);
+                            }}
                           >
                             clear
                           </button>

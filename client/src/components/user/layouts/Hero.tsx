@@ -75,7 +75,7 @@ const Hero: React.FC<HeroProps> = ({ handleSearch, handleRateRangeChange }) => {
           alt="img"
           className="w-full max-h-[500px] object-bottom object-cover"
         />
-        <div className="absolute top-0 left-0 w-full h-full text-gray-200 max-h-[500px] flex flex-col justify-center p-4 sm:p-10 lg:p-20 xl:p-40">
+        <div className="absolute top-0 left-0 w-full h-full text-gray-200 max-h-[500px] flex flex-col justify-center p-4 sm:p-10 lg:p-20 2xl:p-40">
           <div className="text-base px-3 sm:text-2xl md:text-2xl pt-10 lg:text-3xl xl:text-4xl font-bold xl:px-40 flex ">
             <span className="typewriter">
               Book Table at Your

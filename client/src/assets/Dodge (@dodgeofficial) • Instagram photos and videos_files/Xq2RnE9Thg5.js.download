@@ -1,0 +1,4 @@
+;/*FB_PKG_DELIM*/
+
+__d("LSDeleteThenInsertContactPresence",[],(function(a,b,c,d,e,f){function a(){var a=arguments,b=a[a.length-1],c=[];return b.sequence([function(c){return b.db.table(186).put({contactId:a[0],status:a[1],expirationTimestampMs:a[3],lastActiveTimestampMs:a[2],capabilities:a[4],publishId:a[5]})},function(a){return b.resolve(c)}])}a.__sproc_name__="LSPresenceDeleteThenInsertContactPresenceStoredProcedure";e.exports=a}),null);
+__d("LSTruncatePresenceDatabase",[],(function(a,b,c,d,e,f){function a(){var a=arguments,b=a[a.length-1],c=[];return b.sequence([function(c){return a[0]?b.forEach(b.db.table(186).fetch(),function(a){return a["delete"]()}):b.forEach(b.db.table(186).fetch(),function(a){return a["delete"]()})},function(a){return b.resolve(c)}])}a.__sproc_name__="LSPresenceTruncatePresenceDatabaseStoredProcedure";e.exports=a}),null);

@@ -4,7 +4,7 @@ const SectionHomeDetails: React.FC = () => {
   return (
     <>
       <div className="">
-        <h3 className="font-bold text-orange-500 flex xl:px-80 underline">
+        <h3 className="font-bold text-orange-500 flex px-52 2xl:px-80 underline">
           Available in{" "}
         </h3>
       </div>
